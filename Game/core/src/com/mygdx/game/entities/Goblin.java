@@ -40,4 +40,10 @@ public class Goblin extends Enemies {
 		animation(this.type, batch);
 	}
 
+	@Override
+	public void attack(int damage, Entity hitter, int direction) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

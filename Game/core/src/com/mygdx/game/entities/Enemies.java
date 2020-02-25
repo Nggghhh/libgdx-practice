@@ -58,8 +58,11 @@ public abstract class Enemies extends LivingEntity {
 			remainingRecoveryTime -= deltaTime;
 		else if(remainingRecoveryTime < 0)
 			remainingRecoveryTime = 0;
+		
+		if(this.HEALTH == 0)
+			super.destroy = true;
 
-		if(behavior == "PASSIVE") {
+		if(this.behavior == "PASSIVE" && this.state != "HURT") {
 			if(remainingStrayTime > 0) {
 				if(this.direction == 1) {
 					moveX(-SPEED*deltaTime);

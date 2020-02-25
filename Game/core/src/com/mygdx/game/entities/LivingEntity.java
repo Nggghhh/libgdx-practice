@@ -60,6 +60,9 @@ public abstract class LivingEntity extends Entity {
 			remainingRecoveryTime -= deltaTime;
 		else if(remainingRecoveryTime < 0)
 			remainingRecoveryTime = 0;
+		
+		if(this.HEALTH == 0)
+			super.destroy = true;
 	}
 	
 	@Override

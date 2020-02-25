@@ -51,7 +51,6 @@ public class Player extends LivingEntity {
 			}
 		}
 		
-		if(this.HEALTH < 0) this.HEALTH = 0;
 		if(this.HEALTH > this.MAX_HEALTH) this.HEALTH = this.MAX_HEALTH;
 		super.update(deltaTime);
 	}
@@ -59,5 +58,11 @@ public class Player extends LivingEntity {
 	public void render(SpriteBatch batch) {
 		hud.render(this.HEALTH, batch);
 		animation(this.type, batch);
+	}
+
+	@Override
+	public void attack(int damage, Entity hitter, int direction) {
+		// TODO Auto-generated method stub
+		
 	}
 }

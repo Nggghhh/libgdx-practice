@@ -3,10 +3,9 @@ package com.mygdx.game.world;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.entities.Enemies;
 import com.mygdx.game.entities.Entity;
 import com.mygdx.game.entities.Goblin;
 import com.mygdx.game.entities.Player;
@@ -16,30 +15,41 @@ public abstract class GameMap {
 	public GameMap() {
 		entities = new ArrayList<Entity>();
 		entities.add(new Player(40, 300, this));
-		entities.add(new Goblin(60, 300, this));
+		entities.add(new Goblin(60, 320, this));
 		entities.add(new Goblin(80, 250, this));
 		entities.add(new Goblin(80, 200, this));
 		entities.add(new Goblin(100, 150, this));
 	}
 	public void render (OrthographicCamera camera, SpriteBatch batch) {
 		for(Entity entity : entities) {
-			entity.render(batch);
+			if(entity.getAlive() == false)
+				entity.render(batch);
 		}
 	}
+	
 	public void update (float delta) {
-		for(Entity entity : entities) {
-			entity.update(delta);
-		}
-		
 		for(int i = 0; i<entities.size(); i++)
 			for(int j = 0; j<entities.size(); j++)
 				if(entities.get(j).getY() < entities.get(i).getY()) {
-					if(entities.get(j).getRect().collidesWith(entities.get(i).getRect()) && entities.get(0).getState() != "DASH") {
-						entities.get(j).hurt(1, entities.get(i), entities.get(j));
-						entities.get(i).hurt(1, entities.get(j), entities.get(i));
-					}
-					Collections.swap(entities, j, i);
+					Collections.swap(entities, i, j);
 				}
+		for(Entity entity : entities) {
+			if(entity.getAlive() == false)
+				entity.update(delta);
+			
+			for(Entity entityB : entities) {
+				if(entity.getRect().collidesWith(entityB.getRect())) {
+					if(entity instanceof Player && entityB instanceof Enemies) {
+						entity.hurt(1, entityB, entity);
+					}
+				}
+				if(entity.getRect().collidesWithAtOffset(entityB.getRect(), entity.getDirection(), 32)) {
+					if(entity instanceof Player && entityB instanceof Enemies && entity.getState() == "ATTACK") {
+						entityB.hurt(1, entity, entityB);
+					}
+				}
+			}
+		}
 	}
 	public abstract void dispose ();
 	

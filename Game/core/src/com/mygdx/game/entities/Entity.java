@@ -19,6 +19,8 @@ public abstract class Entity {
 	protected boolean collide = false;
 	protected int direction = 1;
 	
+	protected boolean destroy = false;
+	
 	protected float time = 0;
 	
 	public Entity(float x, float y, EntityType type, GameMap map) {
@@ -36,6 +38,8 @@ public abstract class Entity {
 	
 	public abstract void hurt(int damage, Entity hitter, Entity receiver);
 	
+	public abstract void attack(int damage, Entity hitter, int direction);
+	
 	public abstract void render (SpriteBatch batch);
 	
 	protected boolean loop = true;
@@ -43,6 +47,7 @@ public abstract class Entity {
 	protected int animNum = 0;
 	
 	protected String state = "IDLE";
+	protected String previousState = "IDLE";
 	protected String currentAnim = "IDLELEFT";
 	
 	protected String PATH;
@@ -64,6 +69,10 @@ public abstract class Entity {
 		
 		TextureRegion[][] crop = TextureRegion.split(sheet, 64, 64);
 		batch.draw(crop[animNum][frameNum], pos.x-28, pos.y-12, 64, 64);
+		
+		if(this.previousState != this.state)
+			frameNum = 0;
+			this.previousState = this.state;
 		
 		if(this.state == "IDLE") 
 			if(this.direction == 1)
@@ -137,5 +146,10 @@ public abstract class Entity {
 	
 	public void setState(String state) {
 		this.state = state;
+	}
+
+
+	public boolean getAlive() {
+		return destroy;
 	}
 }
