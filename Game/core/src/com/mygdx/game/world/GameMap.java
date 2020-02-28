@@ -22,23 +22,26 @@ public abstract class GameMap {
 	}
 	public void render (OrthographicCamera camera, SpriteBatch batch) {
 		for(Entity entity : entities) {
-			if(entity.getAlive() == false)
+			if(entity.getDestroyed() == false)
 				entity.render(batch);
 		}
-	}
-	
-	public void update (float delta) {
+		
+		//render order
 		for(int i = 0; i<entities.size(); i++)
 			for(int j = 0; j<entities.size(); j++)
 				if(entities.get(j).getY() < entities.get(i).getY()) {
 					Collections.swap(entities, i, j);
 				}
+	}
+	//update method and collision checks, revision needed
+	public void update (float delta) {
+		
 		for(Entity entity : entities) {
-			if(entity.getAlive() == false)
+			if(entity.getDestroyed() == false)
 				entity.update(delta);
 			
 			for(Entity entityB : entities) {
-				if(entity.getRect().collidesWith(entityB.getRect())) {
+				if(entity.getRect().collidesWith(entityB.getRect()) && entityB.getDestroyed() == false) {
 					if(entity instanceof Player && entityB instanceof Enemies) {
 						entity.hurt(1, entityB, entity);
 					}

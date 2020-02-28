@@ -7,10 +7,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.world.GameMap;
 import com.mygdx.game.tools.CollisionRect;
+import com.mygdx.game.tools.SoundManager;
 
 public abstract class Entity {
 	
 	protected Vector2 pos;
+	protected Vector2 velocity;
+	
+	protected SoundManager sound;
+	
 	protected EntityType type;
 	protected GameMap map;
 	protected CollisionRect rect;
@@ -25,6 +30,7 @@ public abstract class Entity {
 	
 	public Entity(float x, float y, EntityType type, GameMap map) {
 		this.pos = new Vector2(x, y);
+		this.velocity = new Vector2(0, 0);
 		this.type = type;
 		this.map = map;
 		this.rect = new CollisionRect(x,y,type.getWidth(), type.getHeight());
@@ -38,13 +44,14 @@ public abstract class Entity {
 	
 	public abstract void hurt(int damage, Entity hitter, Entity receiver);
 	
-	public abstract void attack(int damage, Entity hitter, int direction);
+	public abstract void attack(int damage, Entity hitter, int direction, String type);
 	
 	public abstract void render (SpriteBatch batch);
 	
 	protected boolean loop = true;
 	protected int frameNum = 0;
 	protected int animNum = 0;
+	protected int animLen = 1;
 	
 	protected String state = "IDLE";
 	protected String previousState = "IDLE";
@@ -53,18 +60,21 @@ public abstract class Entity {
 	protected String PATH;
 	protected Texture sheet;
 	protected float timer = 0;
-	protected int animLenght = 2;
+	protected int animSpeed = 2;
 	
 	public void animation(EntityType type, SpriteBatch batch) {
-		timer += Gdx.graphics.getDeltaTime()*animLenght;
+		timer += Gdx.graphics.getDeltaTime()*animSpeed;
 		
-		if(timer > 1f && frameNum < 1) {
+		if(timer > 1f && frameNum < animLen) {
 			frameNum += 1;
 			timer = 0;
 		}
-		else if(timer > 1f && frameNum == 1) {
+		else if(timer > 1f && frameNum == animLen) {
 			frameNum = 0;
 			timer = 0;
+			if(loop == false) {
+				this.state = "IDLE";
+			}	
 		}
 		
 		TextureRegion[][] crop = TextureRegion.split(sheet, 64, 64);
@@ -74,7 +84,11 @@ public abstract class Entity {
 			frameNum = 0;
 			this.previousState = this.state;
 		
-		if(this.state == "IDLE") 
+		if(this.state == "IDLE")  {
+			this.loop = true;
+			this.animLen = 1;
+			this.animSpeed = 2;
+			
 			if(this.direction == 1)
 				this.animNum = 0;
 			else if(this.direction == 2)
@@ -83,8 +97,13 @@ public abstract class Entity {
 				this.animNum = 2;
 			else
 				this.animNum = 3;
+		}
 		
-		else if(this.state == "HURT")
+		else if(this.state == "HURT") {
+			this.loop = true;
+			this.animLen = 1;
+			this.animSpeed = 2;
+			
 			if(this.direction == 1)
 				this.animNum = 4;
 			else if(this.direction == 2)
@@ -93,6 +112,22 @@ public abstract class Entity {
 				this.animNum = 4;
 			else
 				this.animNum = 4;
+		}
+		
+		else if(this.state == "ATTACK") {
+			this.loop = false;
+			this.animLen = 5;
+			this.animSpeed = 15;
+			
+			if(this.direction == 1)
+				this.animNum = 5;
+			else if(this.direction == 2)
+				this.animNum = 6;
+			else if(this.direction == 3)
+				this.animNum = 7;
+			else
+				this.animNum = 7;
+		}
 	}
 
 	public Vector2 getPos() {
@@ -149,7 +184,7 @@ public abstract class Entity {
 	}
 
 
-	public boolean getAlive() {
+	public boolean getDestroyed() {
 		return destroy;
 	}
 }

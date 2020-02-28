@@ -41,7 +41,7 @@ public class Goblin extends Enemies {
 	}
 
 	@Override
-	public void attack(int damage, Entity hitter, int direction) {
+	public void attack(int damage, Entity hitter, int direction, String type) {
 		// TODO Auto-generated method stub
 		
 	}

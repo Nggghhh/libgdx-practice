@@ -22,33 +22,33 @@ public abstract class Enemies extends LivingEntity {
 	@Override
 	public void update(float deltaTime) {
 		float newX = pos.x;
-		newX += this.velocityX*deltaTime;
+		newX += this.velocity.x*deltaTime;
 		
 		rect.move(this.pos.x, this.pos.y);
 		
 		float newY = pos.y;
-		newY += this.velocityY*deltaTime;
+		newY += this.velocity.y*deltaTime;
 		
 		if(map.doesRectCollideWithMap(newX, pos.y, getWidth(), getHeight())) {
-			if(velocityX < 0) {
+			if(velocity.x < 0) {
 				this.pos.x = (float) Math.floor(pos.x);
 			}
-			this.velocityX = 0;
+			this.velocity.x = 0;
 		}
 		else {
 			this.pos.x = newX;
 		}
 		
 		if(map.doesRectCollideWithMap(pos.x, newY, getWidth(), getHeight())) {
-			if(velocityY < 0) {
+			if(velocity.y < 0) {
 				this.pos.y = (float) Math.floor(pos.y);
 			}
-			this.velocityY = 0;
+			this.velocity.y = 0;
 		}
 		else {
 			this.pos.y = newY;
 		}
-		timer();
+		timer(deltaTime);
 		remainingStrayTime -= deltaTime;
 		
 		if(remainingRecoveryTime < RECOVERY_TIME/2 && this.state == "HURT")
@@ -59,9 +59,11 @@ public abstract class Enemies extends LivingEntity {
 		else if(remainingRecoveryTime < 0)
 			remainingRecoveryTime = 0;
 		
-		if(this.HEALTH == 0)
-			super.destroy = true;
+		//destroy after flinch animation is ended
+		if(this.HEALTH == 0 && this.state != "HURT")
+			this.destroy = true;
 
+		
 		if(this.behavior == "PASSIVE" && this.state != "HURT") {
 			if(remainingStrayTime > 0) {
 				if(this.direction == 1) {
