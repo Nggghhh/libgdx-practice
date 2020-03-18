@@ -5,25 +5,28 @@ import java.util.Collections;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.game.entities.Enemies;
 import com.mygdx.game.entities.Entity;
 import com.mygdx.game.entities.Goblin;
 import com.mygdx.game.entities.Player;
+import com.mygdx.game.tools.RandomNumGen;
 
 public abstract class GameMap {
 	protected ArrayList<Entity> entities;
+	protected ShapeRenderer sh;
 	public GameMap() {
 		entities = new ArrayList<Entity>();
-		entities.add(new Player(40, 300, this));
-		entities.add(new Goblin(60, 320, this));
-		entities.add(new Goblin(80, 250, this));
-		entities.add(new Goblin(80, 200, this));
-		entities.add(new Goblin(100, 150, this));
+		entities.add(new Player(210, 260, this));
+		for(int i = 0; i<5; i++)
+			entities.add(new Goblin(RandomNumGen.getRandomNumberInRange(50, 100), RandomNumGen.getRandomNumberInRange(150, 300), this));
 	}
 	public void render (OrthographicCamera camera, SpriteBatch batch) {
 		for(Entity entity : entities) {
 			if(entity.getDestroyed() == false)
-				entity.render(batch);
+				entity.render(batch, camera);
 		}
 		
 		//render order
@@ -34,12 +37,27 @@ public abstract class GameMap {
 				}
 	}
 	//update method and collision checks, revision needed
-	public void update (float delta) {
+	public void update (OrthographicCamera camera, float delta) {
 		
 		for(Entity entity : entities) {
 			if(entity.getDestroyed() == false)
-				entity.update(delta);
-			
+				entity.update(camera, delta);
+			//get entity out of pull and place it on stage
+			else if(entity.getDestroyed() == true) {
+				entity.recreate(40, 300, entity.getType().getHealth());
+			}
+			//pursue player
+			if(entity instanceof Enemies) {
+				if(entity.getPos().x > getHero().getPos().x && entity.getPos().x > getHero().getWidth()+getHero().getPos().x)
+					entity.setDirection(1);
+				else if(entity.getPos().x < getHero().getPos().x && entity.getPos().x < getHero().getWidth()+getHero().getPos().x)
+					entity.setDirection(2);
+				if(entity.getPos().y > getHero().getPos().y && entity.getPos().y > getHero().getHeight()+getHero().getPos().y)
+					entity.setDirection(3);
+				else if(entity.getPos().y < getHero().getPos().y && entity.getPos().y < getHero().getHeight()+getHero().getPos().y)
+					entity.setDirection(4);
+			}
+			//check entities for collision
 			for(Entity entityB : entities) {
 				if(entity.getRect().collidesWith(entityB.getRect()) && entityB.getDestroyed() == false) {
 					if(entity instanceof Player && entityB instanceof Enemies) {
@@ -55,6 +73,7 @@ public abstract class GameMap {
 		}
 	}
 	public abstract void dispose ();
+	public abstract void init(String name);
 	
 	/**
 	 * Gets a tile by pixel position within game world at a specific layer
@@ -102,6 +121,9 @@ public abstract class GameMap {
 		return this.getHeight()*TileType.TILE_SIZE;
 	}
 	public Entity getHero() {
-		return entities.get(0);
+		for(Entity entity : entities)
+			if(entity instanceof Player)
+				return entity;
+		return null;
 	}
 }

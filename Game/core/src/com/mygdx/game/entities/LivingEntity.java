@@ -1,12 +1,13 @@
 package com.mygdx.game.entities;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.world.GameMap;
 
 public abstract class LivingEntity extends Entity {
 	
-	protected final float RECOVERY_TIME = 1f;
+	protected final float RECOVERY_TIME = 0.7f;
 	protected float remainingRecoveryTime;
 	
 	protected boolean dash = false;
@@ -19,12 +20,12 @@ public abstract class LivingEntity extends Entity {
 	}
 
 	@Override
-	public void render(SpriteBatch batch) {
+	public void render(SpriteBatch batch, OrthographicCamera camera) {
 		// TODO Auto-generated method stub
 
 	}
 	@Override
-	public void update(float deltaTime) {
+	public void update(OrthographicCamera camera, float deltaTime) {
 		//apply velocity on X axis
 		float newX = pos.x;
 		newX += this.velocity.x*deltaTime;

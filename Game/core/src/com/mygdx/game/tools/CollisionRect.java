@@ -25,12 +25,12 @@ public class CollisionRect {
 	
 	public boolean collidesWithAtOffset (CollisionRect rect, int direction, int distance) {
 		if(direction == 1)
-			return (x-distance)<rect.x+rect.width && y<rect.y+rect.height && x+width>rect.x && y+height>rect.y;
+			return (x-distance)<rect.x+rect.width && (y-12)<rect.y+rect.height && x+width>rect.x && (y+12)+height>rect.y;
 		else if(direction == 2)
-			return x<rect.x+rect.width && y<rect.y+rect.height && (x+distance)+width>rect.x && y+height>rect.y;
+			return x<rect.x+rect.width && (y-12)<rect.y+rect.height && (x+distance)+width>rect.x && (y+12)+height>rect.y;
 		else if(direction == 3)
-			return x<rect.x+rect.width && (y-distance)<rect.y+rect.height && x+width>rect.x && y+height>rect.y;
+			return (x-12)<rect.x+rect.width && (y-distance)<rect.y+rect.height && (x+12)+width>rect.x && y+height>rect.y;
 		else
-			return x<rect.x+rect.width && y<rect.y+rect.height && x+width>rect.x && (y+distance)+height>rect.y;	
+			return (x-12)<rect.x+rect.width && y<rect.y+rect.height && (x+12)+width>rect.x && (y+distance)+height>rect.y;	
 	}
 }

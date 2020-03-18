@@ -15,7 +15,12 @@ public class TiledGameMap extends GameMap {
 	OrthogonalTiledMapRenderer tiledMapRenderer;
 	
 	public TiledGameMap () {
-		tiledMap = new TmxMapLoader().load("Map.tmx");
+		init("Map");
+	}
+	
+	@Override
+	public void init(String name) {
+		tiledMap = new TmxMapLoader().load(name+".tmx");
 		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 	}
 	
@@ -24,16 +29,15 @@ public class TiledGameMap extends GameMap {
 		tiledMapRenderer.setView(camera);
 		tiledMapRenderer.render();
 		
-		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		super.render(camera, batch);
 		batch.end();
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update(OrthographicCamera camera, float delta) {
 		// TODO Auto-generated method stub
-		super.update(delta);
+		super.update(camera, delta);
 	}
 
 	@Override
