@@ -3,29 +3,30 @@ package com.mygdx.game.world;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.mygdx.game.entities.Enemies;
 import com.mygdx.game.entities.Entity;
+import com.mygdx.game.entities.EntityType;
 import com.mygdx.game.entities.Goblin;
 import com.mygdx.game.entities.Player;
 import com.mygdx.game.tools.RandomNumGen;
+import com.mygdx.game.tools.Unprojecter;
 
 public abstract class GameMap {
-	protected ArrayList<Entity> entities;
-	protected ShapeRenderer sh;
+	protected transient ArrayList<Entity> entities;
+	protected transient ArrayList<Entity> inventory;
 	public GameMap() {
 		entities = new ArrayList<Entity>();
-		entities.add(new Player(210, 260, this));
-		for(int i = 0; i<5; i++)
-			entities.add(new Goblin(RandomNumGen.getRandomNumberInRange(50, 100), RandomNumGen.getRandomNumberInRange(150, 300), this));
+		entities.add(new Player(210, 260, EntityType.PLAYER, this, 0));
+		for(int i = 1; i<5; i++)
+			entities.add(new Goblin(RandomNumGen.getRandomNumberInRange(50, 400), RandomNumGen.getRandomNumberInRange(150, 300), EntityType.GOBLIN, this, i));
 	}
 	public void render (OrthographicCamera camera, SpriteBatch batch) {
 		for(Entity entity : entities) {
-			if(entity.getDestroyed() == false)
+			if(camera.frustum.pointInFrustum(entity.getX(), entity.getY(), 0))
 				entity.render(batch, camera);
 		}
 		
@@ -38,38 +39,32 @@ public abstract class GameMap {
 	}
 	//update method and collision checks, revision needed
 	public void update (OrthographicCamera camera, float delta) {
-		
+		if(Gdx.input.isKeyJustPressed(Keys.G))
+			entities.add(new Goblin(Unprojecter.getMouseCoords(camera).x, Unprojecter.getMouseCoords(camera).y, EntityType.GOBLIN, this, 0));
 		for(Entity entity : entities) {
-			if(entity.getDestroyed() == false)
-				entity.update(camera, delta);
 			//get entity out of pull and place it on stage
-			else if(entity.getDestroyed() == true) {
-				entity.recreate(40, 300, entity.getType().getHealth());
-			}
+			//			if(entity.getDestroyed() == true) {
+			//				entity.recreate(40, 300, entity.getType().getHealth());
+			//			}
 			//pursue player
-			if(entity instanceof Enemies) {
-				if(entity.getPos().x > getHero().getPos().x && entity.getPos().x > getHero().getWidth()+getHero().getPos().x)
-					entity.setDirection(1);
-				else if(entity.getPos().x < getHero().getPos().x && entity.getPos().x < getHero().getWidth()+getHero().getPos().x)
-					entity.setDirection(2);
-				if(entity.getPos().y > getHero().getPos().y && entity.getPos().y > getHero().getHeight()+getHero().getPos().y)
-					entity.setDirection(3);
-				else if(entity.getPos().y < getHero().getPos().y && entity.getPos().y < getHero().getHeight()+getHero().getPos().y)
-					entity.setDirection(4);
-			}
+			entity.update(camera, delta, this);
+
 			//check entities for collision
 			for(Entity entityB : entities) {
-				if(entity.getRect().collidesWith(entityB.getRect()) && entityB.getDestroyed() == false) {
+				if(entity.getRect().collidesWith(entityB.getRect()) && entityB.getDestroyed() == false && entityB.getState() != "ATTACK") {
 					if(entity instanceof Player && entityB instanceof Enemies) {
 						entity.hurt(1, entityB, entity);
 					}
+					if(entity.getId() != entityB.getId() && entity.getType() == entityB.getType() && entity.getState() != "HURT")
+						entity.push(entityB, 0.5f);
 				}
-				if(entity.getRect().collidesWithAtOffset(entityB.getRect(), entity.getDirection(), 32)) {
-					if(entity instanceof Player && entityB instanceof Enemies && entity.getState() == "ATTACK") {
+				if(entity.getRect().collidesWithAtOffset(entityB.getRect(), entity.getDirection(), 32, 12)) {
+					if(entity instanceof Player && entityB instanceof Enemies && entity.getState() == "ATTACK" && entity.getFrame() == 1) {
 						entityB.hurt(1, entity, entityB);
 					}
 				}
 			}
+
 		}
 	}
 	public abstract void dispose ();
@@ -93,6 +88,7 @@ public abstract class GameMap {
 	 * @return
 	 */
 	public abstract TileType getTileTypeByCoordinate(int layer, int col, int row);
+	public abstract TileType setTile(int layer, int col, int row, int id);
 	
 	public boolean doesRectCollideWithMap(float x, float y, int width, int height) {
 		if (x < 0 || y < 0 || x+width > getPixelWidth() || y + height > getPixelHeight()) {
@@ -104,6 +100,24 @@ public abstract class GameMap {
 					TileType type = getTileTypeByCoordinate(layer, col, row);
 					if (type != null&&type.isCollidable())
 						return true;
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * Check if entity is on this tile. MouseX and MouseY are coordinates of the tile, which you want to check, X and Y - coordinates of the entity. If they match each other, then this method returns true
+	 */
+	public boolean isEntityOnTile(float x, float y, int width, int height, float mouseX, float mouseY) {
+		int mX = (int) mouseX/TileType.TILE_SIZE;
+		int mY = (int) mouseY/TileType.TILE_SIZE;
+		for (int row = (int) (y / TileType.TILE_SIZE); row < Math.ceil((y+height)/TileType.TILE_SIZE); row++) {
+			for (int col = (int) (x / TileType.TILE_SIZE); col < Math.ceil((x+width)/TileType.TILE_SIZE); col++) {
+				for(int layer = 0; layer < getLayers(); layer++) {
+					if (row == mY && col == mX)
+						return true;
+					else
+						return false;
 				}
 			}
 		}
@@ -125,5 +139,14 @@ public abstract class GameMap {
 			if(entity instanceof Player)
 				return entity;
 		return null;
+	}
+	public Entity getEnemies() {
+		for(Entity entity : entities)
+			if(entity instanceof Enemies)
+				return entity;
+		return null;
+	}
+	public ArrayList<Entity> getEntities() {
+		return entities;
 	}
 }

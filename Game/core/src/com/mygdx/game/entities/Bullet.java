@@ -6,13 +6,13 @@ import com.mygdx.game.world.GameMap;
 
 public class Bullet extends Entity {
 
-	public Bullet(float x, float y, EntityType type, GameMap map) {
-		super(x, y, type, map);
+	public Bullet(float x, float y, EntityType type, GameMap map, int id) {
+		super(x, y, type, map, id);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public void update(OrthographicCamera camera, float deltaTime) {
+	public void update(OrthographicCamera camera, float deltaTime, GameMap map) {
 		// TODO Auto-generated method stub
 
 	}

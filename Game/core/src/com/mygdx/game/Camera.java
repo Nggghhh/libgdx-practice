@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.world.GameMap;
 
 public class Camera {
@@ -18,10 +17,7 @@ public class Camera {
 	}
 	
 	public void render(GameMap gameMap, float deltaTime, SpriteBatch batch) {
-		if(Gdx.graphics.isFullscreen())
-			camera.setToOrtho(false, Gdx.graphics.getWidth()*4, Gdx.graphics.getHeight()*4);
-		if(!Gdx.graphics.isFullscreen())
-			camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.setToOrtho(false, Gdx.graphics.getWidth()*0.5f, Gdx.graphics.getHeight()*0.5f);
 		camera.position.set(gameMap.getHero().getX(), gameMap.getHero().getY(), 0);
 		camera.update();
 		

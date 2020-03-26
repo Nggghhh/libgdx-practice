@@ -1,6 +1,5 @@
 package com.mygdx.game.world;
 
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 
 public class ScreenManager{

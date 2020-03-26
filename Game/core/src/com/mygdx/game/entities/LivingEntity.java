@@ -1,21 +1,30 @@
 package com.mygdx.game.entities;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.tools.CollisionRect;
+import com.mygdx.game.tools.Unprojecter;
 import com.mygdx.game.world.GameMap;
 
 public abstract class LivingEntity extends Entity {
 	
 	protected final float RECOVERY_TIME = 0.7f;
-	protected float remainingRecoveryTime;
+	protected transient float remainingRecoveryTime;
 	
-	protected boolean dash = false;
+	protected transient boolean dash = false;
+	protected transient boolean attack = false;
+	protected transient boolean isMoving = false;
 	
 	protected int HEALTH;
 	
-	public LivingEntity(float x, float y, EntityType type, GameMap map) {
-		super(x, y, type, map);
+	public LivingEntity() {
+		
+	}
+
+	public LivingEntity(float x, float y, EntityType type, GameMap map, int id) {
+		super(x, y, type, map, id);
 		this.HEALTH = type.getHealth();
 	}
 
@@ -25,18 +34,18 @@ public abstract class LivingEntity extends Entity {
 
 	}
 	@Override
-	public void update(OrthographicCamera camera, float deltaTime) {
+	public void update(OrthographicCamera camera, float deltaTime, GameMap map) {
 		//apply velocity on X axis
+		super.update(camera, deltaTime, map);
 		float newX = pos.x;
 		newX += this.velocity.x*deltaTime;
-		
+
 		//move collision rectangle with its sprite
 		rect.move(this.pos.x, this.pos.y);
-		
+
 		//apply velocity on Y axis
 		float newY = pos.y;
 		newY += this.velocity.y*deltaTime;
-		
 		//check if collision with solid tile on Y axis occurred
 		if(map.doesRectCollideWithMap(newX, pos.y, getWidth(), getHeight())) {
 			this.pos.x = (float) Math.floor(pos.x);
@@ -45,7 +54,7 @@ public abstract class LivingEntity extends Entity {
 		else {
 			this.pos.x = newX;
 		}
-		
+
 		//check if collision with solid tile on X axis occurred
 		if(map.doesRectCollideWithMap(pos.x, newY, getWidth(), getHeight())) {
 			this.pos.y = (float) Math.floor(pos.y);
@@ -54,22 +63,23 @@ public abstract class LivingEntity extends Entity {
 		else {
 			this.pos.y = newY;
 		}
-		
+
 		//linear damping, adding drag to object velocity
 		timer(deltaTime);
-		
-		//after recovery time is ended, reset back to idling state
-		if(remainingRecoveryTime < RECOVERY_TIME/2 && this.state == "HURT")
-			this.state = "IDLE";
-		
+
+		//after recovery time is ended, reset back to idling stated
+
 		if(remainingRecoveryTime > 0)
 			remainingRecoveryTime -= deltaTime;
 		else if(remainingRecoveryTime < 0)
 			remainingRecoveryTime = 0;
-		
+
 		//destroy after flinch animation is ended
-		if(this.HEALTH == 0 && this.state != "HURT")
+		if(this.HEALTH == 0 && this.state != "HURT") {
 			this.destroy = true;
+		}
+		else if(remainingRecoveryTime < RECOVERY_TIME/2 && this.state == "HURT")
+			changeState("IDLE", true, 1, 2);
 	}
 	
 	//flinch and receive damage method
@@ -77,23 +87,29 @@ public abstract class LivingEntity extends Entity {
 	public void hurt (int damage, Entity hitter, Entity receiver) {
 		if(this.remainingRecoveryTime == 0) {
 			this.remainingRecoveryTime = RECOVERY_TIME;
-			this.state = "HURT";
+			changeState("HURT", false, 2, 6);
 			this.HEALTH -= damage;
-			this.push(200, hitter, 2f);
+			this.push(hitter, 2f);
 			System.out.println("collide");
 		}
 	}
 	//move object on X axis
 	protected void moveX (float amount) {
 		float newX = pos.x + amount;
-		if (!map.doesRectCollideWithMap(newX, pos.y, getWidth(), getHeight()))
-			this.pos.x = newX;	
+		if (!map.doesRectCollideWithMap(newX, pos.y, getWidth(), getHeight())) {
+			this.pos.x = newX;
+		}
+		else
+			changeState("IDLE", true, 1, 2);
 	}
 	//move object on Y axis
 	protected void moveY (float amount) {
 		float newY = pos.y + amount;
-		if (!map.doesRectCollideWithMap(pos.x, newY, getWidth(), getHeight()))
+		if (!map.doesRectCollideWithMap(pos.x, newY, getWidth(), getHeight())) {
 			this.pos.y = newY;
+		}
+		else
+			changeState("IDLE", true, 1, 2);
 	}
 	//dash method, revision needed
 	public void dash (float velocity, int direction) {
@@ -111,7 +127,8 @@ public abstract class LivingEntity extends Entity {
 		}
 	}
 	//push object from other object
-	public void push(float velocity, Entity pusher,float distance) {
+	@Override
+	public void push(Entity pusher,float distance) {
         float distanceBetweenEntities = Vector2.dst(this.pos.x, this.pos.y, pusher.pos.x, pusher.pos.y);
         float ratio = distance/distanceBetweenEntities;
 		this.velocity.x = (this.pos.x-pusher.pos.x)*ratio*100;

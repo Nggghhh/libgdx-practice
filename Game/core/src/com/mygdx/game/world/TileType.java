@@ -4,40 +4,37 @@ import java.util.HashMap;
 
 public enum TileType {
 	
-	SANDSTONE_DARK(1, false, "Sandstone"),
-	SANDSTONE_FRAME(2, false, "Sandstone"),
-	GRASS_0(42, false, "Grass"),
-	GRASS_1(43, false, "Grass"),
-	GRASS_2(44, false, "Grass"),
-	GRASS_3(74, false, "Grass"),
-	GRASS_4(75, false, "Grass"),
-	GRASS_5(76, false, "Grass"),
-	GRASS_6(106, false, "Grass"),
-	GRASS_7(107, false, "Grass"),
-	GRASS_8(108, false, "Grass"),
-	COLLISION(13, true, "COLLISION"),
-	FLOWERS(78, false, "Flowers");
+	COLLISION(13, true, "COLLISION", 0, false),
+	FREESPACE(14, false, "FREESPACE", 0, false);
 	
 	public static final int TILE_SIZE = 16;
 	private int id;
 	private boolean collidable;
 	private String name;
 	private float damage;
+	private boolean filled;
 	
-	private TileType(int id, boolean collidable, String name) {
-		this(id, collidable, name, 0);
-	}
-	private TileType(int id, boolean collidable, String name, float damage) {
+	private TileType(int id, boolean collidable, String name, float damage, boolean filled) {
 		this.id = id;
 		this.collidable = collidable;
 		this.name = name;
 		this.damage = damage;
+		this.filled = false;
 	}
 	public int getId() {
 		return id;
 	}
+	public void setFilled() {
+		this.filled = true;
+	}
+	public void setFree() {
+		this.filled = false;
+	}
 	public boolean isCollidable() {
 		return collidable;
+	}
+	public boolean isFilled() {
+		return filled;
 	}
 	public String getName() {
 		return name;

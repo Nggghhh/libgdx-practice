@@ -1,5 +1,10 @@
 package com.mygdx.game.world;
 
+import java.util.logging.FileHandler;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -7,12 +12,17 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.utils.Base64Coder;
+import com.badlogic.gdx.utils.Json;
+import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.tools.OrthogonalTiledMapRenderer;
 
 public class TiledGameMap extends GameMap {
 
 	TiledMap tiledMap;
 	OrthogonalTiledMapRenderer tiledMapRenderer;
+	StaticTiledMapTile tile;
 	
 	public TiledGameMap () {
 		init("Map");
@@ -36,7 +46,6 @@ public class TiledGameMap extends GameMap {
 
 	@Override
 	public void update(OrthographicCamera camera, float delta) {
-		// TODO Auto-generated method stub
 		super.update(camera, delta);
 	}
 
@@ -59,6 +68,17 @@ public class TiledGameMap extends GameMap {
 		}
 		return null;
 	}
+	
+	@Override
+	public TileType setTile(int layer, int col, int row, int id) {
+		Cell cell = ((TiledMapTileLayer) tiledMap.getLayers().get(layer)).getCell(col, row);
+		if(cell != null) {
+			cell.setTile(tiledMap.getTileSets().getTile(id));
+			System.out.println("epic");
+		}
+		return null;
+	}
+
 
 	@Override
 	public int getWidth() {
