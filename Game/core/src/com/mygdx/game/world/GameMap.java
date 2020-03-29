@@ -2,6 +2,7 @@ package com.mygdx.game.world;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -12,33 +13,52 @@ import com.mygdx.game.entities.Entity;
 import com.mygdx.game.entities.EntityType;
 import com.mygdx.game.entities.Goblin;
 import com.mygdx.game.entities.Player;
+import com.mygdx.game.items.Items;
 import com.mygdx.game.tools.RandomNumGen;
 import com.mygdx.game.tools.Unprojecter;
 
 public abstract class GameMap {
 	protected transient ArrayList<Entity> entities;
-	protected transient ArrayList<Entity> inventory;
+	protected transient ArrayList<Entity> renderOrder;
+	protected transient ArrayList<Items> inventory;
 	public GameMap() {
 		entities = new ArrayList<Entity>();
+		renderOrder = new ArrayList<Entity>();
 		entities.add(new Player(210, 260, EntityType.PLAYER, this, 0));
+		entities.add(new Items(215, 265, EntityType.DAGGER, this, 22));
 		for(int i = 1; i<5; i++)
 			entities.add(new Goblin(RandomNumGen.getRandomNumberInRange(50, 400), RandomNumGen.getRandomNumberInRange(150, 300), EntityType.GOBLIN, this, i));
 	}
 	public void render (OrthographicCamera camera, SpriteBatch batch) {
-		for(Entity entity : entities) {
+		renderOrder();
+		for(Entity entity : renderOrder) {
 			if(camera.frustum.pointInFrustum(entity.getX(), entity.getY(), 0))
 				entity.render(batch, camera);
 		}
-		
-		//render order
-		for(int i = 0; i<entities.size(); i++)
-			for(int j = 0; j<entities.size(); j++)
-				if(entities.get(j).getY() < entities.get(i).getY()) {
-					Collections.swap(entities, i, j);
-				}
+	}
+	
+	public void renderOrder() {
+		renderOrder.removeAll(renderOrder);
+		renderOrder.addAll(entities);
+		for(int i = 0; i<renderOrder.size(); i++)
+			for(int j = 0; j<renderOrder.size(); j++)
+				if(renderOrder.get(j).getY() < renderOrder.get(i).getY())
+					Collections.swap(renderOrder, i, j);
+	}
+	//removes object from collection
+	public void remove(Entity entity) {
+		Iterator<Entity> it = entities.iterator();
+		while(it.hasNext()) {
+			Entity ent = it.next();
+			if(ent == entity) {
+				it.remove();
+			}
+		}
 	}
 	//update method and collision checks, revision needed
 	public void update (OrthographicCamera camera, float delta) {
+		if(Gdx.input.isKeyJustPressed(Keys.N))
+			remove(getItems());
 		if(Gdx.input.isKeyJustPressed(Keys.G))
 			entities.add(new Goblin(Unprojecter.getMouseCoords(camera).x, Unprojecter.getMouseCoords(camera).y, EntityType.GOBLIN, this, 0));
 		for(Entity entity : entities) {
@@ -113,7 +133,7 @@ public abstract class GameMap {
 		int mY = (int) mouseY/TileType.TILE_SIZE;
 		for (int row = (int) (y / TileType.TILE_SIZE); row < Math.ceil((y+height)/TileType.TILE_SIZE); row++) {
 			for (int col = (int) (x / TileType.TILE_SIZE); col < Math.ceil((x+width)/TileType.TILE_SIZE); col++) {
-				for(int layer = 0; layer < getLayers(); layer++) {
+				for(int layer = 0; layer < getLayers();) {
 					if (row == mY && col == mX)
 						return true;
 					else
@@ -143,6 +163,12 @@ public abstract class GameMap {
 	public Entity getEnemies() {
 		for(Entity entity : entities)
 			if(entity instanceof Enemies)
+				return entity;
+		return null;
+	}
+	public Entity getItems() {
+		for(Entity entity : entities)
+			if(entity instanceof Items)
 				return entity;
 		return null;
 	}

@@ -67,8 +67,7 @@ public abstract class LivingEntity extends Entity {
 		//linear damping, adding drag to object velocity
 		timer(deltaTime);
 
-		//after recovery time is ended, reset back to idling stated
-
+		//after recovery time is ended, reset back to idling state
 		if(remainingRecoveryTime > 0)
 			remainingRecoveryTime -= deltaTime;
 		else if(remainingRecoveryTime < 0)

@@ -1,10 +1,14 @@
 package com.mygdx.game.entities;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.world.GameMap;
 import com.mygdx.game.world.TileType;
@@ -27,7 +31,6 @@ public abstract class Entity {
 	protected boolean isPickable = false;
 	
 	//collisions
-	protected boolean collide = false;
 	protected int direction = 1;
 	
 	protected boolean destroy = false;
@@ -108,7 +111,7 @@ public abstract class Entity {
 		if(currentAnim != "IDLE") {
 			currentAnim = "IDLE_LEFT";
 		}
-		batch.draw(frames(this.currentAnim, frameNum), pos.x-28, pos.y-12, 64, 64);
+		batch.draw(frames(this.currentAnim, frameNum), pos.x-this.type.getPivotX(), pos.y-this.type.getPivotY(), 64, 64);
 	}
 	
 	public void animation(EntityType type, SpriteBatch batch) {
@@ -219,15 +222,6 @@ public abstract class Entity {
 	
 	public CollisionRect getRect() {
 		return rect;
-	}
-	
-	public boolean getCollide() {
-		return collide;
-	}
-	
-	
-	public void setCollide(boolean c) {
-		this.collide = c;
 	}
 	
 	public void setState(String state) {

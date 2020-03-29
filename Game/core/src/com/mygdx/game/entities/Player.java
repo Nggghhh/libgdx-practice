@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.HUD;
+import com.mygdx.game.items.Items;
 import com.mygdx.game.tools.SoundManager;
 import com.mygdx.game.tools.Unprojecter;
 import com.mygdx.game.world.GameMap;
@@ -71,7 +72,7 @@ public class Player extends LivingEntity {
 //			if(Gdx.input.justTouched() && this.state != "ATTACK" && this.previousState != "HURT") {
 //				changeState("ATTACK", false, 5, 15);
 //			}
-
+			
 			if(this.state == "ATTACK")
 				attack(1, this, 60, "physical");
 		}
