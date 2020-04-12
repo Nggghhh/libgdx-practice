@@ -1,6 +1,7 @@
 package com.mygdx.game.entities;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.tools.RandomNumGen;
 import com.mygdx.game.world.GameMap;
 
@@ -8,6 +9,8 @@ public abstract class Enemies extends LivingEntity {
 	
 	private static final float MAX_STRAY_TIME = 1f;
 	private static final int SPEED = 20;
+	protected float FOV;
+	
 	protected float remainingStrayTime = 1f;
 	protected float remainingAttackTime = 1f;
 	protected Behavior behavior = Behavior.AGRESSIVE;
@@ -16,7 +19,7 @@ public abstract class Enemies extends LivingEntity {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public enum Behavior{
+	protected enum Behavior{
 		AGRESSIVE,
 		PASSIVE;
 	}
@@ -24,6 +27,17 @@ public abstract class Enemies extends LivingEntity {
 	@Override
 	public void update(OrthographicCamera camera, float deltaTime, GameMap map) {
 		super.update(camera, deltaTime, map);
+	}
+	
+	@Override
+	public void livingState(OrthographicCamera camera, float deltaTime, GameMap map) {
+		super.livingState(camera, deltaTime, map);
+		
+		if(playerIsOnSight(FOV, map.getHero().getX(), map.getHero().getY()) && !map.getHero().getDestroyed())
+			this.behavior = Behavior.AGRESSIVE;
+		else
+			this.behavior = Behavior.PASSIVE;
+		
 		if(remainingAttackTime > 0)
 			remainingAttackTime -= deltaTime;
 		if(this.behavior == behavior.PASSIVE)
@@ -63,6 +77,13 @@ public abstract class Enemies extends LivingEntity {
 		else if(this.direction == 4) {
 			moveY(SPEED*deltaTime);
 		}
+	}
+	
+	public boolean playerIsOnSight(float FOV, float entityX, float entityY) {
+		float distance = Vector2.dst(this.pos.x, this.pos.y, entityX, entityY);
+		if(distance <= FOV)
+			return true;
+		return false;
 	}
 	
 	public void turnTowardsPlayer(GameMap map) {

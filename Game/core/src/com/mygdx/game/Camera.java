@@ -1,10 +1,12 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.game.world.GameMap;
 
 public class Camera {
@@ -18,6 +20,7 @@ public class Camera {
 	
 	public void render(GameMap gameMap, float deltaTime, SpriteBatch batch) {
 		camera.setToOrtho(false, Gdx.graphics.getWidth()*0.5f, Gdx.graphics.getHeight()*0.5f);
+		
 		camera.position.set(gameMap.getHero().getX(), gameMap.getHero().getY(), 0);
 		camera.update();
 		
@@ -26,14 +29,14 @@ public class Camera {
 		gameMap.update(camera, deltaTime);
 		gameMap.render(camera, batch);
 		
-		sh.begin(ShapeType.Line);
-		sh.setProjectionMatrix(camera.combined);
-		sh.setColor(255, 0, 0, 255);
-		sh.line(gameMap.getHero().getX(), gameMap.getHero().getY(), gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY());
-		sh.line(gameMap.getHero().getX(), gameMap.getHero().getY()+gameMap.getHero().getHeight(), gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY()+gameMap.getHero().getHeight());
-		sh.line(gameMap.getHero().getX(), gameMap.getHero().getY()+gameMap.getHero().getHeight(), gameMap.getHero().getX(), gameMap.getHero().getY());
-		sh.line(gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY()+gameMap.getHero().getHeight(), gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY());
-		sh.end();
+//		sh.begin(ShapeType.Line);
+//		sh.setProjectionMatrix(camera.combined);
+//		sh.setColor(255, 0, 0, 255);
+//		sh.line(gameMap.getHero().getX(), gameMap.getHero().getY(), gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY());
+//		sh.line(gameMap.getHero().getX(), gameMap.getHero().getY()+gameMap.getHero().getHeight(), gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY()+gameMap.getHero().getHeight());
+//		sh.line(gameMap.getHero().getX(), gameMap.getHero().getY()+gameMap.getHero().getHeight(), gameMap.getHero().getX(), gameMap.getHero().getY());
+//		sh.line(gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY()+gameMap.getHero().getHeight(), gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY());
+//		sh.end();
 	}
 	
 	public void dispose() {

@@ -1,6 +1,7 @@
 package com.mygdx.game.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.world.GameMap;
 import com.mygdx.game.world.TileType;
+import com.mygdx.game.items.Inventory;
 import com.mygdx.game.tools.CollisionRect;
 import com.mygdx.game.tools.SoundManager;
 import com.mygdx.game.tools.Unprojecter;
@@ -21,6 +23,8 @@ public abstract class Entity {
 	
 	protected Vector2 pos;
 	protected transient Vector2 velocity;
+	protected float weight;
+	protected float pushStrenght;
 	
 	protected transient SoundManager sound;
 	
@@ -29,6 +33,7 @@ public abstract class Entity {
 	protected transient CollisionRect rect;
 	protected boolean canMove = true;
 	protected boolean isPickable = false;
+	protected boolean disabled = false;
 	
 	//collisions
 	protected int direction = 1;
@@ -42,42 +47,41 @@ public abstract class Entity {
 	public Entity(float x, float y, EntityType type, GameMap map, int id) {
 		this.pos = new Vector2(x, y);
 		this.velocity = new Vector2(0, 0);
+		this.entityTextures = new HashMap<String, Texture>();
 		this.type = type;
 		this.map = map;
 		this.rect = new CollisionRect(x,y,type.getWidth(), type.getHeight(), true);
-		this.sheet = new Texture(this.type+"/"+this.state+"/"+this.currentAnim+"/"+frameNum+".png");
 		this.id = id;
 	}
 	
 
 	//breakpoint
 	public void update (OrthographicCamera camera, float deltaTime, GameMap map) {
-//		if(Gdx.input.isKeyJustPressed(Keys.X)) {
-//			if(map.getHero().getDirection() == 1) {
-//				if(!map.isEntityOnTile(pos.x, pos.y, getWidth(), getHeight(), map.getHero().getX()+16, map.getHero().getY()))
-//					map.setTile(2, (int)(map.getHero().getX()-16)/TileType.TILE_SIZE,(int)map.getHero().getY()/TileType.TILE_SIZE, 14);
-//			}
-//			else if(map.getHero().getDirection() == 2) {
-//				if(!map.isEntityOnTile(pos.x, pos.y, getWidth(), getHeight(), map.getHero().getX()-16, map.getHero().getY()))
-//					map.setTile(2, (int)(map.getHero().getX()+16)/TileType.TILE_SIZE,(int)map.getHero().getY()/TileType.TILE_SIZE, 14);
-//			}
-//			else if(map.getHero().getDirection() == 3) {
-//				if(!map.isEntityOnTile(pos.x, pos.y, getWidth(), getHeight(), map.getHero().getX(), map.getHero().getY()-16))
-//					map.setTile(2, (int)map.getHero().getX()/TileType.TILE_SIZE,(int)(map.getHero().getY()-16)/TileType.TILE_SIZE, 14);
-//			}
-//			else if(map.getHero().getDirection() == 4) {
-//				if(!map.isEntityOnTile(pos.x, pos.y, getWidth(), getHeight(), map.getHero().getX(), map.getHero().getY()+16))
-//					map.setTile(2, (int)map.getHero().getX()/TileType.TILE_SIZE,(int)(map.getHero().getY()+16)/TileType.TILE_SIZE, 14);
-//			}
-//		}
-		if(Gdx.input.isKeyJustPressed(Keys.X) && !map.isEntityOnTile(pos.x, pos.y, getWidth(), getHeight(), Unprojecter.getMouseCoords(camera).x, Unprojecter.getMouseCoords(camera).y))
-			map.setTile(2, (int)Unprojecter.getMouseCoords(camera).x/TileType.TILE_SIZE,(int)Unprojecter.getMouseCoords(camera).y/TileType.TILE_SIZE, 13);
+		animation(this.type);
+		
+		//move collision rectangle with its sprite
+		if(rect.isEnabled())
+			rect.move(this.pos.x, this.pos.y);
+		if(this.isDisabled())
+			this.rect.setEnabled(false);
+		
 	}
 	
 	public abstract void hurt(int damage, Entity hitter, Entity receiver);
 	
-	public void push(Entity pusher,float distance) {
+	public void push(float x, float y, float distance) {
 		
+	}
+	
+	public void throwEntity(Entity thrower, float power) {
+		if(thrower.getDirection() == 1)
+			this.setVelocityX(-power);
+		else if(thrower.getDirection() == 2)
+			this.setVelocityX(+power);
+		else if(thrower.getDirection() == 3)
+			this.setVelocityY(-power);
+		else if(thrower.getDirection() == 4)
+			this.setVelocityY(+power);
 	}
 	
 	public abstract void attack(int damage, Entity hitter, int velocity, String type);
@@ -85,6 +89,8 @@ public abstract class Entity {
 	public abstract void render (SpriteBatch batch, OrthographicCamera camera);
 	
 	public abstract void recreate (int x, int y, int health);
+	
+	protected transient HashMap<String, Texture> entityTextures;
 	
 	protected boolean loop = true;
 	protected int frameNum = 0;
@@ -94,27 +100,13 @@ public abstract class Entity {
 	
 	protected String state = "IDLE";
 	protected transient String previousState = "IDLE";
-	protected String currentAnim = "IDLE_LEFT";
+	protected String currentAnim = "0";
 	
 	protected transient Texture sheet;
 	protected transient float timer = 0;
 	protected int animSpeed = 2;
 	
-	public Texture frames(String currentAnim, int frameNum) {
-		sheet.dispose();
-		if(sheet != null)
-			return sheet = new Texture(this.type+"/"+this.state+"/"+this.currentAnim+"/"+frameNum+".png");
-		return sheet = new Texture(this.type+"/IDLE/"+this.currentAnim+"/"+frameNum+".png");
-	}
-	
-	public void staticFrame(EntityType type, SpriteBatch batch) {
-		if(currentAnim != "IDLE") {
-			currentAnim = "IDLE_LEFT";
-		}
-		batch.draw(frames(this.currentAnim, frameNum), pos.x-this.type.getPivotX(), pos.y-this.type.getPivotY(), 64, 64);
-	}
-	
-	public void animation(EntityType type, SpriteBatch batch) {
+	public void animation(EntityType type) {
 		timer += Gdx.graphics.getDeltaTime()*animSpeed;
 		if(timer > 1f) {
 			timer = 0;
@@ -131,7 +123,17 @@ public abstract class Entity {
 				}
 			}
 		}
-		batch.draw(frames(this.currentAnim, frameNum), pos.x-28, pos.y-12, 64, 64);
+	}
+	
+	public void animationPlay(SpriteBatch batch) {
+		if(entityTextures.get(this.type+"/"+this.state+"/"+this.currentAnim+"/"+frameNum+".png") != null)
+			batch.draw(entityTextures.get(this.type+"/"+this.state+"/"+this.currentAnim+"/"+frameNum+".png"), pos.x-type.getPivotX(), pos.y-type.getPivotY());
+	}
+	
+	protected void animationLoader(EntityType type, String name, int frameNum, int animationNumber) {
+		for(int i = 0; i < animationNumber; i++)
+			for(int j = 0; j < frameNum; j++)
+				this.entityTextures.put(type+"/"+name+"/"+i+"/"+j+".png", new Texture(type+"/"+name+"/"+i+"/"+j+".png"));
 	}
 	
 	protected void changeState(String newState, boolean loop, int animLen, int animSpeed) {
@@ -139,6 +141,7 @@ public abstract class Entity {
 		this.animLen = animLen;
 		this.animSpeed = animSpeed;
 		this.state = newState;
+		
 		if(this.previousState != this.state) {
 			this.timer = 0;
 			this.frameNum = 0;
@@ -146,23 +149,23 @@ public abstract class Entity {
 		}
 		if(state != "DEATH" && state != "HURT") {
 			if(this.direction == 1)
-				this.currentAnim = state+"_LEFT";
+				this.currentAnim = "0";
 			else if(this.direction == 2)
-				this.currentAnim = state+"_RIGHT";
+				this.currentAnim = "1";
 			else if(this.direction == 3)
-				this.currentAnim = state+"_DOWN";
+				this.currentAnim = "2";
 			else
-				this.currentAnim = state+"_UP";
+				this.currentAnim = "3";
 		}
 		else {
 			if(this.direction == 1)
-				this.currentAnim = state;
+				this.currentAnim = "0";
 			else if(this.direction == 2)
-				this.currentAnim = state;
+				this.currentAnim = "0";
 			else if(this.direction == 3)
-				this.currentAnim = state;
+				this.currentAnim = "0";
 			else
-				this.currentAnim = state;
+				this.currentAnim = "0";
 		}
 	}
 	
@@ -183,12 +186,36 @@ public abstract class Entity {
 		return type;
 	}
 	
+	public void setType(EntityType type) {
+		this.type = type;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public float getX() {
 		return pos.x;
 	}
 	
 	public float getY() {
 		return pos.y;
+	}
+	
+	public float velocityX() {
+		return velocity.x;
+	}
+	
+	public float velocityY() {
+		return velocity.y;
+	}
+	
+	public void setVelocityX(float x) {
+		this.velocity.x = x;
+	}
+	
+	public void setVelocityY(float y) {
+		this.velocity.y = y;
 	}
 	
 	public int getWidth() {
@@ -247,5 +274,13 @@ public abstract class Entity {
 	
 	public void setCanMove(boolean canMove) {
 		this.canMove = canMove;
+	}
+	
+	public boolean isDisabled() {
+		return disabled;
+	}
+	
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
 	}
 }

@@ -44,4 +44,12 @@ public class CollisionRect {
 		}
 		return false;
 	}
+	
+	public boolean isEnabled() {
+		return isCollisionEnabled;
+	}
+	
+	public void setEnabled(boolean isCollisionEnabled) {
+		this.isCollisionEnabled = isCollisionEnabled;
+	}
 }

@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Json;
 import com.mygdx.game.entities.Entity;
+import com.mygdx.game.entities.Player;
+import com.mygdx.game.world.CustomGameMap;
 import com.mygdx.game.world.GameMap;
 import com.mygdx.game.world.TiledGameMap;
 
@@ -22,7 +24,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		camera = new Camera();
 		camera.init(batch);
-		gameMap = new TiledGameMap();
+		gameMap = new CustomGameMap();
 		gm = new GameManager(gameMap);
 	}
 
@@ -35,11 +37,13 @@ public class MyGdxGame extends ApplicationAdapter {
 		if(Gdx.input.isKeyJustPressed(Keys.DOWN))
 			gameMap.init("Menu");
 		
-		if(Gdx.input.isKeyJustPressed(Keys.H))
-			gm.saveData(gameMap.getHero());
+		if(Gdx.input.isKeyJustPressed(Keys.H)) {
+			gm.saveData(gameMap.getHero(), gameMap.getHero().getPlayerInventory());
+		}
 		
-		if(Gdx.input.isKeyJustPressed(Keys.J))
+		if(Gdx.input.isKeyJustPressed(Keys.J)) {
 			gm.loadData(gameMap.getHero(), gameMap);
+		}
 		
 		if(Gdx.input.isKeyJustPressed(Keys.K))
 			gm.printJson();

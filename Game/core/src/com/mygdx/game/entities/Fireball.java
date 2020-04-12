@@ -1,20 +1,19 @@
-package com.mygdx.game.items;
+package com.mygdx.game.entities;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.entities.Entity;
-import com.mygdx.game.entities.EntityType;
-import com.mygdx.game.tools.CollisionRect;
+import com.mygdx.game.tools.Unprojecter;
 import com.mygdx.game.world.GameMap;
 
-public class Items extends Entity {
-	public Items(float x, float y, EntityType type, GameMap map, int id) {
-		super(x, y, type, map, id);
-		this.animLen = 0;
+public class Fireball extends Bullet {
+	public Fireball(float x, float y, EntityType type, GameMap map, int id, String caster) {
+		super(x, y, type, map, id, caster);
 		
-		animationLoader(this.type, "IDLE", 1, 1);
+		animationLoader(this.type, "IDLE", 4, 1);
+		changeState("IDLE", true, 3, 6);
+		this.sliperyness = 1f;
+		this.defaultStrenght = 1;
 	}
 	
 	@Override
@@ -30,7 +29,8 @@ public class Items extends Entity {
 		//check if collision with solid tile on Y axis occurred
 		if(map.doesRectCollideWithMap(newX, pos.y, getWidth(), getHeight())) {
 			this.pos.x = (float) Math.floor(pos.x);
-			this.velocity.x = 0;
+			this.HEALTH -= 1;
+			this.velocity.x *= -1;
 		}
 		else {
 			this.pos.x = newX;
@@ -39,13 +39,26 @@ public class Items extends Entity {
 		//check if collision with solid tile on X axis occurred
 		if(map.doesRectCollideWithMap(pos.x, newY, getWidth(), getHeight())) {
 			this.pos.y = (float) Math.floor(pos.y);
-			this.velocity.y = 0;
+			this.HEALTH -= 1;
+			this.velocity.y *= -1;
 		}
 		else {
 			this.pos.y = newY;
 		}
+
 		//linear damping, adding drag to object velocity
-		timer(deltaTime);
+		timer(deltaTime, sliperyness);
+
+		//destroy after flinch animation is ended
+		if(this.HEALTH < 0 && this.state != "HURT") {
+		}
+		
+		for(Entity entity : map.getEntities())
+			if(this.caster != entity.getType().getName() && entity.getId() != this.getId() && entity instanceof LivingEntity && !entity.getDestroyed())
+				if(this.rect.collidesWith(entity.getRect())) {
+					this.push(entity.getX(), entity.getY(), entity.getType().getWeight());
+					entity.hurt(1, this, entity);
+				}
 	}
 
 	@Override
@@ -53,16 +66,20 @@ public class Items extends Entity {
 		// TODO Auto-generated method stub
 
 	}
+	
+	public void destroy() {
+		this.disabled = true;
+	}
 
 	@Override
-	public void attack(int damage, Entity hitter, int velocity, String type) {
+	public void attack(int damage, Entity hitter, int direction, String type) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void render(SpriteBatch batch, OrthographicCamera camera) {
-		animationPlay(batch);
+		super.render(batch, camera);
 	}
 
 	@Override
@@ -72,9 +89,7 @@ public class Items extends Entity {
 	}
 	
 	@Override
-	public void push(float x, float y ,float distance) {
-        this.velocity.x = 0;
-        this.velocity.y = 0;
+	public void push(float x, float y, float distance) {
         if(this.pos.x != x && this.pos.y != y) {
             float distanceBetweenEntities = Vector2.dst(this.pos.x, this.pos.y, x, y);
             float ratio = distance/distanceBetweenEntities;
@@ -88,9 +103,4 @@ public class Items extends Entity {
         	this.velocity.y = (this.pos.y-y)*ratio*100;
         }
 	}
-	
-	public void timer(float deltaTime) {
-		velocity.scl(1 - (4f * deltaTime*2));
-	}
-
 }

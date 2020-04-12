@@ -40,9 +40,6 @@ public abstract class LivingEntity extends Entity {
 		float newX = pos.x;
 		newX += this.velocity.x*deltaTime;
 
-		//move collision rectangle with its sprite
-		rect.move(this.pos.x, this.pos.y);
-
 		//apply velocity on Y axis
 		float newY = pos.y;
 		newY += this.velocity.y*deltaTime;
@@ -65,18 +62,21 @@ public abstract class LivingEntity extends Entity {
 		}
 
 		//linear damping, adding drag to object velocity
-		timer(deltaTime);
-
+		timer(deltaTime);		
+	}
+	
+	public void livingState(OrthographicCamera camera, float deltaTime, GameMap map) {
 		//after recovery time is ended, reset back to idling state
 		if(remainingRecoveryTime > 0)
 			remainingRecoveryTime -= deltaTime;
 		else if(remainingRecoveryTime < 0)
 			remainingRecoveryTime = 0;
-
+		
 		//destroy after flinch animation is ended
 		if(this.HEALTH == 0 && this.state != "HURT") {
 			this.destroy = true;
 		}
+		
 		else if(remainingRecoveryTime < RECOVERY_TIME/2 && this.state == "HURT")
 			changeState("IDLE", true, 1, 2);
 	}
@@ -88,7 +88,7 @@ public abstract class LivingEntity extends Entity {
 			this.remainingRecoveryTime = RECOVERY_TIME;
 			changeState("HURT", false, 2, 6);
 			this.HEALTH -= damage;
-			this.push(hitter, 2f);
+			this.push(hitter.getX(), hitter.getY(), hitter.getType().getWeight());
 			System.out.println("collide");
 		}
 	}
@@ -127,15 +127,21 @@ public abstract class LivingEntity extends Entity {
 	}
 	//push object from other object
 	@Override
-	public void push(Entity pusher,float distance) {
-        float distanceBetweenEntities = Vector2.dst(this.pos.x, this.pos.y, pusher.pos.x, pusher.pos.y);
+	public void push(float x, float y, float distance) {
+		if(distance < 0)
+			distance = 0;
+        float distanceBetweenEntities = Vector2.dst(this.pos.x, this.pos.y, x, y);
         float ratio = distance/distanceBetweenEntities;
-		this.velocity.x = (this.pos.x-pusher.pos.x)*ratio*100;
-		this.velocity.y = (this.pos.y-pusher.pos.y)*ratio*100;
+		this.velocity.x = (this.pos.x-x)*ratio*100;
+		this.velocity.y = (this.pos.y-y)*ratio*100;
 	}
 	
 	//linear damping, adding drag to object velocity
 	public void timer(float deltaTime) {
 		velocity.scl(1 - (4f * deltaTime*2));
+	}
+	
+	public void setHealth(int health) {
+		this.HEALTH = health;
 	}
 }

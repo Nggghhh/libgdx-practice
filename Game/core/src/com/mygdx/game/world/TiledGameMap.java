@@ -1,5 +1,6 @@
 package com.mygdx.game.world;
 
+import java.util.Arrays;
 import java.util.logging.FileHandler;
 
 import com.badlogic.gdx.Gdx;
@@ -17,15 +18,72 @@ import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
 import com.mygdx.game.MyGdxGame;
 import com.mygdx.game.tools.OrthogonalTiledMapRenderer;
+import com.mygdx.game.tools.RandomNumGen;
+import com.mygdx.game.tools.SimplexNoise;
+import com.mygdx.game.world.tiles.CustomTileType;
 
 public class TiledGameMap extends GameMap {
 
 	TiledMap tiledMap;
 	OrthogonalTiledMapRenderer tiledMapRenderer;
 	StaticTiledMapTile tile;
+	SimplexNoise simp;
+	
+	float[][] map;
 	
 	public TiledGameMap () {
 		init("Map");
+		simp = new SimplexNoise();
+		
+//		for(int row = 0; row < map.length; row++)
+//			for(int col = 0; col < map[row].length; col++)
+//				map[row][col] = 0;
+//		for(int i = 0; i < 20; i++) {
+//			map[RandomNumGen.getRandomNumberInRange(0, 49)][RandomNumGen.getRandomNumberInRange(0, 49)] = 5;
+//		}
+//		
+//		for(int row = 0; row < map.length; row++)
+//			for(int col = 0; col < map[row].length; col++) {
+//				if(map[row][col] == 5) {
+//					if(row+1 > 0 && row+1 < map.length && col > 0 && col < map.length) map[row+1][col] = 4;
+//					if(row-1 > 0 && row-1 < map.length && col > 0 && col < map.length) map[row-1][col] = 4;
+//					if(row > 0 && row < map.length && col+1 > 0 && col+1 < map.length) map[row][col+1] = 4;
+//					if(row > 0 && row < map.length && col-1 > 0 && col-1 < map.length) map[row][col-1] = 4;
+//				}
+//			}
+//		for(int row = 0; row < map.length; row++)
+//			for(int col = 0; col < map[row].length; col++)
+//				if(map[row][col] == 4 && map[row][col] != 5) {
+//					if(row+1 > 0 && row+1 < map.length && col > 0 && col < map.length && map[row+1][col] != 5) map[row+1][col] = 3;
+//					if(row-1 > 0 && row-1 < map.length && col > 0 && col < map.length && map[row-1][col] != 5) map[row-1][col] = 3;
+//					if(row > 0 && row < map.length && col+1 > 0 && col+1 < map.length && map[row][col+1] != 5) map[row][col+1] = 3;
+//					if(row > 0 && row < map.length && col-1 > 0 && col-1 < map.length && map[row][col-1] != 5) map[row][col-1] = 3;
+//				}
+//		for(int row = 0; row < map.length; row++)
+//			for(int col = 0; col < map[row].length; col++)
+//				if(map[row][col] == 3 && map[row][col] != 4) {
+//					if(row+1 > 0 && row+1 < map.length && col > 0 && col < map.length && map[row+1][col] != 4) map[row+1][col] = 2;
+//					if(row-1 > 0 && row-1 < map.length && col > 0 && col < map.length && map[row-1][col] != 4) map[row-1][col] = 2;
+//					if(row > 0 && row < map.length && col+1 > 0 && col+1 < map.length && map[row][col+1] != 4) map[row][col+1] = 2;
+//					if(row > 0 && row < map.length && col-1 > 0 && col-1 < map.length && map[row][col-1] != 4) map[row][col-1] = 2;
+//				}
+		
+		
+		for(int row = 0; row < map.length; row++) {
+			for(int col = 0; col < map[row].length; col++) {
+				System.out.print((int)map[row][col]+" ");
+			}
+			System.out.println();
+		}
+		
+	}
+	
+	public static boolean find(int[][] map, int target) {
+		for(int row = 0; row < map.length; row++)
+			for(int col = 0; col < map[row].length; col++)
+				if(row > 0 && row < map.length && col-1 > 0 && col-1 < map.length)
+					return true;
+		return false;
 	}
 	
 	@Override
@@ -56,16 +114,8 @@ public class TiledGameMap extends GameMap {
 	}
 
 	@Override
-	public TileType getTileTypeByCoordinate(int layer, int col, int row) {
-		Cell cell = ((TiledMapTileLayer) tiledMap.getLayers().get(layer)).getCell(col, row);
-		if(cell != null) {
-			TiledMapTile tile = cell.getTile();
-			
-			if(tile != null) {
-				int id = tile.getId();
-				return TileType.getTileTypeById(id);
-			}
-		}
+	public CustomTileType getTileTypeByCoordinate(int layer, int col, int row) {
+
 		return null;
 	}
 	
