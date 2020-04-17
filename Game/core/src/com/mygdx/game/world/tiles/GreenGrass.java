@@ -8,7 +8,9 @@ public class GreenGrass extends CustomTileType {
 	public GreenGrass(String name, int x, int y) {
 		super(name, x, y);
 		this.id = 4;
+		this.group = "grass";
 		this.collidable = false;
 		this.destroyable = false;
+		this.connectable = true;
 	}
 }

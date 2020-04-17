@@ -136,21 +136,30 @@ public class SimplexNoise {
 	}
 	
 	public float[][][] generateBaseTerrain(float[][] array) {
+		System.out.println(array[0][0]);
+		double deepWaterLevel = 0;
+		double shallowWaterLevel = 0.4;
+		double sandLevel = 0.5;
+		double grassLevel = 0.6;
+		double rockyLevel = 0.83;
+		double mountainLevel = 0.85;
 		float[][][] terrain = new float[array.length][array[0].length][2];
 		
 		for(int layer = 0; layer<terrain[0][0].length; layer++)
 			for(int row = 0; row<terrain.length; row++ )
 				for(int col = 0; col<terrain[0].length; col++ ) {
-					if(array[row][col] < 0.4) //deep water
+					if(array[row][col] >= deepWaterLevel && array[row][col] < shallowWaterLevel) //deep water
 						terrain[row][col][0] = 1;
-					else if(array[row][col] < 0.5 && array[row][col] > 0.4) //shallow water
+					else if(array[row][col] >= shallowWaterLevel && array[row][col] < sandLevel) //shallow water
 						terrain[row][col][0] = 2;
-					else if(array[row][col] == 0.5) //sand
+					else if(array[row][col] >= sandLevel && array[row][col] < grassLevel) //sand
 						terrain[row][col][0] = 3;
-					else //grass
+					else if(array[row][col] >= grassLevel && array[row][col] < rockyLevel)//grass
 						terrain[row][col][0] = 4;
+					else if(array[row][col] >= rockyLevel)//rocky terrain
+						terrain[row][col][0] = 3;
 					
-					if(array[row][col] > 0.81) //mountains
+					if(array[row][col] >= mountainLevel) //mountains
 						terrain[row][col][1] = 5;
 					else //empty space
 						terrain[row][col][1] = 0;

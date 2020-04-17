@@ -8,7 +8,7 @@ import com.mygdx.game.world.GameMap;
 public abstract class Enemies extends LivingEntity {
 	
 	private static final float MAX_STRAY_TIME = 1f;
-	private static final int SPEED = 20;
+	protected int SPEED;
 	protected float FOV;
 	
 	protected float remainingStrayTime = 1f;

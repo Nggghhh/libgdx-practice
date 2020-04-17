@@ -15,7 +15,6 @@ import com.mygdx.game.world.GameMap;
 import com.mygdx.game.world.TileType;
 
 public class Player extends LivingEntity {
-	private transient HUD hud;
 	private static int SPEED = 130;
 	private static int DASH_VELOCITY = 400;
 	private int MAX_HEALTH = 6;
@@ -27,7 +26,6 @@ public class Player extends LivingEntity {
 	
 	public Player(float x, float y, EntityType type, GameMap map, int id) {
 		super(x, y, type, map, id);
-		hud = new HUD();
 		playerInventory = new Inventory(map);
 		
 		
@@ -103,7 +101,6 @@ public class Player extends LivingEntity {
 	
 	@Override
 	public void render(SpriteBatch batch, OrthographicCamera camera) {
-		hud.render(this.HEALTH, batch, camera);
 		animationPlay(batch);
 	}
 	

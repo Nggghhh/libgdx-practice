@@ -133,7 +133,8 @@ public abstract class Entity {
 	protected void animationLoader(EntityType type, String name, int frameNum, int animationNumber) {
 		for(int i = 0; i < animationNumber; i++)
 			for(int j = 0; j < frameNum; j++)
-				this.entityTextures.put(type+"/"+name+"/"+i+"/"+j+".png", new Texture(type+"/"+name+"/"+i+"/"+j+".png"));
+				if(!entityTextures.containsKey(type+"/"+name+"/"+i+"/"+j+".png"))
+					entityTextures.put(type+"/"+name+"/"+i+"/"+j+".png", new Texture(type+"/"+name+"/"+i+"/"+j+".png"));
 	}
 	
 	protected void changeState(String newState, boolean loop, int animLen, int animSpeed) {

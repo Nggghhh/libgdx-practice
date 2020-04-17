@@ -8,7 +8,7 @@ import com.mygdx.game.world.GameMap;
 
 public class TileGridCell {
 	private final int CELL_SIZE = 16;
-	public int x, y, id, layer, variation;
+	public int x, y, id, layer;
 	public GameMap map;
 	protected CollisionRect rect;
 	public boolean occupied = false;
@@ -21,17 +21,7 @@ public class TileGridCell {
 		this.y = y*CELL_SIZE;
 		this.layer = layer;
 		this.id = tileId;
-		
-		if(TileTextureManager.getTile(this.id) != null)
-			tile = TileTextureManager.getTile(this.id);
-		tile.x = this.x;
-		tile.y = this.y;
-		
-		if(this.id == 4)
-			this.variation = RandomNumGen.getRandomNumberInRange(0, 3);
-		else
-			this.variation = 0;
-		
+
 		if(this.id == 5)
 			tile = new Rock("rock", this.x, this.y);
 		if(this.id == 4)
@@ -42,6 +32,8 @@ public class TileGridCell {
 			tile = new ShallowWater("shallowWater", this.x, this.y);
 		if(this.id == 1)
 			tile = new DeepWater("deepWater", this.x, this.y);
+		if(this.id == 0)
+			tile = new Air("air", this.x, this.y);
 		
 		this.rect = new CollisionRect(this.x, this.y, CELL_SIZE, CELL_SIZE, true);
 	}
@@ -50,10 +42,15 @@ public class TileGridCell {
 		return rect;
 	}
 	
-	public void tileChange(CustomTileType tile) {
+	public void tileChange(CustomTileType tile, CustomGameMap map) {
 		if(this.tile != tile) {
 			this.tile = tile;
 			this.id = tile.id;
+			map.updateTile((this.x/CELL_SIZE), (this.y/CELL_SIZE)+1, this.layer);
+			map.updateTile((this.x/CELL_SIZE)+1, (this.y/CELL_SIZE), this.layer);
+			map.updateTile((this.x/CELL_SIZE), (this.y/CELL_SIZE)-1, this.layer);
+			map.updateTile((this.x/CELL_SIZE)-1, (this.y/CELL_SIZE), this.layer);
+			map.updateTile((this.x/CELL_SIZE), (this.y/CELL_SIZE), this.layer);
 		}
 	}
 }

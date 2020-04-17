@@ -7,9 +7,9 @@ import com.mygdx.game.tools.RandomNumGen;
 import com.mygdx.game.world.GameMap;
 
 public abstract class CustomTileType {
-	protected int id, x, y;
-	protected String name;
-	protected boolean collidable, destroyable, replacable = true;
+	protected int id, x, y, variation;
+	protected String name, group;
+	protected boolean collidable, destroyable, replacable = true, connectable = false, liquid = false;
 	
 	protected final int TILE_SIZE = 16;
 	
@@ -17,10 +17,11 @@ public abstract class CustomTileType {
 		this.x = x;
 		this.y = y;
 		this.name = name;
+		this.variation = 0;
 	}
 	
-	public void render(SpriteBatch batch, TextureRegion tile) {
-		batch.draw(tile, x, y);
+	public void render(SpriteBatch batch) {
+		batch.draw(TileTextureManager.getTex(this.variation, this.id), x, y);
 	}
 	
 	public String getName() {
@@ -41,5 +42,25 @@ public abstract class CustomTileType {
 	
 	public boolean isCollidable() {
 		return collidable;
+	}
+	
+	public boolean isConnectable() {
+		return connectable;
+	}
+
+	public boolean isLiquid() {
+		return liquid;
+	}
+	
+	public int getVar() {
+		return variation;
+	}
+	
+	public void setVar(int newVar) {
+		this.variation = newVar;
+	}
+	
+	public String getGroup() {
+		return group;
 	}
 }

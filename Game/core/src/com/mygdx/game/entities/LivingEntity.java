@@ -144,4 +144,8 @@ public abstract class LivingEntity extends Entity {
 	public void setHealth(int health) {
 		this.HEALTH = health;
 	}
+	
+	public int getHealth() {
+		return HEALTH;
+	}
 }

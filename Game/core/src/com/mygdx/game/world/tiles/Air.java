@@ -14,7 +14,7 @@ public class Air extends CustomTileType {
 	}
 	
 	@Override
-	public void render(SpriteBatch batch, TextureRegion tiles) {
+	public void render(SpriteBatch batch) {
 		
 	}
 }

@@ -56,7 +56,7 @@ public class CustomGameMapLoader {
 		
 		mapData.id = id;
 		mapData.name = name;
-		mapData.map = mapGen.generateBaseTerrain(mapGen.CreateRoundedArray(SIZE, SIZE, octave, 1, seed));
+		mapData.map = mapGen.generateBaseTerrain(mapGen.CreateRoundedArray(SIZE, SIZE, octave, 5, seed));
 		
 		return mapData;
 	}

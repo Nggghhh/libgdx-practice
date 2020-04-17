@@ -7,25 +7,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.world.TileType;
 
 public class TileTextureManager {
-	private TextureRegion[][] tiles;
-	private static CustomTileType[] tileList;
+	private static TextureRegion[][] tiles;
+	private static TextureRegion[][] liquids;
 	public TileTextureManager() {
-		tileList = new CustomTileType[32];
-		tileList[0] = new Air("air", 0, 0);
-		tileList[1] = new DeepWater("deepWater", 0, 0);
-		tileList[2] = new ShallowWater("shallowWater", 0, 0);
-		tileList[3] = new Sand("sand", 0, 0);
-		tileList[4] = new GreenGrass("greenGrass", 0, 0);
-		tileList[5] = new Rock("rock", 0, 0);
 		tiles = TextureRegion.split(new Texture("MainNwwew.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
+		liquids = TextureRegion.split(new Texture("liquid.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
 	}
 	
-	public TextureRegion getTex(int row, int col) {
+	public static TextureRegion getTex(int row, int col) {
 		return 	fixBleeding(tiles[row][col]);
 	}
 	
-	public static CustomTileType getTile(int id) {
-		return tileList[id];
+	public static TextureRegion getLiquids(int row, int col) {
+		return 	fixBleeding(liquids[row][col]);
 	}
 	
 	public static TextureRegion fixBleeding(TextureRegion region) {

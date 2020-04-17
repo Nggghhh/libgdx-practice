@@ -19,19 +19,20 @@ public class MyGdxGame extends ApplicationAdapter {
 	GameManager gm;
 	GameMap gameMap;
 	
+	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		camera = new Camera();
-		camera.init(batch);
 		gameMap = new CustomGameMap();
 		gm = new GameManager(gameMap);
+		camera.init(batch, gameMap);
 	}
 
 	@Override
 	public void render () {
 		float deltaTime = Math.min(1/30f, Gdx.graphics.getDeltaTime());
-		Gdx.gl.glClearColor(90/255f,168/255f,92/255f,1);
+		Gdx.gl.glClearColor(0,0,0,255);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		if(Gdx.input.isKeyJustPressed(Keys.DOWN))

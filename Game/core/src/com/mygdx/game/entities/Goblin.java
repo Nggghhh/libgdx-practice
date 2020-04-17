@@ -15,6 +15,7 @@ public class Goblin extends Enemies {
 		super(x, y, type, map, id);
 		this.direction = RandomNumGen.getRandomNumberInRange(1, 4);
 		this.FOV = 120f;
+		this.SPEED = 50;
 		
 		animationLoader(this.type, "IDLE", 2, 4);
 		animationLoader(this.type, "MOVE", 2, 4);

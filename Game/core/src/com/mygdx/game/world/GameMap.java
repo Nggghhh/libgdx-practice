@@ -11,6 +11,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.Camera;
 import com.mygdx.game.entities.Bullet;
 import com.mygdx.game.entities.Enemies;
 import com.mygdx.game.entities.Entity;
@@ -41,12 +42,12 @@ public abstract class GameMap {
 			entities.add(new Goblin(RandomNumGen.getRandomNumberInRange(50, 400), RandomNumGen.getRandomNumberInRange(150, 300), EntityType.GOBLIN, this, i));
 	}
 	
-	public void render (OrthographicCamera camera, SpriteBatch batch) {
+	public void render (Camera camera, SpriteBatch batch) {
 		renderOrder();
 		for(Entity entity : renderOrder) {
 			if(!entity.isDisabled())
-				if(camera.frustum.pointInFrustum(entity.getX(), entity.getY()+16, 0))
-					entity.render(batch, camera);
+				if(camera.getRightB()>entity.getX() && camera.getTopB()>entity.getY() && camera.getLeftB()-16<entity.getX() && camera.getBottomB()-16<entity.getY())
+					entity.render(batch, camera.getCamera());
 		}
 	}
 	
