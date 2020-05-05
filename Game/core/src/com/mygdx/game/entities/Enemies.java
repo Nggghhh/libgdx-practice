@@ -8,11 +8,14 @@ import com.mygdx.game.world.GameMap;
 public abstract class Enemies extends LivingEntity {
 	
 	private static final float MAX_STRAY_TIME = 1f;
+	protected int DEFAULT_SPEED;
 	protected int SPEED;
+	protected int RUN_SPEED;
 	protected float FOV;
+	protected float attackVelocity;
 	
 	protected float remainingStrayTime = 1f;
-	protected float remainingAttackTime = 1f;
+	protected float remainingAttackTime = 2f;
 	protected Behavior behavior = Behavior.AGRESSIVE;
 	public Enemies(float x, float y, EntityType type, GameMap map, int id) {
 		super(x, y, type, map, id);
@@ -21,6 +24,7 @@ public abstract class Enemies extends LivingEntity {
 	
 	protected enum Behavior{
 		AGRESSIVE,
+		RETREAT,
 		PASSIVE;
 	}
 	
@@ -33,19 +37,25 @@ public abstract class Enemies extends LivingEntity {
 	public void livingState(OrthographicCamera camera, float deltaTime, GameMap map) {
 		super.livingState(camera, deltaTime, map);
 		
-		if(playerIsOnSight(FOV, map.getHero().getX(), map.getHero().getY()) && !map.getHero().getDestroyed())
-			this.behavior = Behavior.AGRESSIVE;
-		else
-			this.behavior = Behavior.PASSIVE;
+		if(this.behavior != behavior.RETREAT)
+			if(playerIsOnSight(FOV, map.getHero().getX(), map.getHero().getY()) && !map.getHero().isDestroyed())
+				this.behavior = Behavior.AGRESSIVE;
+			else
+				this.behavior = Behavior.PASSIVE;
 		
 		if(remainingAttackTime > 0)
 			remainingAttackTime -= deltaTime;
-		if(this.behavior == behavior.PASSIVE)
+		if(behavior == behavior.PASSIVE)
 			remainingStrayTime -= deltaTime;
-		if(this.behavior == behavior.AGRESSIVE) {
+		if(behavior == behavior.AGRESSIVE) {
 			remainingStrayTime = MAX_STRAY_TIME;
 			if(this.state != "HURT" && this.state != "ATTACK")
 				turnTowardsPlayer(map);
+		}
+		if(behavior == behavior.RETREAT) {
+			remainingStrayTime = MAX_STRAY_TIME;
+			if(this.state != "HURT" && this.state != "ATTACK")
+				turnFromPlayer(map);
 		}
 
 		if(this.state != "HURT" && this.state != "DEATH" && this.state != "ATTACK") {
@@ -95,5 +105,16 @@ public abstract class Enemies extends LivingEntity {
 			this.setDirection(3);
 		else if(this.getPos().y < map.getHero().getPos().y && this.getPos().y < map.getHero().getHeight()+map.getHero().getPos().y)
 			this.setDirection(4);
+	}
+	
+	public void turnFromPlayer(GameMap map) {
+		if(this.getPos().x > map.getHero().getPos().x && this.getPos().x > map.getHero().getWidth()+map.getHero().getPos().x)
+			this.setDirection(2);
+		else if(this.getPos().x < map.getHero().getPos().x && this.getPos().x < map.getHero().getWidth()+map.getHero().getPos().x)
+			this.setDirection(1);
+		if(this.getPos().y > map.getHero().getPos().y && this.getPos().y > map.getHero().getHeight()+map.getHero().getPos().y)
+			this.setDirection(4);
+		else if(this.getPos().y < map.getHero().getPos().y && this.getPos().y < map.getHero().getHeight()+map.getHero().getPos().y)
+			this.setDirection(3);
 	}
 }

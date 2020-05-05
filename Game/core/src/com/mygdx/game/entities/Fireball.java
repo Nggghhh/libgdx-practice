@@ -54,7 +54,7 @@ public class Fireball extends Bullet {
 		}
 		
 		for(Entity entity : map.getEntities())
-			if(this.caster != entity.getType().getName() && entity.getId() != this.getId() && entity instanceof LivingEntity && !entity.getDestroyed())
+			if(this.caster != entity.getType().getName() && entity.getId() != this.getId() && entity instanceof LivingEntity && !entity.isDestroyed())
 				if(this.rect.collidesWith(entity.getRect())) {
 					this.push(entity.getX(), entity.getY(), entity.getType().getWeight());
 					entity.hurt(1, this, entity);
@@ -72,7 +72,7 @@ public class Fireball extends Bullet {
 	}
 
 	@Override
-	public void attack(int damage, Entity hitter, int direction, String type) {
+	public void attack(int damage, Entity hitter, float velocity, String type) {
 		// TODO Auto-generated method stub
 
 	}

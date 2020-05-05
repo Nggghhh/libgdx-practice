@@ -10,6 +10,10 @@ public class Unprojecter {
 		return camera.unproject(vec);
 	}
 	
+	public static Vector3 project(OrthographicCamera camera, Vector3 vec) {
+		return camera.project(vec);
+	}
+	
 	public static Vector3 getMouseCoords(OrthographicCamera camera) {
 		mousePos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 		return camera.unproject(mousePos);

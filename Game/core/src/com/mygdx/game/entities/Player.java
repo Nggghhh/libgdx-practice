@@ -20,13 +20,11 @@ public class Player extends LivingEntity {
 	private int MAX_HEALTH = 6;
 	private Inventory playerInventory;
 	
-	public Player() {
-		
-	}
-	
 	public Player(float x, float y, EntityType type, GameMap map, int id) {
 		super(x, y, type, map, id);
 		playerInventory = new Inventory(map);
+		this.slippery = 8f;
+		this.layer = 0;
 		
 		
 		animationLoader(this.type, "IDLE", 2, 4);
@@ -40,7 +38,7 @@ public class Player extends LivingEntity {
 		if(this.HEALTH > this.MAX_HEALTH) 
 			this.HEALTH = this.MAX_HEALTH;
 		
-		if(this.destroy == false) {
+		if(!this.destroy) {
 			livingState(camera, deltaTime, map);
 		}
 		else {
@@ -87,7 +85,7 @@ public class Player extends LivingEntity {
 		}
 
 		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) {
-			strafe(400, -5f, camera);
+			strafe(-7f, camera);
 		}
 
 //		if(Gdx.input.justTouched() && this.state != "ATTACK" && this.previousState != "HURT") {
@@ -104,7 +102,7 @@ public class Player extends LivingEntity {
 		animationPlay(batch);
 	}
 	
-	public void strafe(float velocity, float distance, OrthographicCamera camera) {
+	public void strafe(float distance, OrthographicCamera camera) {
 		this.velocity.x = 0;
 		this.velocity.y = 0;
         float distanceBetweenEntities = Vector2.dst(this.pos.x, this.pos.y, Unprojecter.getMouseCoords(camera).x, Unprojecter.getMouseCoords(camera).y);
@@ -114,7 +112,7 @@ public class Player extends LivingEntity {
 	}
 
 	@Override
-	public void attack(int damage, Entity hitter, int velocity, String type) {
+	public void attack(int damage, Entity hitter, float velocity, String type) {
 		if(this.frameNum == 1) {
 			if(this.direction == 1) {
 				this.velocity.x -= velocity;
@@ -146,7 +144,7 @@ public class Player extends LivingEntity {
 	public void pickUpItems(GameMap map) {
 		for(int b = 0; b < map.getEntities().size(); b++)
 			if(map.getEntities().get(b) instanceof Items && !map.getEntities().get(b).isDisabled())
-				if(this.rect.collidesWith(map.getEntities().get(b).getRect()) && this.getDestroyed() == false) {
+				if(this.rect.collidesWith(map.getEntities().get(b).getRect()) && this.isDestroyed() == false) {
 					if(Gdx.input.isKeyJustPressed(Keys.E) && this.playerInventory.getItemList().size() < playerInventory.getSize()) {
 						playerInventory.getItemList().add((Items) map.getEntities().get(b));
 						map.getEntities().remove(map.getEntities().get(b));

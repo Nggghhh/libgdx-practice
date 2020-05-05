@@ -138,7 +138,7 @@ public abstract class LivingEntity extends Entity {
 	
 	//linear damping, adding drag to object velocity
 	public void timer(float deltaTime) {
-		velocity.scl(1 - (4f * deltaTime*2));
+		velocity.scl(1 - (slippery * deltaTime*2));
 	}
 	
 	public void setHealth(int health) {

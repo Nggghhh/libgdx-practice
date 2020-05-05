@@ -136,14 +136,13 @@ public class SimplexNoise {
 	}
 	
 	public float[][][] generateBaseTerrain(float[][] array) {
-		System.out.println(array[0][0]);
 		double deepWaterLevel = 0;
 		double shallowWaterLevel = 0.4;
 		double sandLevel = 0.5;
 		double grassLevel = 0.6;
 		double rockyLevel = 0.83;
 		double mountainLevel = 0.85;
-		float[][][] terrain = new float[array.length][array[0].length][2];
+		float[][][] terrain = new float[array.length][array[0].length][LAYERS];
 		
 		for(int layer = 0; layer<terrain[0][0].length; layer++)
 			for(int row = 0; row<terrain.length; row++ )
@@ -163,6 +162,11 @@ public class SimplexNoise {
 						terrain[row][col][1] = 5;
 					else //empty space
 						terrain[row][col][1] = 0;
+					
+					int random = RandomNumGen.getRandomNumberInRange(0, 20);
+					if(terrain[row][col][1] == 0 && terrain[row][col][0] == 4 && random == 20)
+						terrain[row][col][1] = 6;
+					
 			}
 		return terrain;
 	}

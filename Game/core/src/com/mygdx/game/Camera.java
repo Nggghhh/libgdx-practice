@@ -12,16 +12,18 @@ import com.mygdx.game.world.GameMap;
 public class Camera {
 	OrthographicCamera camera;
 	ShapeRenderer sh;
+//	float lenght = 0;
+//	int angleToTransform = 0;
 	int mapLeft, mapRight, mapUp, mapDown;
-	public float cameraLeft, cameraRight, cameraBottom, cameraTop, cameraLeftBorder, cameraRightBorder, cameraBottomBorder, cameraTopBorder, cameraHalfWidth, cameraHalfHeight;
+	public float cameraLeft, cameraRight, cameraBottom, cameraTop, cameraHalfWidth, cameraHalfHeight;
 	
 	public void init(SpriteBatch batch, GameMap gameMap) {
 		camera = new OrthographicCamera();
 		sh = new ShapeRenderer();
-		mapLeft = 0;
-		mapRight = 0 + gameMap.getPixelWidth();
-		mapDown = 0;
-		mapUp = 0 + gameMap.getPixelHeight();
+		mapLeft = 16;
+		mapRight = 0 + gameMap.getPixelWidth()-16;
+		mapDown = 16;
+		mapUp = 0 + gameMap.getPixelHeight()-16;
 	}
 	
 	public void render(GameMap gameMap, float deltaTime, SpriteBatch batch) {
@@ -36,15 +38,6 @@ public class Camera {
 		cameraRight = camera.position.x + cameraHalfWidth;
 		cameraBottom = camera.position.y - cameraHalfHeight;
 		cameraTop = camera.position.y + cameraHalfHeight;
-		
-		if(cameraLeft > mapLeft)
-			cameraLeftBorder = cameraLeft;
-		if(cameraRight < mapRight)
-			cameraRightBorder = cameraRight;
-		if(cameraBottom > mapDown)
-			cameraBottomBorder = cameraBottom;
-		if(cameraTop < mapUp)
-			cameraTopBorder = cameraTop;
 		
 		if(gameMap.getPixelWidth() < camera.viewportWidth)
 		{
@@ -78,6 +71,37 @@ public class Camera {
 		
 		gameMap.update(camera, deltaTime);
 		gameMap.render(this, batch);
+		
+//		float originX = gameMap.getHero().getX();
+//		float originY = gameMap.getHero().getY();
+//		
+//		float x = originX+lenght;
+//		float y = originY+lenght;
+//		
+//		double angle = Math.toRadians(angleToTransform);
+//		
+//		float newX = (float) (Math.cos(angle)*(x-originX) - Math.sin(angle)*(y-originY)+originX);
+//		float newY = (float) (Math.sin(angle)*(x-originX) + Math.cos(angle)*(y-originY)+originY);
+//		
+//		if(newX < gameMap.getWidth()*16 && newY < gameMap.getHeight()*16 && newX > 0 && newY > 0)
+//			if(gameMap.getTileTypeByLocation(1, newX, newY).tile != null && !gameMap.getTileTypeByLocation(1, newX, newY).tile.isCollidable())
+//				lenght += 16;
+//			else
+//				lenght = 0;
+//		else
+//			lenght = 0;
+//		
+//		angleToTransform += 1;
+//		
+//		if(angleToTransform > 360) {
+//			angleToTransform = 0;
+//		}
+		
+//		sh.begin(ShapeType.Line);
+//		sh.setProjectionMatrix(camera.combined);
+//		sh.setColor(255, 0, 0, 255);
+//		sh.line(originX, originY, newX, newY);
+//		sh.end();
 		
 //		sh.begin(ShapeType.Line);
 //		sh.setProjectionMatrix(camera.combined);

@@ -9,9 +9,11 @@ import com.mygdx.game.world.TileType;
 public class TileTextureManager {
 	private static TextureRegion[][] tiles;
 	private static TextureRegion[][] liquids;
+	private static Texture tree;
 	public TileTextureManager() {
 		tiles = TextureRegion.split(new Texture("MainNwwew.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
 		liquids = TextureRegion.split(new Texture("liquid.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
+		tree = new Texture("PINE/IDLE/0/0.png");
 	}
 	
 	public static TextureRegion getTex(int row, int col) {
@@ -20,6 +22,10 @@ public class TileTextureManager {
 	
 	public static TextureRegion getLiquids(int row, int col) {
 		return 	fixBleeding(liquids[row][col]);
+	}
+	
+	public static Texture getTree() {
+		return 	tree;
 	}
 	
 	public static TextureRegion fixBleeding(TextureRegion region) {

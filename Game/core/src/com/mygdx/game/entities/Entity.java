@@ -22,9 +22,11 @@ public abstract class Entity {
 	protected int id;
 	
 	protected Vector2 pos;
+	protected int layer;
 	protected transient Vector2 velocity;
 	protected float weight;
 	protected float pushStrenght;
+	protected float slippery = 4f;
 	
 	protected transient SoundManager sound;
 	
@@ -84,7 +86,7 @@ public abstract class Entity {
 			this.setVelocityY(+power);
 	}
 	
-	public abstract void attack(int damage, Entity hitter, int velocity, String type);
+	public abstract void attack(int damage, Entity hitter, float velocity, String type);
 	
 	public abstract void render (SpriteBatch batch, OrthographicCamera camera);
 	
@@ -257,7 +259,7 @@ public abstract class Entity {
 	}
 
 
-	public boolean getDestroyed() {
+	public boolean isDestroyed() {
 		return destroy;
 	}
 	
@@ -283,5 +285,9 @@ public abstract class Entity {
 	
 	public void setDisabled(boolean disabled) {
 		this.disabled = disabled;
+	}
+	
+	public int getLayer() {
+		return layer;
 	}
 }

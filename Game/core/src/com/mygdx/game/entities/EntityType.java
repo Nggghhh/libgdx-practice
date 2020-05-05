@@ -5,6 +5,7 @@ public enum EntityType {
 	DAGGER("DAGGER", 8, 3, 32, 3, 4, 0.5f),
 	SHORT_SWORD("SWORD", 8, 3, 32, 3, 4, 0.8f),
 	RUBY("RUBY", 8, 3, 32, 3, 4, 0.2f),
+	PINE("PINE", 10, 4, 3, 3, 1, 1f),
 	
 	FIREBALL("FIEBALL", 8, 3, 4, 3, 4, 1.0f),
 	

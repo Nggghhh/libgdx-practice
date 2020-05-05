@@ -21,6 +21,7 @@ import com.mygdx.game.tools.OrthogonalTiledMapRenderer;
 import com.mygdx.game.tools.RandomNumGen;
 import com.mygdx.game.tools.SimplexNoise;
 import com.mygdx.game.world.tiles.CustomTileType;
+import com.mygdx.game.world.tiles.TileGridCell;
 
 public class TiledGameMap extends GameMap {
 
@@ -113,11 +114,11 @@ public class TiledGameMap extends GameMap {
 		tiledMapRenderer.dispose();
 	}
 
-	@Override
-	public CustomTileType getTileTypeByCoordinate(int layer, int col, int row) {
-
-		return null;
-	}
+//	@Override
+//	public CustomTileType getTileTypeByCoordinate(int layer, int col, int row) {
+//
+//		return null;
+//	}
 	
 	@Override
 	public TileType setTile(int layer, int col, int row, int id) {
@@ -143,5 +144,11 @@ public class TiledGameMap extends GameMap {
 	@Override
 	public int getLayers() {
 		return tiledMap.getLayers().getCount();
+	}
+
+	@Override
+	public TileGridCell getTileTypeByCoordinate(int row, int col, int layer) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

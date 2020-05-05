@@ -30,7 +30,7 @@ public abstract class Bullet extends Entity {
 	}
 
 	@Override
-	public void attack(int damage, Entity hitter, int direction, String type) {
+	public void attack(int damage, Entity hitter, float velocity, String type) {
 		// TODO Auto-generated method stub
 
 	}
