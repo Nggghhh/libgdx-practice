@@ -10,7 +10,7 @@ public class Fireball extends Bullet {
 	public Fireball(float x, float y, EntityType type, GameMap map, int id, String caster) {
 		super(x, y, type, map, id, caster);
 		
-		animationLoader(this.type, "IDLE", 4, 1);
+//		animationLoader(this.type, "IDLE", 4, 1);
 		changeState("IDLE", true, 3, 6);
 		this.sliperyness = 1f;
 		this.defaultStrenght = 1;

@@ -7,8 +7,8 @@ import com.mygdx.game.world.CustomGameMap;
 
 public class Air extends CustomTileType {
 
-	public Air(String name, int x, int y, CustomGameMap map) {
-		super(name, x, y, map);
+	public Air(int x, int y, CustomGameMap map) {
+		super(x, y, map);
 		this.id = 0;
 		this.collidable = false;
 		this.destroyable = false;

@@ -69,7 +69,7 @@ public class Camera {
 		
 		batch.setProjectionMatrix(camera.combined);
 		
-		gameMap.update(camera, deltaTime);
+		gameMap.update(this, deltaTime);
 		gameMap.render(this, batch);
 		
 //		float originX = gameMap.getHero().getX();

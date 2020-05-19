@@ -14,7 +14,7 @@ public class Items extends Entity {
 		super(x, y, type, map, id);
 		this.animLen = 0;
 		
-		animationLoader(this.type, "IDLE", 1, 1);
+//		animationLoader(this.type, "IDLE", 1, 1);
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,7 +14,6 @@ import com.mygdx.game.entities.Entity;
 import com.mygdx.game.entities.Player;
 import com.mygdx.game.world.CustomGameMap;
 import com.mygdx.game.world.GameMap;
-import com.mygdx.game.world.TiledGameMap;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -21,10 +21,13 @@ public class MyGdxGame extends ApplicationAdapter {
 	GameManager gm;
 	GameMap gameMap;
 	ShaderProgram shader;
+	Input input;
 	
 	
 	@Override
 	public void create () {
+		input = new Input();
+		Gdx.input.setInputProcessor(input);
 		batch = new SpriteBatch();
 		
 		camera = new Camera();

@@ -14,8 +14,8 @@ public class AnimatedTile extends CustomTileType {
 	protected int animSpeed = 3;
 	protected boolean loop = true;
 	
-	public AnimatedTile(String name, int x, int y, CustomGameMap map) {
-		super(name, x, y, map);
+	public AnimatedTile(int x, int y, CustomGameMap map) {
+		super(x, y, map);
 	}
 	
 	@Override

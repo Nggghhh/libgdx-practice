@@ -22,40 +22,44 @@ public class TileGridCell {
 		this.layer = layer;
 		this.id = tileId;
 		
+		if(this.id == 7)
+			tile = new LanternTile(this.x, this.y, map);
 		if(this.id == 6)
-			tile = new TreeTile("tree", this.x, this.y, map);
+			tile = new TreeTile(this.x, this.y, map);
 		if(this.id == 5)
-			tile = new Rock("rock", this.x, this.y, map);
+			tile = new Rock(this.x, this.y, map);
 		if(this.id == 4)
-			tile = new GreenGrass("greenGrass", this.x, this.y, map);
+			tile = new GreenGrass(this.x, this.y, map);
 		if(this.id == 3)
-			tile = new Sand("sand", this.x, this.y, map);
+			tile = new Sand(this.x, this.y, map);
 		if(this.id == 2)
-			tile = new ShallowWater("water", this.x, this.y, map);
+			tile = new ShallowWater(this.x, this.y, map);
 		if(this.id == 1)
-			tile = new ShallowWater("water", this.x, this.y, map);
+			tile = new ShallowWater(this.x, this.y, map);
 		if(this.id == 0)
-			tile = new Air("air", this.x, this.y, map);
+			tile = new Air(this.x, this.y, map);
 		
 		this.rect = new CollisionRect(this.x, this.y, CELL_SIZE, CELL_SIZE, true);
 	}
 	
 	public void assignTiles() {
 		this.tile = null;
+		if(this.id == 7)
+			tile = new LanternTile(this.x, this.y, map);
 		if(this.id == 6)
-			tile = new TreeTile("tree", this.x, this.y, map);
+			tile = new TreeTile(this.x, this.y, map);
 		if(this.id == 5)
-			tile = new Rock("rock", this.x, this.y, map);
+			tile = new Rock(this.x, this.y, map);
 		if(this.id == 4)
-			tile = new GreenGrass("greenGrass", this.x, this.y, map);
+			tile = new GreenGrass(this.x, this.y, map);
 		if(this.id == 3)
-			tile = new Sand("sand", this.x, this.y, map);
+			tile = new Sand(this.x, this.y, map);
 		if(this.id == 2)
-			tile = new ShallowWater("water", this.x, this.y, map);
+			tile = new ShallowWater(this.x, this.y, map);
 		if(this.id == 1)
-			tile = new ShallowWater("water", this.x, this.y, map);
+			tile = new ShallowWater(this.x, this.y, map);
 		if(this.id == 0)
-			tile = new Air("air", this.x, this.y, map);
+			tile = new Air(this.x, this.y, map);
 	}
 
 	public CollisionRect getRect() {
@@ -82,7 +86,7 @@ public class TileGridCell {
 	public void tileDestroy(CustomGameMap map) {
 		this.tile.destroy(map);
 		this.tile = null;
-		tileChange(new Air("air", this.x, this.y, map), map);
+		tileChange(new Air(this.x, this.y, map), map);
 	}
 	
 	public TileGridCell getCell() {

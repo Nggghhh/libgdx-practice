@@ -10,10 +10,12 @@ public class TileTextureManager {
 	private static TextureRegion[][] tiles;
 	private static TextureRegion[][] liquids;
 	private static Texture tree;
+	private static Texture lantern;
 	public TileTextureManager() {
 		tiles = TextureRegion.split(new Texture("MainNwwew.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
 		liquids = TextureRegion.split(new Texture("liquid.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
 		tree = new Texture("PINE/IDLE/0/0.png");
+		lantern = new Texture("PINE/IDLE/0/1.png");
 	}
 	
 	public static TextureRegion getTex(int row, int col) {
@@ -26,6 +28,10 @@ public class TileTextureManager {
 	
 	public static Texture getTree() {
 		return 	tree;
+	}
+	
+	public static Texture getLantern() {
+		return 	lantern;
 	}
 	
 	public static TextureRegion fixBleeding(TextureRegion region) {

@@ -19,12 +19,12 @@ public class Goblin extends Enemies {
 		this.DEFAULT_SPEED = 50;
 		this.SPEED = this.DEFAULT_SPEED;
 		this.attackVelocity = 30f;
-		
-		animationLoader(this.type, "IDLE", 2, 4);
-		animationLoader(this.type, "MOVE", 2, 4);
-		animationLoader(this.type, "HURT", 3, 1);
-		animationLoader(this.type, "ATTACK", 3, 4);
-		animationLoader(this.type, "DEATH", 3, 1);
+//		
+//		animationLoader(this.type, "IDLE", 2, 4);
+//		animationLoader(this.type, "MOVE", 2, 4);
+//		animationLoader(this.type, "HURT", 3, 1);
+//		animationLoader(this.type, "ATTACK", 3, 4);
+//		animationLoader(this.type, "DEATH", 3, 1);
 	}
 	
 	public void update(OrthographicCamera camera, float deltaTime, GameMap map) {

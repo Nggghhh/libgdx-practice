@@ -77,6 +77,11 @@ public class Raycaster {
 						map.getCells()[row][col][layer].render = false;
 	}
 	
+	public void updateTile(CustomGameMap map, int row, int col, int layer) {
+		if(map.getCells()[row][col][layer] != null)
+			map.getCells()[row][col][layer].render = false;
+	}
+	
 	public void visualizeRay(Camera camera) {
 		sh.begin(ShapeType.Line);
 		sh.setProjectionMatrix(camera.getCamera().combined);

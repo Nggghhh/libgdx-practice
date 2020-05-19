@@ -10,10 +10,4 @@ public class ScreenManager{
 		PLAINS_1,
 		PLAINS_2;
 	}
-	public ScreenManager(String level) {
-		init(level);
-	}
-	private TiledGameMap init(String level) {
-		return new TiledGameMap();
-	}
 }

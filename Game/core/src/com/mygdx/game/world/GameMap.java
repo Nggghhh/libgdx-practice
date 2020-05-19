@@ -37,11 +37,11 @@ public abstract class GameMap {
 		entities = new ArrayList<Entity>();
 		renderOrder = new ArrayList<Entity>();
 		entities.add(new Player(2*16, 26*16, EntityType.PLAYER, this, 0));
-		entities.add(new Items(215, 265, EntityType.SHORT_SWORD, this, 22));
-		entities.add(new Items(230, 265, EntityType.RUBY, this, 25));
-		entities.add(new Items(250, 300, EntityType.DAGGER, this, 23));
-		entities.add(new Fireball(270, 300, EntityType.FIREBALL, this, 264, "UNKNOWN"));
-		entities.add(new Fireball(280, 270, EntityType.FIREBALL, this, 265, "UNKNOWN"));
+//		entities.add(new Items(215, 265, EntityType.SHORT_SWORD, this, 22));
+//		entities.add(new Items(230, 265, EntityType.RUBY, this, 25));
+//		entities.add(new Items(250, 300, EntityType.DAGGER, this, 23));
+//		entities.add(new Fireball(270, 300, EntityType.FIREBALL, this, 264, "UNKNOWN"));
+//		entities.add(new Fireball(280, 270, EntityType.FIREBALL, this, 265, "UNKNOWN"));
 //		for(int i = 1; i<5; i++)
 //			entities.add(new Goblin(RandomNumGen.getRandomNumberInRange(50, 400), RandomNumGen.getRandomNumberInRange(150, 300), EntityType.GOBLIN, this, i));
 	}
@@ -59,6 +59,14 @@ public abstract class GameMap {
 		}
 	}
 	
+	public Entity getEntityByCoordinate(int row, int col, int layer) {
+		for(Entity entity : entities) {
+			if((int) entity.getX()/16 == row && (int) entity.getY()/16 == col && entity.getLayer() == layer)
+				return entity;
+		}
+		return null;
+	}
+	
 	public void renderOrder() {
 		renderOrder.removeAll(renderOrder);
 		renderOrder.addAll(entities);
@@ -68,11 +76,11 @@ public abstract class GameMap {
 					Collections.swap(renderOrder, i, j);
 	}
 	//update method and collision checks, revision needed
-	public void update (OrthographicCamera camera, float delta) {
+	public void update (Camera camera, float delta) {
 		inGameTime.timePasses(this, delta);
 		
 		if(Gdx.input.isKeyJustPressed(Keys.G))
-			entities.add(new Goblin(Unprojecter.getMouseCoords(camera).x, Unprojecter.getMouseCoords(camera).y, EntityType.GOBLIN, this, 0));
+			entities.add(new Goblin(Unprojecter.getMouseCoords(camera.getCamera()).x, Unprojecter.getMouseCoords(camera.getCamera()).y, EntityType.GOBLIN, this, 0));
 		if(Gdx.input.isKeyJustPressed(Keys.L))
 			printEntities();
 		
@@ -83,7 +91,7 @@ public abstract class GameMap {
 				//				entity.recreate(40, 300, entity.getType().getHealth());
 				//			}
 				if(!entities.get(i).isDisabled())
-					entities.get(i).update(camera, delta, this);
+					entities.get(i).update(camera.getCamera(), delta, this);
 
 			//check entities for collision
 			for(int b = 0; b < entities.size(); b++) {

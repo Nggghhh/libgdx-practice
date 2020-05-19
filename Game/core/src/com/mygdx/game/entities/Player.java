@@ -27,9 +27,9 @@ public class Player extends LivingEntity {
 		this.layer = 0;
 		
 		
-		animationLoader(this.type, "IDLE", 2, 4);
-		animationLoader(this.type, "MOVE", 2, 4);
-		animationLoader(this.type, "HURT", 3, 1);
+//		animationLoader(this.type, "IDLE", 2, 4);
+//		animationLoader(this.type, "MOVE", 2, 4);
+//		animationLoader(this.type, "HURT", 3, 1);
 	}
 	
 	@Override

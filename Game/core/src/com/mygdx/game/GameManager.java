@@ -17,7 +17,6 @@ import com.mygdx.game.items.Inventory;
 import com.mygdx.game.items.Items;
 import com.mygdx.game.world.GameMap;
 import com.mygdx.game.world.TileType;
-import com.mygdx.game.world.TiledGameMap;
 
 public class GameManager {
 	private FileHandle playerInfo = Gdx.files.local("bin/playerData.json");

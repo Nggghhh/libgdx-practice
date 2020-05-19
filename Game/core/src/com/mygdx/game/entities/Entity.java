@@ -1,18 +1,15 @@
 package com.mygdx.game.entities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.world.GameMap;
 import com.mygdx.game.world.TileType;
+import com.mygdx.game.entities.animations.EntityAssetManager;
 import com.mygdx.game.items.Inventory;
 import com.mygdx.game.tools.CollisionRect;
 import com.mygdx.game.tools.SoundManager;
@@ -24,7 +21,7 @@ public abstract class Entity {
 	protected Vector2 pos;
 	protected int layer;
 	protected transient Vector2 velocity;
-	protected float weight;
+	protected float weight, r, g, b;;
 	protected float pushStrenght;
 	protected float slippery = 4f;
 	
@@ -49,7 +46,6 @@ public abstract class Entity {
 	public Entity(float x, float y, EntityType type, GameMap map, int id) {
 		this.pos = new Vector2(x, y);
 		this.velocity = new Vector2(0, 0);
-		this.entityTextures = new HashMap<String, Texture>();
 		this.type = type;
 		this.map = map;
 		this.rect = new CollisionRect(x,y,type.getWidth(), type.getHeight(), true);
@@ -59,6 +55,9 @@ public abstract class Entity {
 
 	//breakpoint
 	public void update (OrthographicCamera camera, float deltaTime, GameMap map) {
+		this.r = map.getTileTypeByLocation(layer, pos.x, pos.y).tile.getColors()[0];
+		this.g = map.getTileTypeByLocation(layer, pos.x, pos.y).tile.getColors()[1];
+		this.b = map.getTileTypeByLocation(layer, pos.x, pos.y).tile.getColors()[2];
 		animation(this.type);
 		
 		//move collision rectangle with its sprite
@@ -91,8 +90,6 @@ public abstract class Entity {
 	public abstract void render (SpriteBatch batch, OrthographicCamera camera);
 	
 	public abstract void recreate (int x, int y, int health);
-	
-	protected transient HashMap<String, Texture> entityTextures;
 	
 	protected boolean loop = true;
 	protected int frameNum = 0;
@@ -128,17 +125,18 @@ public abstract class Entity {
 	}
 	
 	public void animationPlay(SpriteBatch batch) {
-		if(entityTextures.get(this.type+"/"+this.state+"/"+this.currentAnim+"/"+frameNum+".png") != null)
-			batch.draw(entityTextures.get(this.type+"/"+this.state+"/"+this.currentAnim+"/"+frameNum+".png"), pos.x-type.getPivotX(), pos.y-type.getPivotY());
+		try {
+			TextureRegion texture = EntityAssetManager.getTexture(this.type+"/"+this.state, frameNum, direction-1);
+			if(texture != null) {
+				batch.setColor(r,g,b,1.0f);
+				batch.draw(texture, pos.x-type.getPivotX(), pos.y-type.getPivotY());
+				batch.setColor(1.0f,1.0f,1.0f,1.0f);
+			}
+		}
+		catch(IndexOutOfBoundsException e) {
+			System.out.println(this.type+"/"+this.state);
+		}
 	}
-	
-	protected void animationLoader(EntityType type, String name, int frameNum, int animationNumber) {
-		for(int i = 0; i < animationNumber; i++)
-			for(int j = 0; j < frameNum; j++)
-				if(!entityTextures.containsKey(type+"/"+name+"/"+i+"/"+j+".png"))
-					entityTextures.put(type+"/"+name+"/"+i+"/"+j+".png", new Texture(type+"/"+name+"/"+i+"/"+j+".png"));
-	}
-	
 	protected void changeState(String newState, boolean loop, int animLen, int animSpeed) {
 		this.loop = loop;
 		this.animLen = animLen;
@@ -149,26 +147,6 @@ public abstract class Entity {
 			this.timer = 0;
 			this.frameNum = 0;
 			this.previousState = this.state;
-		}
-		if(state != "DEATH" && state != "HURT") {
-			if(this.direction == 1)
-				this.currentAnim = "0";
-			else if(this.direction == 2)
-				this.currentAnim = "1";
-			else if(this.direction == 3)
-				this.currentAnim = "2";
-			else
-				this.currentAnim = "3";
-		}
-		else {
-			if(this.direction == 1)
-				this.currentAnim = "0";
-			else if(this.direction == 2)
-				this.currentAnim = "0";
-			else if(this.direction == 3)
-				this.currentAnim = "0";
-			else
-				this.currentAnim = "0";
 		}
 	}
 	

@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.mygdx.game.world.CustomGameMap;
 
 public class DeepWater extends AnimatedTile {
-	public DeepWater(String name, int x, int y, CustomGameMap map) {
-		super(name, x, y, map);
+	public DeepWater(int x, int y, CustomGameMap map) {
+		super(x, y, map);
 		this.id = 1;
 		this.group = "water";
 		this.collidable = true;
