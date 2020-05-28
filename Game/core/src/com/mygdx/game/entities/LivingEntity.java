@@ -16,16 +16,10 @@ public abstract class LivingEntity extends Entity {
 	protected transient boolean dash = false;
 	protected transient boolean attack = false;
 	protected transient boolean isMoving = false;
-	
-	protected int HEALTH;
-	
-	public LivingEntity() {
-		
-	}
 
-	public LivingEntity(float x, float y, EntityType type, GameMap map, int id) {
-		super(x, y, type, map, id);
-		this.HEALTH = type.getHealth();
+	@Override
+	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
+		super.create(snapshot, type, map);
 	}
 
 	@Override

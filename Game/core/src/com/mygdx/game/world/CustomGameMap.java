@@ -8,10 +8,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mydgx.game.shaders.Vignette;
 import com.mygdx.game.Camera;
 import com.mygdx.game.HUD;
+import com.mygdx.game.entities.Entity;
+import com.mygdx.game.entities.EntitySnapshot;
+import com.mygdx.game.entities.EntityType;
+import com.mygdx.game.entities.SmallBush;
+import com.mygdx.game.entities.TreeEntity;
 import com.mygdx.game.entities.animations.EntityAssetManager;
 import com.mygdx.game.tools.RandomNumGen;
 import com.mygdx.game.tools.Raycaster;
 import com.mygdx.game.tools.Unprojecter;
+import com.mygdx.game.world.tiles.Air;
 import com.mygdx.game.world.tiles.LanternTile;
 import com.mygdx.game.world.tiles.Rock;
 import com.mygdx.game.world.tiles.Sand;
@@ -19,6 +25,8 @@ import com.mygdx.game.world.tiles.ShallowWater;
 import com.mygdx.game.world.tiles.TileGridCell;
 import com.mygdx.game.world.tiles.TileTextureManager;
 import com.mygdx.game.world.tiles.TreeTile;
+import com.mygdx.game.world.tiles.WoodFloor;
+import com.mygdx.game.world.tiles.WoodWall;
 
 public class CustomGameMap extends GameMap {
 	String name;
@@ -26,10 +34,12 @@ public class CustomGameMap extends GameMap {
 	Raycaster ray;
 	float[][][] map;
 	TileGridCell[][][] arrayOfCells;
+	protected DayAndNightCycles inGameTime;
 	private HUD hud;
 	private Vignette vignetteShader;
 	private TileTextureManager tileTextures;
 	private EntityAssetManager entityTextures;
+	private boolean update = false;
 	
 	private int mapNum = 0;
 
@@ -38,6 +48,8 @@ public class CustomGameMap extends GameMap {
 		this.id = data.id;
 		this.name = data.name;
 		this.map = data.map;
+		loadEntities(data.entities);
+		inGameTime = new DayAndNightCycles();
 		hud = new HUD();
 		vignetteShader = new Vignette("default", "default");
 		tileTextures = new TileTextureManager();
@@ -66,104 +78,74 @@ public class CustomGameMap extends GameMap {
 		batch.setProjectionMatrix(camera.getCamera().combined);
 		batch.begin();
 		
-//		batch.setShader(darken.getShader());
-//		darken.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
-		vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
-		batch.setShader(vignetteShader.getShader());
+		if(getHero() != null) {
+			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
+			batch.setShader(vignetteShader.getShader());
+		}
 		
-//		if(inGameTime.getHours() > 21 || inGameTime.getHours() < 4) {
-//			vignetteShader.newColor(0.0f, 0.4f, 0.4f);
-//			vignetteShader.editCircle(.3f, .2f, 0.95f);
-//			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
-//			batch.setShader(vignetteShader.getShader());
-//		}
-//		else if(inGameTime.getHours() > 20) {
-//			vignetteShader.newColor(0.0f, 0.4f, 0.4f);
-//			vignetteShader.editCircle(.4f, .3f, 0.80f);
-//			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
-//			batch.setShader(vignetteShader.getShader());
-//		}
-//		else if(inGameTime.getHours() > 19) {
-//			vignetteShader.newColor(0.0f, 0.4f, 0.4f);
-//			vignetteShader.editCircle(.5f, .4f, 0.70f);
-//			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
-//			batch.setShader(vignetteShader.getShader());
-//		}
-//		else if(inGameTime.getHours() > 18) {
-//			vignetteShader.newColor(0.0f, 0.1f, 0.1f);
-//			vignetteShader.editCircle(.6f, .5f, 0.60f);
-//			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
-//			batch.setShader(vignetteShader.getShader());
-//		}
-//		else if(inGameTime.getHours() > 17) {
-//			vignetteShader.newColor(0.0f, 0.1f, 0.1f);
-//			vignetteShader.editCircle(.7f, .6f, 0.30f);
-//			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
-//			batch.setShader(vignetteShader.getShader());
-//		}
-//		else if(inGameTime.getHours() > 16) {
-//			vignetteShader.newColor(0.0f, 0.0f, 0.0f);
-//			vignetteShader.editCircle(.10f, .6f, 0.10f);
-//			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
-//			batch.setShader(vignetteShader.getShader());
-//		}
-//		else if(inGameTime.getHours() < 8) {
-//			vignetteShader.newColor(0.1f, 0.1f, 0.0f);
-//			vignetteShader.editCircle(.5f, .4f, 0.5f);
-//			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
-//			batch.setShader(vignetteShader.getShader());
-//		}
-//		else
-//			batch.setShader(null);
 		
 		int mapLeftBorder = (int) camera.getLeftB()/16;
 		int mapRightBorder = (int) camera.getRightB()/16;
 		int mapTopBorder = (int) camera.getTopB()/16;
 		int mapBottomBorder = (int) camera.getBottomB()/16;
-		int playerLayer = getHero().getLayer();
-		int roofLayer = getHero().getLayer()+2;
+		int playerLayer;
+		int roofLayer;
+		if(getHero() != null) {
+			playerLayer = getHero().getLayer();
+			roofLayer = getHero().getLayer()+2;
+		}
+		else {
+			playerLayer = 0;
+			roofLayer = 2;
+		}
+			
+		
+		if(!update) {
+			updateLight(playerLayer, roofLayer);
+			update = true;
+		}
 		
 		for(int layer = playerLayer; layer < roofLayer; layer++) {
-			for(int row = mapRightBorder; row > mapLeftBorder-1; row--) {
-				for(int col = mapTopBorder; col > mapBottomBorder-1; col--) {
+			for(int col = mapTopBorder; col > mapBottomBorder-1; col--) {
+				for(int row = mapRightBorder; row > mapLeftBorder-1; row--) {
 					if(arrayOfCells[row][col][layer].tile != null && arrayOfCells[row][col][layer].tile.isVisible()) {
-						arrayOfCells[row][col][layer].tile.adjustLight(inGameTime.getLight());
-						if(arrayOfCells[row][col][layer].tile.getGroup() == "light") {
-							LanternTile tile = (LanternTile) arrayOfCells[row][col][layer].tile;
-							tile.light(this);
-						}
-						arrayOfCells[row][col][layer].tile.updateLight();
 						arrayOfCells[row][col][layer].render(batch);
 					}
 				}
 			}
 		}
 		
-//		if(this.getHero().getX() != ray.oldOriginX || this.getHero().getY() != ray.oldOriginY) {
-//			ray.oldOriginX = this.getHero().getX();
-//			ray.oldOriginY = this.getHero().getY();
-//			raycastUpdate(camera);
-//		}
-//////		
-//		for(int layer = playerLayer; layer < roofLayer; layer++) {
-//			for(int row = mapRightBorder; row > mapLeftBorder-1; row--) {
-//				for(int col = mapTopBorder; col > mapBottomBorder-1; col--) {
-//					if(arrayOfCells[row][col][layer].render) {
-//						arrayOfCells[row][col][layer].tile.setColors(1.0f, 1.0f, 1.0f);
-//					}
-//					else {
-//						arrayOfCells[row][col][layer].tile.setColors(0.5f, 0.5f, 0.5f);
-//					}
-//					arrayOfCells[row][col][layer].render(batch);
-//				}
-//			}
-//		}
-			
 		super.render(camera, batch);
 		batch.setShader(null);
 		
-		hud.render(this.getHero().getHealth(), batch, camera.getCamera(), inGameTime.getHours(), inGameTime.getMoonPhase());
+		if(getHero() != null)
+			hud.render(this.getHero().getHealth(), batch, camera, inGameTime.getHours(), inGameTime.getMoonPhase());
 		batch.end();
+	}
+	
+	public void updateLight(int playerLayer, int roofLayer) {
+		for(int layer = playerLayer; layer < roofLayer+1; layer++) {
+			for(int row = getWidth()-1; row > -1; row--) {
+				for(int col = getHeight()-1; col > -1; col--) {
+					if(arrayOfCells[row][col][layer].tile != null && arrayOfCells[row][col][layer].tile.isVisible()) {
+						if(arrayOfCells[row][col][layer].tile.getGroup() == "light") {
+							LanternTile tile2 = (LanternTile) arrayOfCells[row][col][layer].tile;
+							tile2.light(this);
+						}
+					}
+				}
+			}
+		}
+		for(int layer = playerLayer; layer < roofLayer+1; layer++) {
+			for(int row = getWidth()-1; row > -1; row--) {
+				for(int col = getHeight()-1; col > -1; col--) {
+					if(arrayOfCells[row][col][layer].tile != null && arrayOfCells[row][col][layer].tile.isVisible()) {
+						arrayOfCells[row][col][layer].tile.adjustLight(inGameTime.getLight());
+						arrayOfCells[row][col][layer].tile.updateLight();
+					}
+				}
+			}
+		}
 	}
 	
 	public void raycastUpdate(Camera camera) {
@@ -174,34 +156,28 @@ public class CustomGameMap extends GameMap {
 
 	@Override
 	public void update (Camera camera, float delta) {
+		inGameTime.timePasses(this, delta);
+		
 		if(Gdx.input.isKeyJustPressed(Keys.H)) {
 			changeMap();
 		}
-		int row = (int)Unprojecter.getMouseCoords(camera.getCamera()).x/16;
-		int col = (int)Unprojecter.getMouseCoords(camera.getCamera()).y/16;
-		if(Gdx.input.justTouched())
-		//			if(arrayOfCells[row][col][1].tile.isReplacable() && arrayOfCells[row][col][1].tile.getName() == "air") {
-		//				arrayOfCells[row][col][1].tileChange(new Rock("rock", arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
-		//				arrayOfCells[row][col][0].tileChange(new Sand("sand", arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y, this), this);
-		//			}
-					if(arrayOfCells[row][col][0].tile.isReplacable() && arrayOfCells[row][col][0].tile.getName() == "greenGrass") {
-						arrayOfCells[row][col][1].tileChange(new LanternTile(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
-					}
-		//			else if(arrayOfCells[row][col][1].tile.isReplacable() && arrayOfCells[row][col][1].tile.getName() == "rock")
-		//				arrayOfCells[row][col][1].tileChange(new Air(arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y, this), this);
+		int row = (int) Unprojecter.getMouseCoords(camera.getCamera()).x/16;
+		int col = (int) Unprojecter.getMouseCoords(camera.getCamera()).y/16;
+
+		if(Gdx.input.justTouched()) {
+			if(arrayOfCells[row][col][1].tile.getId() == 0) {
+				arrayOfCells[row][col][1].tileChange(new LanternTile(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
+			}
+//			if(arrayOfCells[row][col][1].tile.getId() == 0  && !Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
+//				arrayOfCells[row][col][1].tileChange(new WoodWall(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
+//			if(arrayOfCells[row][col][0].tile.isReplacable() && Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
+//				arrayOfCells[row][col][0].tileChange(new WoodFloor(arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y, this), this);
+//			else if(arrayOfCells[row][col][1].tile.getId() == 34)
+//				arrayOfCells[row][col][1].tileChange(new Air(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
+		}
 		super.update(camera, delta);
 		
-//		make tile occupied by player
-//		if(this.getHero().getRect().collidesWith(arrayOfCells[row][col][0].getRect())) {
-//			if(!arrayOfCells[row][col][0].occupied) {
-//				arrayOfCells[row][col][0].occupied = true;
-//				System.out.println(arrayOfCells[row][col][0].tile.getName());
-////				if(arrayOfCells[row][col][0].tile.isReplacable())
-////					arrayOfCells[row][col][0].tileChange(new ShallowWater("shallowwater", arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y), this);
-//			}
-//		}
-//		else
-//			arrayOfCells[row][col][0].occupied = false;
+
 	}
 
 	public void save() {
@@ -229,8 +205,8 @@ public class CustomGameMap extends GameMap {
 			TileGridCell leftCell = arrayOfCells[row-1][col][layer];
 			TileGridCell rightCell = arrayOfCells[row+1][col][layer];
 			if(midCell.tile != null)
-			if(midCell.tile.isConnectable())
-//				if(upCell.tile.getLevel() >= midCell.tile.getLevel() && downCell.tile.getLevel() >= midCell.tile.getLevel() && leftCell.tile.getLevel() >= midCell.tile.getLevel() && rightCell.tile.getLevel() >= midCell.tile.getLevel())
+				if(midCell.tile.isConnectable())
+					//				if(upCell.tile.getLevel() >= midCell.tile.getLevel() && downCell.tile.getLevel() >= midCell.tile.getLevel() && leftCell.tile.getLevel() >= midCell.tile.getLevel() && rightCell.tile.getLevel() >= midCell.tile.getLevel())
 					if(upCell.tile.getGroup() == midCell.tile.getGroup() && downCell.tile.getGroup() == midCell.tile.getGroup() && leftCell.tile.getGroup() == midCell.tile.getGroup() && rightCell.tile.getGroup() == midCell.tile.getGroup())
 						midCell.tile.setVar(1);
 					else if(upCell.tile.getGroup() == midCell.tile.getGroup()  && downCell.tile.getGroup() != midCell.tile.getGroup() && leftCell.tile.getGroup() == midCell.tile.getGroup() && rightCell.tile.getGroup() == midCell.tile.getGroup())
@@ -273,25 +249,41 @@ public class CustomGameMap extends GameMap {
 		for(int col = 0; col < map.length; col++)
 			for(int row = 0; row < map[col].length; row++) {
 				for(int layer = 0; layer < map[col][row].length; layer++) {
+					TileGridCell cell = arrayOfCells[row][col][layer];
 					//flowers, empty grass, dark and highlighted grass
-					if(arrayOfCells[row][col][layer].id == 4 && arrayOfCells[row][col][layer].tile.getVar() == 1) {
-						int random = RandomNumGen.getRandomNumberInRange(16, 21);
+					if(cell.id == 4 && cell.tile.getVar() == 1) {
+						int random = RandomNumGen.getRandomNumberInRange(17, 21);
 						if(random == 21)
-							arrayOfCells[row][col][layer].tile.setVar(1);
+							cell.tile.setVar(1);
 						else
-							arrayOfCells[row][col][layer].tile.setVar(random);
+							cell.tile.setVar(random);
 					}
 					//sea stars
-					if(arrayOfCells[row][col][layer].id == 3 && arrayOfCells[row][col][layer].tile.getVar() == 1) {
+					if(cell.id == 3 && cell.tile.getVar() == 1) {
 						int random = RandomNumGen.getRandomNumberInRange(0, 40);
 						if(random == 0)
-							arrayOfCells[row][col][layer].tile.setVar(16);
+							cell.tile.setVar(16);
 						if(random == 1)
-							arrayOfCells[row][col][layer].tile.setVar(17);
+							cell.tile.setVar(17);
 					}
+					//trees
+//					if(cell.id == 4) {
+//						int random = RandomNumGen.getRandomNumberInRange(0, 40);
+//						if(random == 40)
+//							entities.add(new TreeEntity(cell.x+8, cell.y+8, EntityType.BUSH, this, 10));
+//						else if(random == 39)
+//							entities.add(new SmallBush(cell.x+8, cell.y+8, EntityType.SMALL_BUSH, this, 10));
+//					}
 				}
 			}
 						
+	}
+	
+	public void loadEntities(EntitySnapshot[] snapshots) {
+		for(EntitySnapshot snapshot : snapshots) {
+			if(snapshot != null)
+			entities.add(EntityType.createEntityUsingSnapshot(snapshot, this));
+		}
 	}
 	
 	public void changeMap() {
@@ -304,6 +296,7 @@ public class CustomGameMap extends GameMap {
 		id = data.id;
 		name = data.name;
 		map = data.map;
+		loadEntities(data.entities);
 		for(int col = 0; col < map.length; col++)
 			for(int row = 0; row < map[col].length; row++)
 				for(int layer = 0; layer < map[col][row].length; layer++) {
@@ -312,6 +305,7 @@ public class CustomGameMap extends GameMap {
 				}
 
 		updateTiles();
+		updateLight(0, 2);
 		plants();
 		this.mapIsLoading = false;
 	}
@@ -385,5 +379,23 @@ public class CustomGameMap extends GameMap {
 	public TileType setTile(int layer, int col, int row, int id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void setUpdate(boolean update) {
+		this.update = update;
+	}
+	
+	public boolean isSpaceOccupied(float checkX, float checkY) {
+		for(int i = 0; i < entities.size(); i++) {
+			Entity entity = entities.get(i);
+			float x = entity.getX();
+			float y = entity.getY();
+			float width = entity.getX()+entity.getWidth();
+			float height = entity.getY()+entity.getHeight();
+			
+			if(checkX > x && checkX < width && checkY > y && checkY < height)
+				return true;
+		}
+		return false;
 	}
 }

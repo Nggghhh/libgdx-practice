@@ -15,7 +15,7 @@ public class Camera {
 //	float lenght = 0;
 //	int angleToTransform = 0;
 	int mapLeft, mapRight, mapUp, mapDown;
-	public float cameraLeft, cameraRight, cameraBottom, cameraTop, cameraHalfWidth, cameraHalfHeight;
+	public float viewportHeight, viewportWidth, cameraLeft, cameraRight, cameraBottom, cameraTop, cameraHalfWidth, cameraHalfHeight;
 	
 	public void init(SpriteBatch batch, GameMap gameMap) {
 		camera = new OrthographicCamera();
@@ -24,15 +24,25 @@ public class Camera {
 		mapRight = 0 + gameMap.getPixelWidth()-16;
 		mapDown = 16;
 		mapUp = 0 + gameMap.getPixelHeight()-16;
+		viewportHeight = camera.viewportHeight;
+		viewportWidth = camera.viewportWidth;
 	}
 	
 	public void render(GameMap gameMap, float deltaTime, SpriteBatch batch) {
 		camera.setToOrtho(false, Gdx.graphics.getWidth()*0.5f, Gdx.graphics.getHeight()*0.5f);
-		camera.position.y = gameMap.getHero().getY();
-		camera.position.x = gameMap.getHero().getX();
+		if(gameMap.getHero() != null) {
+			camera.position.y = gameMap.getHero().getY();
+			camera.position.x = gameMap.getHero().getX();
+		}
+		else {
+			camera.position.y = 500;
+			camera.position.x = 500;
+		}
+		viewportHeight = camera.viewportHeight;
+		viewportWidth = camera.viewportWidth;
 		
-		cameraHalfWidth = camera.viewportWidth * .5f;
-		cameraHalfHeight = camera.viewportHeight * .5f;
+		cameraHalfWidth = viewportWidth * .5f;
+		cameraHalfHeight = viewportHeight * .5f;
 		
 		cameraLeft = camera.position.x - cameraHalfWidth;
 		cameraRight = camera.position.x + cameraHalfWidth;

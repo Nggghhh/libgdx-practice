@@ -12,19 +12,14 @@ import com.mygdx.game.world.TileType;
 
 public class Goblin extends Enemies {
 	
-	public Goblin(float x, float y, EntityType type, GameMap map, int id) {
-		super(x, y, type, map, id);
+	@Override
+	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
+		super.create(snapshot, type, map);
 		this.direction = RandomNumGen.getRandomNumberInRange(1, 4);
 		this.FOV = 200f;
 		this.DEFAULT_SPEED = 50;
 		this.SPEED = this.DEFAULT_SPEED;
 		this.attackVelocity = 30f;
-//		
-//		animationLoader(this.type, "IDLE", 2, 4);
-//		animationLoader(this.type, "MOVE", 2, 4);
-//		animationLoader(this.type, "HURT", 3, 1);
-//		animationLoader(this.type, "ATTACK", 3, 4);
-//		animationLoader(this.type, "DEATH", 3, 1);
 	}
 	
 	public void update(OrthographicCamera camera, float deltaTime, GameMap map) {

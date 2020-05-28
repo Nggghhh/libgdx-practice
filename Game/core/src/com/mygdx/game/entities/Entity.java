@@ -37,20 +37,30 @@ public abstract class Entity {
 	//collisions
 	protected int direction = 1;
 	
+	protected int HEALTH;
+	
 	protected boolean destroy = false;
 	
-	public Entity() {
-		
-	}
-		
-	public Entity(float x, float y, EntityType type, GameMap map, int id) {
+	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
+		float x = snapshot.getX();
+		float y = snapshot.getY();
+		int HEALTH = snapshot.HEALTH;
 		this.pos = new Vector2(x, y);
 		this.velocity = new Vector2(0, 0);
 		this.type = type;
 		this.map = map;
-		this.rect = new CollisionRect(x,y,type.getWidth(), type.getHeight(), true);
-		this.id = id;
+		this.rect = new CollisionRect(x,y, type.getWidth(), type.getHeight(), true);
+		this.HEALTH = HEALTH;
 	}
+		
+//	public Entity(float x, float y, EntityType type, GameMap map, int id) {
+//		this.pos = new Vector2(x, y);
+//		this.velocity = new Vector2(0, 0);
+//		this.type = type;
+//		this.map = map;
+//		this.rect = new CollisionRect(x,y,type.getWidth(), type.getHeight(), true);
+//		this.id = id;
+//	}
 	
 
 	//breakpoint
@@ -58,7 +68,7 @@ public abstract class Entity {
 		this.r = map.getTileTypeByLocation(layer, pos.x, pos.y).tile.getColors()[0];
 		this.g = map.getTileTypeByLocation(layer, pos.x, pos.y).tile.getColors()[1];
 		this.b = map.getTileTypeByLocation(layer, pos.x, pos.y).tile.getColors()[2];
-		animation(this.type);
+		animation();
 		
 		//move collision rectangle with its sprite
 		if(rect.isEnabled())
@@ -95,7 +105,7 @@ public abstract class Entity {
 	protected int frameNum = 0;
 	protected int previousFrameNum = 0;
 	protected int animNum = 0;
-	protected int animLen = 1;
+	protected int animLen = 0;
 	
 	protected String state = "IDLE";
 	protected transient String previousState = "IDLE";
@@ -105,7 +115,7 @@ public abstract class Entity {
 	protected transient float timer = 0;
 	protected int animSpeed = 2;
 	
-	public void animation(EntityType type) {
+	public void animation() {
 		timer += Gdx.graphics.getDeltaTime()*animSpeed;
 		if(timer > 1f) {
 			timer = 0;
@@ -148,6 +158,10 @@ public abstract class Entity {
 			this.frameNum = 0;
 			this.previousState = this.state;
 		}
+	}
+	
+	public EntitySnapshot getSaveSnapshot() {
+		return new EntitySnapshot(type.getName(), pos.x, pos.y, HEALTH);
 	}
 	
 	public int getId() {

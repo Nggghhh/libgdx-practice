@@ -22,32 +22,27 @@ public class TileGridCell {
 		this.layer = layer;
 		this.id = tileId;
 		
-		if(this.id == 7)
-			tile = new LanternTile(this.x, this.y, map);
-		if(this.id == 6)
-			tile = new TreeTile(this.x, this.y, map);
-		if(this.id == 5)
-			tile = new Rock(this.x, this.y, map);
-		if(this.id == 4)
-			tile = new GreenGrass(this.x, this.y, map);
-		if(this.id == 3)
-			tile = new Sand(this.x, this.y, map);
-		if(this.id == 2)
-			tile = new ShallowWater(this.x, this.y, map);
-		if(this.id == 1)
-			tile = new ShallowWater(this.x, this.y, map);
-		if(this.id == 0)
-			tile = new Air(this.x, this.y, map);
+		assignTiles();
 		
 		this.rect = new CollisionRect(this.x, this.y, CELL_SIZE, CELL_SIZE, true);
 	}
 	
 	public void assignTiles() {
-		this.tile = null;
-		if(this.id == 7)
+		if(this.tile != null)
+			this.tile = null;
+		
+		if(this.id == 36)
+			tile = new BigTreeTile(this.x, this.y, map);
+		if(this.id == 35)
+			tile = new SmallBushTile(this.x, this.y, map);
+		if(this.id == 34)
 			tile = new LanternTile(this.x, this.y, map);
-		if(this.id == 6)
+		if(this.id == 33)
 			tile = new TreeTile(this.x, this.y, map);
+		if(this.id == 7)
+			tile = new WoodFloor(this.x, this.y, map);
+		if(this.id == 6)
+			tile = new WoodWall(this.x, this.y, map);
 		if(this.id == 5)
 			tile = new Rock(this.x, this.y, map);
 		if(this.id == 4)
@@ -70,7 +65,18 @@ public class TileGridCell {
 		this.tile.render(batch);
 	}
 	
+	public boolean isOccupied(CustomGameMap map, int layer) {
+		for(int i = 0; i<16; i++) {
+			for(int b = 0; b<16; b++) {
+				if(map.getEntityByCoordinate(x+b, y+i, layer) != null)
+					return true;
+			}
+		}
+		return false;
+	}
+	
 	public void tileChange(CustomTileType tile, CustomGameMap map) {
+		map.setUpdate(false);
 		if(this.tile != tile) {
 			this.tile = null;
 			this.tile = tile;

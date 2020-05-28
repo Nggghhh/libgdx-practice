@@ -9,12 +9,13 @@ import com.mygdx.game.world.TileType;
 public class TileTextureManager {
 	private static TextureRegion[][] tiles;
 	private static TextureRegion[][] liquids;
-	private static Texture tree;
+	private static TextureRegion[][] trees;
+	private static TextureRegion[][] trees2;
 	private static Texture lantern;
 	public TileTextureManager() {
 		tiles = TextureRegion.split(new Texture("MainNwwew.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
 		liquids = TextureRegion.split(new Texture("liquid.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
-		tree = new Texture("PINE/IDLE/0/0.png");
+//		trees2 = TextureRegion.split(new Texture("PINE/IDLE/1/0.png"), 64, 64);
 		lantern = new Texture("PINE/IDLE/0/1.png");
 	}
 	
@@ -26,9 +27,13 @@ public class TileTextureManager {
 		return 	fixBleeding(liquids[row][col]);
 	}
 	
-	public static Texture getTree() {
-		return 	tree;
-	}
+//	public static TextureRegion getTree(int row, int col) {
+//		return 	fixBleeding(trees[row][col]);
+//	}
+//	
+//	public static TextureRegion getTree2(int row, int col) {
+//		return 	fixBleeding(trees2[row][col]);
+//	}
 	
 	public static Texture getLantern() {
 		return 	lantern;

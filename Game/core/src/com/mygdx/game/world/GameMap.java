@@ -29,40 +29,36 @@ import com.mygdx.game.world.tiles.TileGridCell;
 public abstract class GameMap {
 	protected transient ArrayList<Entity> entities;
 	protected transient ArrayList<Entity> renderOrder;
-	protected DayAndNightCycles inGameTime;
 	protected boolean mapIsLoading;
 
 	public GameMap() {
-		inGameTime = new DayAndNightCycles();
 		entities = new ArrayList<Entity>();
 		renderOrder = new ArrayList<Entity>();
-		entities.add(new Player(2*16, 26*16, EntityType.PLAYER, this, 0));
-//		entities.add(new Items(215, 265, EntityType.SHORT_SWORD, this, 22));
-//		entities.add(new Items(230, 265, EntityType.RUBY, this, 25));
-//		entities.add(new Items(250, 300, EntityType.DAGGER, this, 23));
-//		entities.add(new Fireball(270, 300, EntityType.FIREBALL, this, 264, "UNKNOWN"));
-//		entities.add(new Fireball(280, 270, EntityType.FIREBALL, this, 265, "UNKNOWN"));
-//		for(int i = 1; i<5; i++)
-//			entities.add(new Goblin(RandomNumGen.getRandomNumberInRange(50, 400), RandomNumGen.getRandomNumberInRange(150, 300), EntityType.GOBLIN, this, i));
 	}
 	
 	public void render (Camera camera, SpriteBatch batch) {
 		renderOrder();
 		for(Entity entity : renderOrder) {
 			if(!mapIsLoading)
-			if(!entity.isDisabled()) {
-//				if(camera.getRightB()>entity.getX() && camera.getTopB()>entity.getY() && camera.getLeftB()-16<entity.getX() && camera.getBottomB()-16<entity.getY() && getTileTypeByLocation(0, entity.getX(), entity.getY()).render)
-//					entity.render(batch, camera.getCamera());
-				if(camera.getRightB()>entity.getX() && camera.getTopB()>entity.getY() && camera.getLeftB()-16<entity.getX() && camera.getBottomB()-16<entity.getY())
-					entity.render(batch, camera.getCamera());
-			}
+				if(!entity.isDisabled()) {
+					if(camera.getRightB()>entity.getX() && camera.getTopB()>entity.getY() && camera.getLeftB()-16<entity.getX() && camera.getBottomB()-16<entity.getY())
+						entity.render(batch, camera.getCamera());
+				}
 		}
 	}
 	
-	public Entity getEntityByCoordinate(int row, int col, int layer) {
-		for(Entity entity : entities) {
-			if((int) entity.getX()/16 == row && (int) entity.getY()/16 == col && entity.getLayer() == layer)
-				return entity;
+	public Entity getEntityByCoordinate(float row, float col, int layer) {
+		for(int i = 0; i < entities.size(); i++) {
+			Entity entity = entities.get(i);
+			float x = entity.getX();
+			float y = entity.getY();
+			int width = entity.getWidth();
+			int height = entity.getHeight();
+			int entityLayer = entity.getLayer();
+			
+			if(entityLayer == layer)
+				if(x <= row && x+width >= row && y <= col && y+height >= col)
+					return entity;
 		}
 		return null;
 	}
@@ -71,16 +67,19 @@ public abstract class GameMap {
 		renderOrder.removeAll(renderOrder);
 		renderOrder.addAll(entities);
 		for(int i = 0; i<renderOrder.size(); i++)
-			for(int j = 0; j<renderOrder.size(); j++)
+			for(int j = 0; j<renderOrder.size(); j++) {
 				if(renderOrder.get(j).getY() < renderOrder.get(i).getY())
 					Collections.swap(renderOrder, i, j);
+				
+				else if(renderOrder.get(j).getY() == renderOrder.get(i).getY()) {
+					if(renderOrder.get(j).getX() < renderOrder.get(i).getX()) {
+						Collections.swap(renderOrder, i, j);
+					}
+				}
+			}
 	}
 	//update method and collision checks, revision needed
 	public void update (Camera camera, float delta) {
-		inGameTime.timePasses(this, delta);
-		
-		if(Gdx.input.isKeyJustPressed(Keys.G))
-			entities.add(new Goblin(Unprojecter.getMouseCoords(camera.getCamera()).x, Unprojecter.getMouseCoords(camera.getCamera()).y, EntityType.GOBLIN, this, 0));
 		if(Gdx.input.isKeyJustPressed(Keys.L))
 			printEntities();
 		
@@ -103,7 +102,7 @@ public abstract class GameMap {
 						if(entities.get(i) instanceof Items && entities.get(b) instanceof Items) {
 							if(entities.indexOf(entities.get(i)) != entities.indexOf(entities.get(b)))
 								entities.get(i).push(entities.get(b).getX(), entities.get(b).getY(), entities.get(b).getType().getWeight());
-						} else
+						} else if(!(entities.get(i) instanceof Items) && !(entities.get(b) instanceof Items))
 							if(entities.indexOf(entities.get(i)) != entities.indexOf(entities.get(b)) && entities.get(i).getState() != "HURT" && entities.get(i).getState() != "ATTACK" && !entities.get(i).isDestroyed())
 								entities.get(i).push(entities.get(b).getX(), entities.get(b).getY(), entities.get(b).getType().getWeight());
 						

@@ -48,14 +48,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		if(Gdx.input.isKeyJustPressed(Keys.DOWN))
 			gameMap.init("Menu");
 		
-		if(Gdx.input.isKeyJustPressed(Keys.H)) {
-			gm.saveData(gameMap.getHero(), gameMap.getHero().getPlayerInventory());
-		}
-		
-		if(Gdx.input.isKeyJustPressed(Keys.J)) {
-			gm.loadData(gameMap.getHero(), gameMap);
-		}
-		
 		if(Gdx.input.isKeyJustPressed(Keys.K))
 			gm.printJson();
 		

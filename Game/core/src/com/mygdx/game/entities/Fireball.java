@@ -7,10 +7,9 @@ import com.mygdx.game.tools.Unprojecter;
 import com.mygdx.game.world.GameMap;
 
 public class Fireball extends Bullet {
-	public Fireball(float x, float y, EntityType type, GameMap map, int id, String caster) {
-		super(x, y, type, map, id, caster);
-		
-//		animationLoader(this.type, "IDLE", 4, 1);
+	@Override
+	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
+		super.create(snapshot, type, map);
 		changeState("IDLE", true, 3, 6);
 		this.sliperyness = 1f;
 		this.defaultStrenght = 1;

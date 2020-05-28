@@ -57,8 +57,8 @@ public class GameManager {
 		gameMap.getHero().setHealth(health);
 //		gameMap.getHero().getPlayerInventory().getItemList().get(0).setType(EntityType.valueOf(name.require(0).require("type").asString()));
 		
-		gameMap.getHero().getPlayerInventory().getItemList().removeAll(gameMap.getHero().getPlayerInventory().getItemList());
-		gameMap.getHero().getPlayerInventory().getItemList().add(new Items(0, 0, EntityType.valueOf(name.require(0).require("type").asString()), gameMap, 2222));
+//		gameMap.getHero().getPlayerInventory().getItemList().removeAll(gameMap.getHero().getPlayerInventory().getItemList());
+//		gameMap.getHero().getPlayerInventory().getItemList().add(new Items(0, 0, EntityType.valueOf(name.require(0).require("type").asString()), gameMap, 2222));
 	}
 	
 	public void printJson() {

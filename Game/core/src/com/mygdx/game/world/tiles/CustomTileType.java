@@ -14,7 +14,7 @@ public abstract class CustomTileType {
 	protected int id, x, y, variation, level = 0;
 	protected String name, group;
 	protected int bottomPoint;
-	protected float r = 1.0f, g = 1.0f, b = 1.0f;
+	protected float r = 0.0f, g = 0.0f, b = 0.0f;
 	protected boolean collidable, destroyable, replacable = true, connectable = false, liquid = false, visible = true;
 	protected Vector3 additionalLight;
 	
@@ -45,6 +45,10 @@ public abstract class CustomTileType {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public int getId() {
+		return id;
 	}
 	
 	public int getX() {
@@ -122,9 +126,9 @@ public abstract class CustomTileType {
 	}
 	
 	public void adjustLight(Vector3 ambientLight) {
-		this.r = 0.0f + ambientLight.x + additionalLight.x;
-		this.g = 0.0f + ambientLight.y + additionalLight.y;
-		this.b = 0.0f + ambientLight.z + additionalLight.z;
+		this.r = ambientLight.x + additionalLight.x;
+		this.g = ambientLight.y + additionalLight.y;
+		this.b = ambientLight.z + additionalLight.z;
 	}
 	
 	public void updateLight() {
@@ -133,5 +137,9 @@ public abstract class CustomTileType {
 	
 	public void addLight(float r, float g, float b) {
 		additionalLight.add(r, g, b);
+	}
+	
+	public void getLight() {
+		System.out.println(additionalLight.x);
 	}
 }

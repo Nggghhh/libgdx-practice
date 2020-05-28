@@ -5,6 +5,7 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import com.mygdx.game.entities.EntitySnapshot;
 import com.mygdx.game.tools.RandomNumGen;
 import com.mygdx.game.tools.SimplexNoise;
 
@@ -13,6 +14,7 @@ public class CustomGameMapLoader {
 	public static final int SIZE = 100;
 	public static final int LAYERS = 5;
 	private static final FileHandle PATH_TO_CELLS = Gdx.files.local("world/maps/");
+	private static final FileHandle PATH_TO_ENTITIES = Gdx.files.local("world/maps/entities");
 	private static final FileHandle PATH_TO_MAP = Gdx.files.local("world/global/");
 	private static SimplexNoise mapGen = new SimplexNoise();
 	
@@ -21,9 +23,21 @@ public class CustomGameMapLoader {
 		if(!PATH_TO_CELLS.exists()) {
 			PATH_TO_CELLS.file().mkdirs();
 		}
+		if(!PATH_TO_ENTITIES.exists()) {
+			PATH_TO_ENTITIES.file().mkdirs();
+		}
 		FileHandle cell = Gdx.files.internal("world/maps/"+id+".map");
-		if(cell.exists()) {
+		FileHandle entityList = Gdx.files.internal("world/maps/entities/"+id+".json");
+		if(cell.exists() && entityList.exists()) {
 			CustomGameMapData data = json.fromJson(CustomGameMapData.class, cell.readString());
+			EntitySnapshot[] entities = json.fromJson(EntitySnapshot[].class, entityList.readString());
+			data.entities = entities;
+			return data;
+		}
+		else if(cell.exists() && !entityList.exists()) {
+			CustomGameMapData data = json.fromJson(CustomGameMapData.class, cell.readString());
+			EntitySnapshot[] entities = new EntitySnapshot[1];
+			data.entities = entities;
 			return data;
 		}
 		else {
@@ -57,11 +71,12 @@ public class CustomGameMapLoader {
 		
 		int seed = 1000;
 		int octave = 3;
-		int randomSeed = RandomNumGen.getRandomNumberInRange(0, 1000);
+		if(seed < 0)
+			seed = RandomNumGen.getRandomNumberInRange(0, 1000);
 		
 		mapData.id = id;
 		mapData.name = name;
-		mapData.map = mapGen.generateBaseTerrain(mapGen.CreateRoundedArray(SIZE, SIZE, octave, 5, randomSeed));
+		mapData.map = mapGen.generateBaseTerrain(mapGen.CreateRoundedArray(SIZE, SIZE, octave, 5, seed));
 		
 		return mapData;
 	}

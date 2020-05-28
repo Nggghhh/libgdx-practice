@@ -11,11 +11,13 @@ public abstract class Bullet extends Entity {
 	protected int HEALTH;
 	protected float sliperyness = 1f;
 	
-	public Bullet(float x, float y, EntityType type, GameMap map, int id, String caster) {
-		super(x, y, type, map, id);
-		this.caster = caster;
-		this.HEALTH = this.type.getHealth();
+	@Override
+	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
+		super.create(snapshot, type, map);
+		this.caster = snapshot.getString("caster", "nobody");
 	}
+	
+	
 
 	@Override
 	public void update(OrthographicCamera camera, float deltaTime, GameMap map) {

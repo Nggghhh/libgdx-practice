@@ -163,9 +163,15 @@ public class SimplexNoise {
 					else //empty space
 						terrain[row][col][1] = 0;
 					
-					int random = RandomNumGen.getRandomNumberInRange(0, 20);
-					if(terrain[row][col][1] == 0 && terrain[row][col][0] == 4 && random == 20)
-						terrain[row][col][1] = 6;
+//					int random = RandomNumGen.getRandomNumberInRange(0, 30);
+//					if(terrain[row][col][1] == 0 && terrain[row][col][0] == 4) {
+//						if(random == 20)
+//							terrain[row][col][1] = 33;
+//						else if(random == 21)
+//							terrain[row][col][1] = 35;
+//						else if(random == 22)
+//							terrain[row][col][1] = 36;
+//					}
 					
 			}
 		return terrain;

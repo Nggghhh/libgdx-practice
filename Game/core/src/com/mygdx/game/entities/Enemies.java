@@ -17,9 +17,10 @@ public abstract class Enemies extends LivingEntity {
 	protected float remainingStrayTime = 1f;
 	protected float remainingAttackTime = 2f;
 	protected Behavior behavior = Behavior.AGRESSIVE;
-	public Enemies(float x, float y, EntityType type, GameMap map, int id) {
-		super(x, y, type, map, id);
-		// TODO Auto-generated constructor stub
+	
+	@Override
+	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
+		super.create(snapshot, type, map);
 	}
 	
 	protected enum Behavior{

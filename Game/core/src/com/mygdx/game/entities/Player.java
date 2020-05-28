@@ -11,25 +11,24 @@ import com.mygdx.game.items.Inventory;
 import com.mygdx.game.items.Items;
 import com.mygdx.game.tools.SoundManager;
 import com.mygdx.game.tools.Unprojecter;
+import com.mygdx.game.world.CustomGameMap;
 import com.mygdx.game.world.GameMap;
 import com.mygdx.game.world.TileType;
 
 public class Player extends LivingEntity {
-	private static int SPEED = 130;
+	private static int SPEED = 70;
 	private static int DASH_VELOCITY = 400;
 	private int MAX_HEALTH = 6;
 	private Inventory playerInventory;
+	private Texture shadow;
 	
-	public Player(float x, float y, EntityType type, GameMap map, int id) {
-		super(x, y, type, map, id);
+	@Override
+	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
+		super.create(snapshot, type, map);
 		playerInventory = new Inventory(map);
 		this.slippery = 8f;
 		this.layer = 0;
-		
-		
-//		animationLoader(this.type, "IDLE", 2, 4);
-//		animationLoader(this.type, "MOVE", 2, 4);
-//		animationLoader(this.type, "HURT", 3, 1);
+		shadow = new Texture("PLAYER/SHADOW.png");
 	}
 	
 	@Override
@@ -50,7 +49,9 @@ public class Player extends LivingEntity {
 	public void livingState(OrthographicCamera camera, float deltaTime, GameMap map) {
 		super.livingState(camera, deltaTime, map);
 		
-		pickUpItems(map);
+		if(Gdx.input.isKeyJustPressed(Keys.E))
+			pickUpItems(map);
+		
 		playerInventory.collectInput(map);
 		
 		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) {
@@ -62,7 +63,7 @@ public class Player extends LivingEntity {
 		//walk
 		if(this.state != "HURT" && this.state != "DASH" && this.state != "ATTACK") {
 			if(Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.W)) {
-				changeState("MOVE", true, 1, 6);
+				changeState("MOVE", true, 7, 6);
 				if(Gdx.input.isKeyPressed(Keys.A)) {
 					moveX(-SPEED*deltaTime);
 					this.direction = 1;
@@ -88,9 +89,12 @@ public class Player extends LivingEntity {
 			strafe(-7f, camera);
 		}
 
-//		if(Gdx.input.justTouched() && this.state != "ATTACK" && this.previousState != "HURT") {
-//			changeState("ATTACK", false, 5, 15);
-//		}
+		if(Gdx.input.justTouched() && this.state != "ATTACK" && this.previousState != "HURT") {
+			if(playerInventory.getItemList()[0] != null) {
+				CustomGameMap newMap = (CustomGameMap) map;
+				playerInventory.getItemList()[0].action(newMap, this, playerInventory, camera);
+			}
+		}
 		
 		if(this.state == "ATTACK")
 			attack(1, this, 60, "physical");
@@ -99,6 +103,7 @@ public class Player extends LivingEntity {
 	
 	@Override
 	public void render(SpriteBatch batch, OrthographicCamera camera) {
+		batch.draw(shadow, pos.x-3, pos.y-1, 11, 3);
 		animationPlay(batch);
 	}
 	
@@ -142,13 +147,18 @@ public class Player extends LivingEntity {
 	}
 	
 	public void pickUpItems(GameMap map) {
-		for(int b = 0; b < map.getEntities().size(); b++)
-			if(map.getEntities().get(b) instanceof Items && !map.getEntities().get(b).isDisabled())
-				if(this.rect.collidesWith(map.getEntities().get(b).getRect()) && this.isDestroyed() == false) {
-					if(Gdx.input.isKeyJustPressed(Keys.E) && this.playerInventory.getItemList().size() < playerInventory.getSize()) {
-						playerInventory.getItemList().add((Items) map.getEntities().get(b));
-						map.getEntities().remove(map.getEntities().get(b));
+		for(int b = 0; b < map.getEntities().size(); b++) {
+			Entity entity = map.getEntities().get(b);
+			if(entity instanceof Items && !entity.isDisabled()) {
+				if(rect.collidesWith(entity.getRect()) && isDestroyed() == false) {
+					int slot = playerInventory.getEmptySlot();
+					if(slot != -1) {
+						playerInventory.put((Items) entity, slot);
+						map.getEntities().remove(entity);
+						return;
 					}
 				}
+			}
+		}
 	}
 }
