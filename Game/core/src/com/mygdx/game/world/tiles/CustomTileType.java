@@ -15,7 +15,7 @@ public abstract class CustomTileType {
 	protected String name, group;
 	protected int bottomPoint;
 	protected float r = 0.0f, g = 0.0f, b = 0.0f;
-	protected boolean collidable, destroyable, replacable = true, connectable = false, liquid = false, visible = true;
+	protected boolean collidable, destroyable, replacable = true, connectable = false, liquid = false, visible = true, transparent = false;
 	protected Vector3 additionalLight;
 	
 	protected final int TILE_SIZE = 16;
@@ -91,6 +91,10 @@ public abstract class CustomTileType {
 		return level;
 	}
 	
+	public boolean isTransparent() {
+		return transparent;
+	}
+	
 	public boolean isVisible() {
 		return visible;
 	}
@@ -141,5 +145,14 @@ public abstract class CustomTileType {
 	
 	public void getLight() {
 		System.out.println(additionalLight.x);
+	}
+
+	public void timer() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void diverce() {
+		
 	}
 }

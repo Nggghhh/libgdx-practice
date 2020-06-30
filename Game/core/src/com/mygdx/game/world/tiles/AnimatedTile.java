@@ -19,7 +19,7 @@ public class AnimatedTile extends CustomTileType {
 	}
 	
 	@Override
-	public void render(SpriteBatch batch) {
+	public void timer() {
 		timer += Gdx.graphics.getDeltaTime()*animSpeed;
 		if(timer > 1f) {
 			timer = 0;
@@ -32,5 +32,10 @@ public class AnimatedTile extends CustomTileType {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void render(SpriteBatch batch) {
+		
 	}
 }

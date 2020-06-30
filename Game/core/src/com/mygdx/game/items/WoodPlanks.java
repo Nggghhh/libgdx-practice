@@ -49,10 +49,10 @@ public class WoodPlanks extends Items {
 			x = actor.getX();
 			y = actor.getY()+actor.getHeight()/2+16;
 		}
-		wall = map.getTileTypeByLocation(actor.getLayer()+1, x, y);
-		floor = map.getTileTypeByLocation(actor.getLayer(), x, y);
+		wall = map.getTileTypeByLocation(1, x, y);
+		floor = map.getTileTypeByLocation(0, x, y);
 		
-		if(!wall.isOccupied(map, actor.getLayer())) {
+		if(!wall.isOccupied(map, 0)) {
 			if(!Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
 				if(wall.tile.getId() == 0) {
 					wall.tileChange(new WoodWall(floor.x, floor.y, map), map);

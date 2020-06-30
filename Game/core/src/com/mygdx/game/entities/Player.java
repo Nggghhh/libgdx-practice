@@ -7,8 +7,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.HUD;
+import com.mygdx.game.entities.animations.EntityAssetManager;
 import com.mygdx.game.items.Inventory;
 import com.mygdx.game.items.Items;
+import com.mygdx.game.items.Knife;
+import com.mygdx.game.items.Weapons;
 import com.mygdx.game.tools.SoundManager;
 import com.mygdx.game.tools.Unprojecter;
 import com.mygdx.game.world.CustomGameMap;
@@ -16,19 +19,18 @@ import com.mygdx.game.world.GameMap;
 import com.mygdx.game.world.TileType;
 
 public class Player extends LivingEntity {
-	private static int SPEED = 70;
+	private static int SPEED = 80;
 	private static int DASH_VELOCITY = 400;
 	private int MAX_HEALTH = 6;
 	private Inventory playerInventory;
-	private Texture shadow;
+	private Weapons weapon;
 	
 	@Override
 	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
 		super.create(snapshot, type, map);
 		playerInventory = new Inventory(map);
-		this.slippery = 8f;
-		this.layer = 0;
-		shadow = new Texture("PLAYER/SHADOW.png");
+		weapon = new Knife();
+		this.faction = EntityFactions.PLAYER;
 	}
 	
 	@Override
@@ -54,35 +56,31 @@ public class Player extends LivingEntity {
 		
 		playerInventory.collectInput(map);
 		
-		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) {
-			this.velocity.x = 0;
-			this.velocity.y = 0;
-			dash(DASH_VELOCITY, this.direction);
-			//log
-		}
 		//walk
-		if(this.state != "HURT" && this.state != "DASH" && this.state != "ATTACK") {
+		if(this.state != "HURT" && this.state != "DASH" && this.state.charAt(0) != 'A') {
 			if(Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.W)) {
 				changeState("MOVE", true, 7, 6);
-				if(Gdx.input.isKeyPressed(Keys.A)) {
-					moveX(-SPEED*deltaTime);
-					this.direction = 1;
-				}
-				if(Gdx.input.isKeyPressed(Keys.D)) {
-					moveX(+SPEED*deltaTime);
-					this.direction = 2;
-				}
-				if(Gdx.input.isKeyPressed(Keys.S)) {
-					moveY(-SPEED*deltaTime);
-					this.direction = 3;
-				}
 				if(Gdx.input.isKeyPressed(Keys.W)) {
-					moveY(+SPEED*deltaTime);
-					this.direction = 4;
+					angle = 270;
 				}
+				else if(Gdx.input.isKeyPressed(Keys.A)) {
+					angle = 360;
+				}
+				else if(Gdx.input.isKeyPressed(Keys.S)) {
+					angle = 90;
+				}
+				else if(Gdx.input.isKeyPressed(Keys.D)) {
+					angle = 180;
+				}
+				move(angle, SPEED, deltaTime);
+//				if(Gdx.input.isKeyPressed(Keys.W)) {
+//					angle = (int) calculateAngle(Unprojecter.getMouseCoords(camera).x, Unprojecter.getMouseCoords(camera).y);
+//					move(angle, SPEED, deltaTime);
+//				}
 			}
-			else
+			else {
 				changeState("IDLE", true, 1, 2);
+			}
 		}
 
 		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) {
@@ -96,6 +94,9 @@ public class Player extends LivingEntity {
 			}
 		}
 		
+		if(weapon != null)
+			weapon.update(this, map);
+		
 		if(this.state == "ATTACK")
 			attack(1, this, 60, "physical");
 		
@@ -103,7 +104,7 @@ public class Player extends LivingEntity {
 	
 	@Override
 	public void render(SpriteBatch batch, OrthographicCamera camera) {
-		batch.draw(shadow, pos.x-3, pos.y-1, 11, 3);
+		batch.draw(EntityAssetManager.getShadow(), pos.x-3, pos.y-1, 11, 3);
 		animationPlay(batch);
 	}
 	

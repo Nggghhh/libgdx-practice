@@ -5,15 +5,16 @@ import java.util.HashMap;
 public class EntitySnapshot {
 	public String type;
 	public float x,y;
-	public int HEALTH;
+	public int HEALTH, layer;
 	public HashMap<String, String> data;
 	
 	public EntitySnapshot() {}
-	public EntitySnapshot(String type, float x, float y, int HEALTH) {
+	public EntitySnapshot(String type, float x, float y, int HEALTH, int layer) {
 		this.type = type;
 		this.x = x;
 		this.y = y;
 		this.HEALTH = HEALTH;
+		this.layer = layer;
 	}
 	public String getType() {
 		return type;

@@ -12,7 +12,7 @@ public class TileTextureManager {
 	private static TextureRegion[][] trees;
 	private static TextureRegion[][] trees2;
 	private static Texture lantern;
-	public TileTextureManager() {
+	static {
 		tiles = TextureRegion.split(new Texture("MainNwwew.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
 		liquids = TextureRegion.split(new Texture("liquid.png"), TileType.TILE_SIZE, TileType.TILE_SIZE);
 //		trees2 = TextureRegion.split(new Texture("PINE/IDLE/1/0.png"), 64, 64);

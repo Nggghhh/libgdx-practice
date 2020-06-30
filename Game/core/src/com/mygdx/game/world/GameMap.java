@@ -41,7 +41,7 @@ public abstract class GameMap {
 		for(Entity entity : renderOrder) {
 			if(!mapIsLoading)
 				if(!entity.isDisabled()) {
-					if(camera.getRightB()>entity.getX() && camera.getTopB()>entity.getY() && camera.getLeftB()-16<entity.getX() && camera.getBottomB()-16<entity.getY())
+					if(camera.getRightB()>entity.getX()-entity.getTextureWidth() && camera.getTopB()>entity.getY() && camera.getLeftB()<entity.getX()+entity.getTextureWidth() && camera.getBottomB()<entity.getY()+entity.getTextureHeight())
 						entity.render(batch, camera.getCamera());
 				}
 		}
@@ -54,7 +54,7 @@ public abstract class GameMap {
 			float y = entity.getY();
 			int width = entity.getWidth();
 			int height = entity.getHeight();
-			int entityLayer = entity.getLayer();
+			int entityLayer = 0;
 			
 			if(entityLayer == layer)
 				if(x <= row && x+width >= row && y <= col && y+height >= col)
@@ -89,26 +89,29 @@ public abstract class GameMap {
 				//			if(entity.getDestroyed() == true) {
 				//				entity.recreate(40, 300, entity.getType().getHealth());
 				//			}
-				if(!entities.get(i).isDisabled())
-					entities.get(i).update(camera.getCamera(), delta, this);
+				
+				Entity entity1 = entities.get(i);
+				if(!entity1.isDisabled())
+					entity1.update(camera.getCamera(), delta, this);
 
 			//check entities for collision
 			for(int b = 0; b < entities.size(); b++) {
-				if(!entities.get(i).isDisabled() && !entities.get(b).isDisabled()) {
-					if(entities.get(i).getRect().collidesWith(entities.get(b).getRect()) && entities.get(b).isDestroyed() == false && entities.get(b).getState() != "ATTACK") {
-						if(entities.get(i) instanceof Player && entities.get(b) instanceof Enemies) {
-							entities.get(i).hurt(1, entities.get(b), entities.get(i));
+				Entity entity2 = entities.get(b);
+				if(!entity1.isDisabled() && !entity2.isDisabled()) {
+					if(entity1.getRect().collidesWith(entity2.getRect()) && entity2.isDestroyed() == false && entity2.getState() != "ATTACK") {
+						if(entity1 instanceof Player && entity2 instanceof Enemies) {
+							entity1.hurt(1, entity2, entity1);
 						}
-						if(entities.get(i) instanceof Items && entities.get(b) instanceof Items) {
-							if(entities.indexOf(entities.get(i)) != entities.indexOf(entities.get(b)))
-								entities.get(i).push(entities.get(b).getX(), entities.get(b).getY(), entities.get(b).getType().getWeight());
-						} else if(!(entities.get(i) instanceof Items) && !(entities.get(b) instanceof Items))
-							if(entities.indexOf(entities.get(i)) != entities.indexOf(entities.get(b)) && entities.get(i).getState() != "HURT" && entities.get(i).getState() != "ATTACK" && !entities.get(i).isDestroyed())
-								entities.get(i).push(entities.get(b).getX(), entities.get(b).getY(), entities.get(b).getType().getWeight());
+						if(entity1 instanceof Items && entity2 instanceof Items) {
+							if(entities.indexOf(entity1) != entities.indexOf(entity2))
+								entity1.push(entity2.getX(), entity2.getY(), entity2.getType().getWeight());
+						} else if(!(entity1 instanceof Items) && !(entity2 instanceof Items))
+							if(entities.indexOf(entity1) != entities.indexOf(entity2) && entity1.getState() != "HURT" && entity1.getState() != "ATTACK" && !entity1.isDestroyed())
+								entity1.push(entity2.getX(), entity2.getY(), entity2.getType().getWeight());
 						
-						if(entities.get(i).getRect().collidesWithAtOffset(entities.get(b).getRect(), entities.get(i).getDirection(), 32, 12)) {
-							if(entities.get(i) instanceof Player && entities.get(b) instanceof Enemies && entities.get(i).getState() == "ATTACK" && entities.get(i).getFrame() == 1) {
-								entities.get(b).hurt(1, entities.get(i), entities.get(b));
+						if(entity1.getRect().collidesWithAtOffset(entity2.getRect(), entity1.getDirection(), 32, 12)) {
+							if(entity1 instanceof Player && entity2 instanceof Enemies && entity1.getState() == "ATTACK" && entity1.getFrame() == 1) {
+								entity2.hurt(1, entity1, entity2);
 							}
 						}
 					}
@@ -208,14 +211,15 @@ public abstract class GameMap {
 	}
 	public void printEntities() {
 		System.out.flush();
+		System.out.println("[");
 		for(Entity entity : entities)
 			System.out.println(entities.indexOf(entity)+". "+entity.getType().getName()+" "+entity.isDisabled()+" "+entity.getPos().x +" "+entity.getId());
+		System.out.println("]");
 	}
 	public void clearEntities() {
-		for(int i = 0; i < entities.size(); i++)
-			if(entities.get(i).isDisabled() && entities.get(i).isDestroyed()) {
-				entities.remove(i);
-			}
+		Player player = getHero();
+		entities.removeAll(entities);
+		entities.add(player);
 	}
 	
 	public void resize(int width, int height) {

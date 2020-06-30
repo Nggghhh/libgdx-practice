@@ -18,7 +18,6 @@ import com.mygdx.game.world.GameMap;
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	Camera camera;
-	GameManager gm;
 	GameMap gameMap;
 	ShaderProgram shader;
 	Input input;
@@ -32,7 +31,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		
 		camera = new Camera();
 		gameMap = new CustomGameMap();
-		gm = new GameManager(gameMap);
 		camera.init(batch, gameMap);
 	}
 
@@ -48,15 +46,13 @@ public class MyGdxGame extends ApplicationAdapter {
 		if(Gdx.input.isKeyJustPressed(Keys.DOWN))
 			gameMap.init("Menu");
 		
-		if(Gdx.input.isKeyJustPressed(Keys.K))
-			gm.printJson();
-		
 		camera.render(gameMap, deltaTime, batch);
 	}
 	
 	@Override
 	public void resize(int width, int height) {
 		gameMap.resize(width, height);
+		camera.resize();
 	}
 	
 	

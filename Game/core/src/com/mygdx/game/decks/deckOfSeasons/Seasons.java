@@ -1,5 +1,9 @@
 package com.mygdx.game.decks.deckOfSeasons;
 
+import java.util.HashMap;
+
+import com.mygdx.game.entities.EntityType;
+
 public enum Seasons {
 	SEASON_OF_AMBIGUITY("Season of ambiguity"),
 	SEASON_OF_BEGINNINGS("Season of beginnings"),
@@ -15,5 +19,17 @@ public enum Seasons {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public static Seasons getSeason(String name) {
+		return seasons.get(name);
+	}
+	
+	private static HashMap<String, Seasons> seasons;
+	
+	static {
+		seasons = new HashMap<String, Seasons>();
+		for(Seasons season : Seasons.values())
+			seasons.put(season.name, season);
 	}
 }

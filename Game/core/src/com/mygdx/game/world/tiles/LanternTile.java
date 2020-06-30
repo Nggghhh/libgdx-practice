@@ -28,6 +28,7 @@ public class LanternTile extends CustomTileType {
 		this.connectable = false;
 		this.visible = true;
 		this.replacable = true;
+		this.transparent = true;
 	}
 	
 	@Override
@@ -45,7 +46,7 @@ public class LanternTile extends CustomTileType {
 	public void light(CustomGameMap map) {
 		int originX = this.x/16;
 		int originY = this.y/16;
-		int playerLayer = map.getHero().getLayer();
+		int playerLayer = 0;
 		for(int i = 0; i<lightArray[0].length; i++) {
 			int newx = i+originX-lightArray[0].length/2;
 			for(int j = 0; j<lightArray.length; j++) {
@@ -72,7 +73,7 @@ public class LanternTile extends CustomTileType {
 	public void light3(int angle, CustomGameMap map) {
 		double originX = this.x+8;
 		double originY = this.y+8;
-		int playerLayer = map.getHero().getLayer();
+		int playerLayer = 0;
 		double newAngle = Math.toRadians(angle);
 		for(int len = 0; len<lightLen; len += 1) {
 			double x = originX + len;

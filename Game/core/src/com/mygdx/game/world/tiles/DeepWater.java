@@ -2,6 +2,7 @@ package com.mygdx.game.world.tiles;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.mygdx.game.tools.RandomNumGen;
 import com.mygdx.game.world.CustomGameMap;
 
 public class DeepWater extends AnimatedTile {
@@ -16,6 +17,8 @@ public class DeepWater extends AnimatedTile {
 		this.liquid = true;
 		this.startingFrame = 4;
 		this.level = 1;
+//		this.frameNum = RandomNumGen.getRandomNumberInRange(0, 3);
+		this.frameNum = 0;
 	}
 	
 	@Override

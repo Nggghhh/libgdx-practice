@@ -30,47 +30,25 @@ import com.mygdx.game.world.tiles.WoodWall;
 
 public class CustomGameMap extends GameMap {
 	String name;
-	int id;
+	String id;
 	Raycaster ray;
 	float[][][] map;
 	TileGridCell[][][] arrayOfCells;
 	protected DayAndNightCycles inGameTime;
 	private HUD hud;
 	private Vignette vignetteShader;
-	private TileTextureManager tileTextures;
-	private EntityAssetManager entityTextures;
 	private boolean update = false;
 	
-	private int mapNum = 0;
+	private int playerCoordsX = 0;
+	private int playerCoordsY = 0;
 
 	public CustomGameMap() {
-		CustomGameMapData data = CustomGameMapLoader.loadMap("bruhlands", mapNum);
-		this.id = data.id;
-		this.name = data.name;
-		this.map = data.map;
-		loadEntities(data.entities);
 		inGameTime = new DayAndNightCycles();
 		hud = new HUD();
 		vignetteShader = new Vignette("default", "default");
-		tileTextures = new TileTextureManager();
-		entityTextures = new EntityAssetManager();
-		this.arrayOfCells = new TileGridCell[map.length][map[0].length][map[0][0].length];
-		for(int row = 0; row < map.length; row++) {
-			for(int col = 0; col < map[row].length; col++) {
-				System.out.print((int)map[row][col][1]+" ");
-			}
-			System.out.println();
-		}
-
-		for(int col = 0; col < map.length; col++)
-			for(int row = 0; row < map[col].length; row++)
-				for(int layer = 0; layer < map[col][row].length; layer++) {
-					arrayOfCells[row][col][layer] = new TileGridCell(this, row, col, layer, (int)map[row][col][layer]);
-				}
-		updateTiles();
-		plants();
-		
 		ray = new Raycaster();
+		load();
+		save();
 	}
 
 	@Override
@@ -78,26 +56,18 @@ public class CustomGameMap extends GameMap {
 		batch.setProjectionMatrix(camera.getCamera().combined);
 		batch.begin();
 		
-		if(getHero() != null) {
-			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
-			batch.setShader(vignetteShader.getShader());
-		}
+//		if(getHero() != null) {
+//			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
+//			batch.setShader(vignetteShader.getShader());
+//		}
 		
 		
 		int mapLeftBorder = (int) camera.getLeftB()/16;
 		int mapRightBorder = (int) camera.getRightB()/16;
 		int mapTopBorder = (int) camera.getTopB()/16;
 		int mapBottomBorder = (int) camera.getBottomB()/16;
-		int playerLayer;
-		int roofLayer;
-		if(getHero() != null) {
-			playerLayer = getHero().getLayer();
-			roofLayer = getHero().getLayer()+2;
-		}
-		else {
-			playerLayer = 0;
-			roofLayer = 2;
-		}
+		int playerLayer = 0;
+		int roofLayer = 5;
 			
 		
 		if(!update) {
@@ -105,11 +75,19 @@ public class CustomGameMap extends GameMap {
 			update = true;
 		}
 		
-		for(int layer = playerLayer; layer < roofLayer; layer++) {
+//		System.out.println(Gdx.graphics.getFramesPerSecond());
+		
+		for(int layer = playerLayer; layer < roofLayer-3; layer++) {
 			for(int col = mapTopBorder; col > mapBottomBorder-1; col--) {
 				for(int row = mapRightBorder; row > mapLeftBorder-1; row--) {
 					if(arrayOfCells[row][col][layer].tile != null && arrayOfCells[row][col][layer].tile.isVisible()) {
-						arrayOfCells[row][col][layer].render(batch);
+						TileGridCell ground = arrayOfCells[row][col][0];
+						TileGridCell rock =  arrayOfCells[row][col][1];
+						
+						if(rock.tile.getId() == 0 || rock.tile.isTransparent()) {
+							ground.render(batch);
+						}
+						rock.render(batch);
 					}
 				}
 			}
@@ -119,12 +97,12 @@ public class CustomGameMap extends GameMap {
 		batch.setShader(null);
 		
 		if(getHero() != null)
-			hud.render(this.getHero().getHealth(), batch, camera, inGameTime.getHours(), inGameTime.getMoonPhase());
+			hud.render(this.getHero().getHealth(), batch, camera, inGameTime.getTimeInHours(), inGameTime.getMoonPhase());
 		batch.end();
 	}
 	
 	public void updateLight(int playerLayer, int roofLayer) {
-		for(int layer = playerLayer; layer < roofLayer+1; layer++) {
+		for(int layer = playerLayer; layer < roofLayer; layer++) {
 			for(int row = getWidth()-1; row > -1; row--) {
 				for(int col = getHeight()-1; col > -1; col--) {
 					if(arrayOfCells[row][col][layer].tile != null && arrayOfCells[row][col][layer].tile.isVisible()) {
@@ -136,7 +114,7 @@ public class CustomGameMap extends GameMap {
 				}
 			}
 		}
-		for(int layer = playerLayer; layer < roofLayer+1; layer++) {
+		for(int layer = playerLayer; layer < roofLayer; layer++) {
 			for(int row = getWidth()-1; row > -1; row--) {
 				for(int col = getHeight()-1; col > -1; col--) {
 					if(arrayOfCells[row][col][layer].tile != null && arrayOfCells[row][col][layer].tile.isVisible()) {
@@ -158,16 +136,59 @@ public class CustomGameMap extends GameMap {
 	public void update (Camera camera, float delta) {
 		inGameTime.timePasses(this, delta);
 		
-		if(Gdx.input.isKeyJustPressed(Keys.H)) {
-			changeMap();
+		for(int layer = 0; layer<2; layer++) {
+			for(int col = 0; col < map.length; col++) {
+				for(int row = 0; row < map[0].length; row++) {
+					if(arrayOfCells[row][col][layer].tile != null) {
+						arrayOfCells[row][col][layer].tile.timer();
+					}
+				}
+			}
 		}
+		
+		if(Gdx.input.isKeyJustPressed(Keys.H)) {
+			save();
+		}
+		if((int) getHero().getX()/16 == 0) {
+			playerCoordsX--;
+			float newY = getHero().getPos().y;
+			float newX = getHero().getPos().x = getPixelWidth()-32;
+			changeMap(playerCoordsX, playerCoordsY, newX, newY);
+		}
+		else if((int) (getHero().getX()+getHero().getWidth())/16 == getWidth()-1) {
+			playerCoordsX++;
+			float newY = getHero().getPos().y;
+			float newX = getHero().getPos().x = 16;
+			changeMap(playerCoordsX, playerCoordsY, newX, newY);
+		}
+		else if((int) getHero().getY()/16 == 0) {
+			playerCoordsY--;
+			float newY = getHero().getPos().y = getPixelHeight()-32;
+			float newX = getHero().getPos().x;
+			changeMap(playerCoordsX, playerCoordsY, newX, newY);
+		}
+		else if((int) (getHero().getY()+getHero().getHeight())/16 == getHeight()-1) {
+			playerCoordsY++;
+			float newY = getHero().getPos().y = 16;
+			float newX = getHero().getPos().x;
+			changeMap(playerCoordsX, playerCoordsY, newX, newY);
+		}
+		
 		int row = (int) Unprojecter.getMouseCoords(camera.getCamera()).x/16;
 		int col = (int) Unprojecter.getMouseCoords(camera.getCamera()).y/16;
 
 		if(Gdx.input.justTouched()) {
-			if(arrayOfCells[row][col][1].tile.getId() == 0) {
-				arrayOfCells[row][col][1].tileChange(new LanternTile(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
-			}
+			EntitySnapshot crab = new EntitySnapshot();
+			crab.x = row*16;
+			crab.y = col*16;
+			crab.type = "SAND_CRAB";
+			crab.HEALTH = 6;
+			Entity entity = EntityType.createEntityUsingSnapshot(crab, this);
+			entities.add(entity);
+			
+//			if(arrayOfCells[row][col][1].tile.getId() == 0) {
+//				arrayOfCells[row][col][1].tileChange(new LanternTile(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
+//			}
 //			if(arrayOfCells[row][col][1].tile.getId() == 0  && !Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
 //				arrayOfCells[row][col][1].tileChange(new WoodWall(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
 //			if(arrayOfCells[row][col][0].tile.isReplacable() && Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
@@ -179,14 +200,61 @@ public class CustomGameMap extends GameMap {
 		
 
 	}
+	
+	public void movePlayer() {
+		
+	}
 
 	public void save() {
 		for(int col = 0; col < map.length; col++)
 			for(int row = 0; row < map[col].length; row++)
 				for(int layer = 0; layer < map[col][row].length; layer++)
 					map[row][col][layer] = arrayOfCells[row][col][layer].id;
-
-		CustomGameMapLoader.saveMap(this.name, this.id, map);
+		
+		GlobalDataSnapshot data = getSaveSnapshot();
+		CustomGameMapLoader.saveMap(this.name, this.id, map, entities, data);
+	}
+	
+	public void load() {
+		GlobalDataSnapshot dataSnapshot = CustomGameMapLoader.loadGlobalData();
+		loadGlobalData(dataSnapshot);
+		CustomGameMapData data = CustomGameMapLoader.loadMap("bruhlands", "X"+playerCoordsX+"Y"+playerCoordsY, dataSnapshot);
+		this.id = data.id;
+		this.name = data.name;
+		this.map = data.map;
+		loadPlayer(CustomGameMapLoader.loadPlayer());
+		loadEntities(data.entities);
+		this.arrayOfCells = new TileGridCell[map.length][map[0].length][map[0][0].length];
+		for(int col = 0; col < map.length; col++)
+			for(int row = 0; row < map[col].length; row++)
+				for(int layer = 0; layer < map[col][row].length; layer++) {
+					arrayOfCells[row][col][layer] = new TileGridCell(this, row, col, layer, (int)map[row][col][layer]);
+				}
+		inGameTime.updateLight(this);
+		updateTiles();
+		plants();
+	}
+	
+	public GlobalDataSnapshot getSaveSnapshot() {
+		GlobalDataSnapshot data = new GlobalDataSnapshot();
+		data.timeInMinutes = inGameTime.getTimeInMinutes();
+		data.timeInHours = inGameTime.getTimeInHours();
+		data.date = inGameTime.getDate();
+		data.currentSeason = inGameTime.getCurrentSeason().getName();
+		data.moonPhase = inGameTime.getMoonPhase();
+		data.x = playerCoordsX;
+		data.y = playerCoordsY;
+		
+		return data;
+	}
+	
+	public void loadGlobalData(GlobalDataSnapshot data) {
+		inGameTime.setTimeInMinutes(data.timeInMinutes);
+		inGameTime.setTimeInHours(data.timeInHours);
+		inGameTime.setDate(data.date);
+		inGameTime.setMoonPhase(data.moonPhase);
+		playerCoordsX = data.x;
+		playerCoordsY = data.y;
 	}
 	
 	public void updateTiles() {
@@ -251,52 +319,38 @@ public class CustomGameMap extends GameMap {
 				for(int layer = 0; layer < map[col][row].length; layer++) {
 					TileGridCell cell = arrayOfCells[row][col][layer];
 					//flowers, empty grass, dark and highlighted grass
-					if(cell.id == 4 && cell.tile.getVar() == 1) {
-						int random = RandomNumGen.getRandomNumberInRange(17, 21);
-						if(random == 21)
-							cell.tile.setVar(1);
-						else
-							cell.tile.setVar(random);
-					}
+					cell.tile.diverce();
 					//sea stars
-					if(cell.id == 3 && cell.tile.getVar() == 1) {
-						int random = RandomNumGen.getRandomNumberInRange(0, 40);
-						if(random == 0)
-							cell.tile.setVar(16);
-						if(random == 1)
-							cell.tile.setVar(17);
-					}
-					//trees
-//					if(cell.id == 4) {
-//						int random = RandomNumGen.getRandomNumberInRange(0, 40);
-//						if(random == 40)
-//							entities.add(new TreeEntity(cell.x+8, cell.y+8, EntityType.BUSH, this, 10));
-//						else if(random == 39)
-//							entities.add(new SmallBush(cell.x+8, cell.y+8, EntityType.SMALL_BUSH, this, 10));
-//					}
 				}
 			}
 						
 	}
 	
 	public void loadEntities(EntitySnapshot[] snapshots) {
-		for(EntitySnapshot snapshot : snapshots) {
-			if(snapshot != null)
-			entities.add(EntityType.createEntityUsingSnapshot(snapshot, this));
-		}
+		if(snapshots != null)
+			for(EntitySnapshot snapshot : snapshots) {
+				if(snapshot != null)
+				entities.add(EntityType.createEntityUsingSnapshot(snapshot, this));
+				snapshot = null;
+			}
 	}
 	
-	public void changeMap() {
+	public void loadPlayer(EntitySnapshot snapshot) {
+		if(snapshot != null)
+			entities.add(EntityType.createEntityUsingSnapshot(snapshot, this));
+	}
+	
+	public void changeMap(int x, int y, float playerNewX, float playerNewY) {
 		save();
 		this.mapIsLoading = true;
 		clearEntities();
-//		tilesDispose();
-		mapNum++;
-		CustomGameMapData data = CustomGameMapLoader.loadMap("bruhlands", mapNum);
+		GlobalDataSnapshot dataSnapshot = getSaveSnapshot();
+		CustomGameMapData data = CustomGameMapLoader.loadMap("bruhlands", "X"+playerCoordsX+"Y"+playerCoordsY, dataSnapshot);
 		id = data.id;
 		name = data.name;
 		map = data.map;
 		loadEntities(data.entities);
+		getHero().setPos(playerNewX, playerNewY);
 		for(int col = 0; col < map.length; col++)
 			for(int row = 0; row < map[col].length; row++)
 				for(int layer = 0; layer < map[col][row].length; layer++) {
@@ -308,6 +362,7 @@ public class CustomGameMap extends GameMap {
 		updateLight(0, 2);
 		plants();
 		this.mapIsLoading = false;
+		save();
 	}
 	
 	public void tilesDispose() {

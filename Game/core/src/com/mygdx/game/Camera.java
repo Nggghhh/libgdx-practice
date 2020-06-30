@@ -29,7 +29,6 @@ public class Camera {
 	}
 	
 	public void render(GameMap gameMap, float deltaTime, SpriteBatch batch) {
-		camera.setToOrtho(false, Gdx.graphics.getWidth()*0.5f, Gdx.graphics.getHeight()*0.5f);
 		if(gameMap.getHero() != null) {
 			camera.position.y = gameMap.getHero().getY();
 			camera.position.x = gameMap.getHero().getX();
@@ -121,6 +120,10 @@ public class Camera {
 //		sh.line(gameMap.getHero().getX(), gameMap.getHero().getY()+gameMap.getHero().getHeight(), gameMap.getHero().getX(), gameMap.getHero().getY());
 //		sh.line(gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY()+gameMap.getHero().getHeight(), gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY());
 //		sh.end();
+	}
+	
+	public void resize() {
+		camera.setToOrtho(false, Gdx.graphics.getWidth()*0.5f, Gdx.graphics.getHeight()*0.5f);
 	}
 	
 	public void dispose() {

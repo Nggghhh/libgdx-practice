@@ -9,27 +9,23 @@ import com.mygdx.game.items.WoodPlanks;
 import com.mygdx.game.world.CustomGameMap;
 import com.mygdx.game.world.GameMap;;
 
-@SuppressWarnings("rawtypes")
 public enum EntityType {
 //	DAGGER("DAGGER", Dagger.class, 8, 3, 32, 3, 4, 0.5f),
 //	SHORT_SWORD("SWORD", ShortSword.class, 8, 3, 32, 3, 4, 0.8f),
 //	RUBY("RUBY", 8, 3, 32, 3, 4, 0.2f),
+	WOODPLANK("WOODPLANK", WoodPlanks.class, 8, 16, 32, 0, 0, 1f),
+	BIG_TREE("BIG_TREE", BigTreeEntity.class, 10, 6, 6, 24, 3, 1f),
 	BUSH("BUSH", TreeEntity.class, 10, 13, 8, 10, 2, 1.0f),
 	SMALL_BUSH("SMALL_BUSH", SmallBush.class, 8, 4, 4, 4, 2, 1.0f),
-	WOODPLANK("WOODPLANK", WoodPlanks.class, 8, 16, 32, 0, 0, 1f),
-	
-//	FIREBALL("FIEBALL", 8, 3, 4, 3, 4, 1.0f),
-	
 	PLAYER("PLAYER", Player.class, 8, 4, 6, 13, 3, 0.5f),
-//	PLAYER("PLAYER", 8, 6, 6, 28, 12, 0.5f),
-	GOBLIN("GOBLIN", Goblin.class, 8, 6, 2, 28, 12, 0.5f);
+	SAND_CRAB("SAND_CRAB", SandCrab.class, 8, 4, 6, 13, 3, 0.5f);
 	
-	private Class loaderClass;
+	private Class<? extends Entity> loaderClass;
 	private String name;
 	private int width, height, health, pivotPointX, pivotPointY;
 	float weight;
 	
-	private EntityType(String name, Class loaderClass, int width, int height, int health, int x, int y, float weight) {
+	private EntityType(String name, Class<? extends Entity> loaderClass, int width, int height, int health, int x, int y, float weight) {
 		this.name = name;
 		this.loaderClass = loaderClass;
 		this.width = width;
@@ -69,11 +65,10 @@ public enum EntityType {
 	}
 	
 	public static Entity createEntityUsingSnapshot (EntitySnapshot eS, CustomGameMap map) {
+		System.out.println(eS);
 		EntityType type = entityTypes.get(eS.type);
 		if(type != null) {
-			System.out.println(type.loaderClass);
 			try {
-				@SuppressWarnings("unchecked")
 				Entity entity = ClassReflection.newInstance(type.loaderClass);
 				entity.create(eS, type, map);
 				return entity;

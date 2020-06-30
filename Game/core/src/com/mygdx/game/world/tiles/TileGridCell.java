@@ -31,14 +31,14 @@ public class TileGridCell {
 		if(this.tile != null)
 			this.tile = null;
 		
-		if(this.id == 36)
-			tile = new BigTreeTile(this.x, this.y, map);
-		if(this.id == 35)
-			tile = new SmallBushTile(this.x, this.y, map);
-		if(this.id == 34)
-			tile = new LanternTile(this.x, this.y, map);
-		if(this.id == 33)
-			tile = new TreeTile(this.x, this.y, map);
+		if(this.id == 37)
+			tile = new Stars(this.x, this.y, map);
+		if(this.id == 12)
+			tile = new LimestoneBrickFloor(this.x, this.y, map);
+		if(this.id == 11)
+			tile = new Limestone(this.x, this.y, map);
+		if(this.id == 10)
+			tile = new RedGrass(this.x, this.y, map);
 		if(this.id == 7)
 			tile = new WoodFloor(this.x, this.y, map);
 		if(this.id == 6)

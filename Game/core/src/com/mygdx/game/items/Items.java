@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Camera;
 import com.mygdx.game.entities.Entity;
+import com.mygdx.game.entities.EntitySnapshot;
 import com.mygdx.game.entities.EntityType;
 import com.mygdx.game.entities.animations.EntityAssetManager;
 import com.mygdx.game.tools.CollisionRect;
@@ -16,6 +17,10 @@ import com.mygdx.game.world.GameMap;
 public abstract class Items extends Entity {
 	protected int frameRow;
 	protected boolean consumable = false;
+	
+	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
+		super.create(snapshot, type, map);
+	}
 	
 	public abstract void action(CustomGameMap map, Entity actor, Inventory actorsInventory, OrthographicCamera camera);
 	

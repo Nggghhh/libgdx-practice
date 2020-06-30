@@ -10,12 +10,10 @@ import com.mygdx.game.world.GameMap;
 
 public abstract class LivingEntity extends Entity {
 	
-	protected final float RECOVERY_TIME = 0.7f;
-	protected transient float remainingRecoveryTime;
-	
 	protected transient boolean dash = false;
 	protected transient boolean attack = false;
 	protected transient boolean isMoving = false;
+	protected EntityFactions faction;
 
 	@Override
 	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
@@ -38,6 +36,7 @@ public abstract class LivingEntity extends Entity {
 		float newY = pos.y;
 		newY += this.velocity.y*deltaTime;
 		//check if collision with solid tile on Y axis occurred
+		
 		if(map.doesRectCollideWithMap(newX, pos.y, getWidth(), getHeight())) {
 			this.pos.x = (float) Math.floor(pos.x);
 			this.velocity.x = 0;
@@ -45,8 +44,7 @@ public abstract class LivingEntity extends Entity {
 		else {
 			this.pos.x = newX;
 		}
-
-		//check if collision with solid tile on X axis occurred
+		
 		if(map.doesRectCollideWithMap(pos.x, newY, getWidth(), getHeight())) {
 			this.pos.y = (float) Math.floor(pos.y);
 			this.velocity.y = 0;
@@ -54,25 +52,17 @@ public abstract class LivingEntity extends Entity {
 		else {
 			this.pos.y = newY;
 		}
-
+		
+		if(angle < 225 && angle > 135)
+			direction = 2;
+		else if(angle < 315 && angle > 225)
+			direction = 4;
+		else if((angle <= 360 && angle > 315) || (angle >= 0 && angle < 45))
+			direction = 1;
+		else if(angle < 180 && angle > 45)
+			direction = 3;
 		//linear damping, adding drag to object velocity
 		timer(deltaTime);		
-	}
-	
-	public void livingState(OrthographicCamera camera, float deltaTime, GameMap map) {
-		//after recovery time is ended, reset back to idling state
-		if(remainingRecoveryTime > 0)
-			remainingRecoveryTime -= deltaTime;
-		else if(remainingRecoveryTime < 0)
-			remainingRecoveryTime = 0;
-		
-		//destroy after flinch animation is ended
-		if(this.HEALTH == 0 && this.state != "HURT") {
-			this.destroy = true;
-		}
-		
-		else if(remainingRecoveryTime < RECOVERY_TIME/2 && this.state == "HURT")
-			changeState("IDLE", true, 1, 2);
 	}
 	
 	//flinch and receive damage method
@@ -103,6 +93,24 @@ public abstract class LivingEntity extends Entity {
 		}
 		else
 			changeState("IDLE", true, 1, 2);
+	}
+	
+	protected void move(int angleToTransform, int speed, float delta) {
+		double angle = Math.toRadians(angleToTransform-225);
+		float newX = (float) (Math.cos(angle) - Math.sin(angle));
+		float newY = (float) (Math.sin(angle) + Math.cos(angle));
+		if(velocity.x != speed*newX)
+			velocity.x =+ speed*newX;
+		if(velocity.y != speed*newY)
+			velocity.y =+ speed*newY;
+	}
+	
+	protected float calculateAngle(float x, float y) {
+		float vecX = x-pos.x;
+		float vecY = y-pos.y;
+		float angle = (float) ((float) Math.atan2(vecY, vecX)*(180/Math.PI));
+		System.out.println(angle+180);
+		return angle+180;
 	}
 	//dash method, revision needed
 	public void dash (float velocity, int direction) {
