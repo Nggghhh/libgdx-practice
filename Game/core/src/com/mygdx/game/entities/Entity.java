@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.world.GameMap;
 import com.mygdx.game.world.TileType;
+import com.mygdx.game.world.tiles.CustomTileType;
 import com.mygdx.game.entities.animations.EntityAssetManager;
 import com.mygdx.game.items.Inventory;
 import com.mygdx.game.tools.CollisionRect;
@@ -30,6 +31,8 @@ public abstract class Entity {
 	protected int textureHeight = 64;
 	protected int textureWidth = 64;
 	
+	protected int SPEED = 0;
+	
 	protected transient SoundManager sound;
 	
 	protected EntityType type;
@@ -49,14 +52,13 @@ public abstract class Entity {
 	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
 		float x = snapshot.getX();
 		float y = snapshot.getY();
-		int HEALTH = snapshot.HEALTH;
-		int layer = snapshot.layer;
+		this.HEALTH = snapshot.HEALTH;;
 		this.pos = new Vector2(x, y);
 		this.velocity = new Vector2(0, 0);
 		this.type = type;
 		this.map = map;
 		this.rect = new CollisionRect(x,y, type.getWidth(), type.getHeight(), true);
-		this.HEALTH = HEALTH;
+		this.SPEED = type.getSpeed();
 	}
 
 	//breakpoint
@@ -86,6 +88,8 @@ public abstract class Entity {
 			remainingRecoveryTime = 0;
 			changeState("IDLE", true, 1, 2);
 		}
+		
+		checkIfSwimming();
 	}
 	
 	public abstract void hurt(int damage, Entity hitter, Entity receiver);
@@ -110,6 +114,22 @@ public abstract class Entity {
 	public abstract void render (SpriteBatch batch, OrthographicCamera camera);
 	
 	public abstract void recreate (int x, int y, int health);
+	
+	public void swimming() {
+		System.out.println(this.type.getName() + " is swimming");
+	}
+	
+	public void checkIfSwimming() {
+		CustomTileType tileBelow1 = map.getTileTypeByLocation(0, this.getX(), this.getY()).tile;
+		CustomTileType tileBelow2 = map.getTileTypeByLocation(0, this.getX()+this.getWidth(), this.getY()+this.getHeight()).tile;
+		if(tileBelow1.isLiquid() && tileBelow2.isLiquid()) {
+			swimming();
+			this.SPEED = type.getSwimmingSpeed();
+		}
+		else {
+			this.SPEED = type.getSpeed();
+		}
+	}
 	
 	protected boolean loop = true;
 	protected int frameNum = 0;
@@ -147,16 +167,21 @@ public abstract class Entity {
 	public void animationPlay(SpriteBatch batch) {
 		try {
 			TextureRegion texture = EntityAssetManager.getTexture(this.type+"/"+this.state, frameNum, direction-1);
-			textureHeight = texture.getRegionHeight();
-			textureWidth = texture.getRegionWidth();
 			if(texture != null) {
+				textureHeight = texture.getRegionHeight();
+				textureWidth = texture.getRegionWidth();
+				int entityHalfWidth = this.getWidth()/2;
+				int entityHalfHeight = this.getHeight()/2;
 				batch.setColor(r,g,b,1.0f);
-				batch.draw(texture, pos.x-type.getPivotX(), pos.y-type.getPivotY());
+				batch.draw(texture, pos.x+entityHalfWidth-textureWidth/2, pos.y-entityHalfHeight);
 				batch.setColor(1.0f,1.0f,1.0f,1.0f);
+			} else {
+				batch.draw(EntityAssetManager.getError(), pos.x-type.getPivotX(), pos.y-type.getPivotY());
 			}
 		}
 		catch(IndexOutOfBoundsException e) {
 			System.out.println(this.type+"/"+this.state);
+			batch.draw(EntityAssetManager.getError(), pos.x-type.getPivotX(), pos.y-type.getPivotY());
 		}
 	}
 	public void changeState(String newState, boolean loop, int animLen, int animSpeed) {

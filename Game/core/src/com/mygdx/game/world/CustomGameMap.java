@@ -56,10 +56,10 @@ public class CustomGameMap extends GameMap {
 		batch.setProjectionMatrix(camera.getCamera().combined);
 		batch.begin();
 		
-//		if(getHero() != null) {
-//			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
-//			batch.setShader(vignetteShader.getShader());
-//		}
+		if(getHero() != null) {
+			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
+			batch.setShader(vignetteShader.getShader());
+		}
 		
 		
 		int mapLeftBorder = (int) camera.getLeftB()/16;
@@ -178,17 +178,17 @@ public class CustomGameMap extends GameMap {
 		int col = (int) Unprojecter.getMouseCoords(camera.getCamera()).y/16;
 
 		if(Gdx.input.justTouched()) {
-			EntitySnapshot crab = new EntitySnapshot();
-			crab.x = row*16;
-			crab.y = col*16;
-			crab.type = "SAND_CRAB";
-			crab.HEALTH = 6;
-			Entity entity = EntityType.createEntityUsingSnapshot(crab, this);
-			entities.add(entity);
+//			EntitySnapshot crab = new EntitySnapshot();
+//			crab.x = row*16;
+//			crab.y = col*16;
+//			crab.type = "SAND_CRAB";
+//			crab.HEALTH = 6;
+//			Entity entity = EntityType.createEntityUsingSnapshot(crab, this);
+//			entities.add(entity);
 			
-//			if(arrayOfCells[row][col][1].tile.getId() == 0) {
-//				arrayOfCells[row][col][1].tileChange(new LanternTile(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
-//			}
+			if(arrayOfCells[row][col][1].tile.getId() == 0 && arrayOfCells[row][col][0].tile.getGroup() != "water") {
+				arrayOfCells[row][col][1].tileChange(new LanternTile(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
+			}
 //			if(arrayOfCells[row][col][1].tile.getId() == 0  && !Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
 //				arrayOfCells[row][col][1].tileChange(new WoodWall(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
 //			if(arrayOfCells[row][col][0].tile.isReplacable() && Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))

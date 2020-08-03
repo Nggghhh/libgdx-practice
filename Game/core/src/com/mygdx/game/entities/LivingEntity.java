@@ -29,6 +29,16 @@ public abstract class LivingEntity extends Entity {
 	public void update(OrthographicCamera camera, float deltaTime, GameMap map) {
 		//apply velocity on X axis
 		super.update(camera, deltaTime, map);
+		adjustAngle();
+		checkForCollisions(deltaTime);
+		linearDamping(deltaTime);		
+	}
+	
+	public void addHealth(int amount) {
+		this.HEALTH += amount;
+	}
+	
+	public void checkForCollisions(float deltaTime) {
 		float newX = pos.x;
 		newX += this.velocity.x*deltaTime;
 
@@ -52,7 +62,10 @@ public abstract class LivingEntity extends Entity {
 		else {
 			this.pos.y = newY;
 		}
-		
+	}
+	
+	//flinch and receive damage method
+	public void adjustAngle() {
 		if(angle < 225 && angle > 135)
 			direction = 2;
 		else if(angle < 315 && angle > 225)
@@ -61,11 +74,8 @@ public abstract class LivingEntity extends Entity {
 			direction = 1;
 		else if(angle < 180 && angle > 45)
 			direction = 3;
-		//linear damping, adding drag to object velocity
-		timer(deltaTime);		
 	}
 	
-	//flinch and receive damage method
 	@Override
 	public void hurt (int damage, Entity hitter, Entity receiver) {
 		if(this.remainingRecoveryTime == 0) {
@@ -109,7 +119,6 @@ public abstract class LivingEntity extends Entity {
 		float vecX = x-pos.x;
 		float vecY = y-pos.y;
 		float angle = (float) ((float) Math.atan2(vecY, vecX)*(180/Math.PI));
-		System.out.println(angle+180);
 		return angle+180;
 	}
 	//dash method, revision needed
@@ -138,8 +147,8 @@ public abstract class LivingEntity extends Entity {
 		this.velocity.y = (this.pos.y-y)*ratio*100;
 	}
 	
-	//linear damping, adding drag to object velocity
-	public void timer(float deltaTime) {
+	//adding drag to object velocity
+	public void linearDamping(float deltaTime) {
 		velocity.scl(1 - (slippery * deltaTime*2));
 	}
 	

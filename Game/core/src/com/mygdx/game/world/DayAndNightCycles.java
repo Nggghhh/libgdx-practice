@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.decks.deckOfSeasons.Seasons;
 
 public class DayAndNightCycles {
-	private float timeInMinutes = 0;
-	private float timeInHours = 1;
+	private float timeInMinutes = 700;
+	private float timeInHours = 0;
 	private int pastHour = 23;
 	private int[] date = {1, 1, 500};
 	private int timeAcceleration = 1;

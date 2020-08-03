@@ -19,7 +19,6 @@ import com.mygdx.game.world.GameMap;
 import com.mygdx.game.world.TileType;
 
 public class Player extends LivingEntity {
-	private static int SPEED = 80;
 	private static int DASH_VELOCITY = 400;
 	private int MAX_HEALTH = 6;
 	private Inventory playerInventory;
@@ -57,35 +56,42 @@ public class Player extends LivingEntity {
 		playerInventory.collectInput(map);
 		
 		//walk
-		if(this.state != "HURT" && this.state != "DASH" && this.state.charAt(0) != 'A') {
-			if(Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.W)) {
-				changeState("MOVE", true, 7, 6);
-				if(Gdx.input.isKeyPressed(Keys.W)) {
-					angle = 270;
-				}
-				else if(Gdx.input.isKeyPressed(Keys.A)) {
-					angle = 360;
-				}
-				else if(Gdx.input.isKeyPressed(Keys.S)) {
-					angle = 90;
-				}
-				else if(Gdx.input.isKeyPressed(Keys.D)) {
-					angle = 180;
-				}
-				move(angle, SPEED, deltaTime);
+//		if(this.state != "HURT" && this.state != "DASH" && this.state.charAt(0) != 'A') {
+//			if(Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.W)) {
+//				changeState("MOVE", true, 7, 6);
 //				if(Gdx.input.isKeyPressed(Keys.W)) {
-//					angle = (int) calculateAngle(Unprojecter.getMouseCoords(camera).x, Unprojecter.getMouseCoords(camera).y);
-//					move(angle, SPEED, deltaTime);
+//					angle = 270;
 //				}
+//				else if(Gdx.input.isKeyPressed(Keys.A)) {
+//					angle = 360;
+//				}
+//				else if(Gdx.input.isKeyPressed(Keys.S)) {
+//					angle = 90;
+//				}
+//				else if(Gdx.input.isKeyPressed(Keys.D)) {
+//					angle = 180;
+//				}
+//				move(angle, SPEED, deltaTime);
+//			}
+//			else {
+//				changeState("IDLE", true, 1, 2);
+//			}
+//		}
+		
+		if(this.state != "HURT" && this.state != "DASH" && this.state.charAt(0) != 'A') {
+			if(Gdx.input.isKeyPressed(Keys.W)) {
+				changeState("MOVE", true, 7, 6);
+				angle = (int) calculateAngle(Unprojecter.getMouseCoords(camera).x, Unprojecter.getMouseCoords(camera).y);
+				move(angle, SPEED, deltaTime);
 			}
 			else {
 				changeState("IDLE", true, 1, 2);
 			}
 		}
 
-		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) {
-			strafe(-7f, camera);
-		}
+//		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) {
+//			strafe(-7f, camera);
+//		}
 
 		if(Gdx.input.justTouched() && this.state != "ATTACK" && this.previousState != "HURT") {
 			if(playerInventory.getItemList()[0] != null) {
@@ -97,14 +103,10 @@ public class Player extends LivingEntity {
 		if(weapon != null)
 			weapon.update(this, map);
 		
-		if(this.state == "ATTACK")
-			attack(1, this, 60, "physical");
-		
 	}
 	
 	@Override
 	public void render(SpriteBatch batch, OrthographicCamera camera) {
-		batch.draw(EntityAssetManager.getShadow(), pos.x-3, pos.y-1, 11, 3);
 		animationPlay(batch);
 	}
 	
@@ -161,5 +163,13 @@ public class Player extends LivingEntity {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void addHealth(int amount) {
+		if(this.HEALTH+amount > this.MAX_HEALTH) 
+			this.HEALTH = this.MAX_HEALTH;
+		else
+			this.HEALTH += amount;
 	}
 }

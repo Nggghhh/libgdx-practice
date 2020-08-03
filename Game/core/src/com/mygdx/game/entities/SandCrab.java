@@ -24,12 +24,16 @@ public class SandCrab extends AIEntities {
 	public void findDestination(CustomGameMap map) {
 		Player player = map.getHero();
 		this.destination = player.getPos();
-		System.out.println("destination");
+	}
+	
+	@Override
+	public void move(int angleToTransform, int speed, float delta) {
+		super.move(angleToTransform, speed, delta);
+		changeState("MOVE", true, 6, 7);
 	}
 	
 	@Override
 	public void render(SpriteBatch batch, OrthographicCamera camera) {
-		batch.draw(EntityAssetManager.getShadow(), pos.x-3, pos.y-1, 11, 3);
 		animationPlay(batch);
 	}
 

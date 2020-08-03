@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class EntityAssetManager {
 	private static HashMap<String,TextureRegion[][]> textures;
-	private static Texture smallShadow = new Texture("ENTITIES_MISC/SHADOWS/SHADOW.png");
 	static {
 		textures = new HashMap<String,TextureRegion[][]>();
+		textures.put("ERROR", TextureRegion.split(new Texture("NOTEXTURE.png"), 16, 16));
 		textures.put("PLAYER/IDLE", TextureRegion.split(new Texture("PLAYER/IDLE/IDLE2.png"), 32, 32));
 		textures.put("PLAYER/MOVE", TextureRegion.split(new Texture("PLAYER/MOVE/MOVE.png"), 32, 32));
 //		textures.put("PLAYER/IDLE", TextureRegion.split(new Texture("PLAYER/IDLE/IDLE.png"), 64, 64));
@@ -47,7 +47,7 @@ public class EntityAssetManager {
 		return null;
 	}
 	
-	public static Texture getShadow() {
-		return smallShadow;
+	public static TextureRegion getError() {
+		return textures.get("ERROR")[0][0];
 	}
 }

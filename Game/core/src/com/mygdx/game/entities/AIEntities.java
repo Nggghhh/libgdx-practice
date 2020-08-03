@@ -8,8 +8,6 @@ import com.mygdx.game.world.CustomGameMap;
 import com.mygdx.game.world.GameMap;
 
 public abstract class AIEntities extends LivingEntity {
-	protected int SPEED = 20;
-	protected int RUN_SPEED = 40;
 	protected float FOV;
 	protected Vector2 destination;
 	protected Behavior behavior = Behavior.AGRESSIVE;
