@@ -48,7 +48,7 @@ public class DayAndNightCycles {
 //		System.out.println((int) timeInMinutes);
 	}
 	
-	public void updateLight(CustomGameMap map) {
+	public void updateLight(CustomGameMap map) { //REPLACE WITH SWITCH-CASE
 		if(timeInHours > 21 || timeInHours < 4) {
 			ambientLight.set(0.05f, 0.05f, 0.1f);
 			map.setUpdate(false);
