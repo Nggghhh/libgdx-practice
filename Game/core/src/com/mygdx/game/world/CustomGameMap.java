@@ -56,10 +56,10 @@ public class CustomGameMap extends GameMap {
 		batch.setProjectionMatrix(camera.getCamera().combined);
 		batch.begin();
 		
-		if(getHero() != null) {
-			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
-			batch.setShader(vignetteShader.getShader());
-		}
+//		if(getHero() != null) {
+//			vignetteShader.bindToWorldObject(this.getHero().getX(), this.getHero().getY(), camera);
+//			batch.setShader(vignetteShader.getShader());
+//		}
 		
 		
 		int mapLeftBorder = (int) camera.getLeftB()/16;

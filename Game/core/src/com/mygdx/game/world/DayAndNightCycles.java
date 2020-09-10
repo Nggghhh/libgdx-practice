@@ -10,7 +10,7 @@ public class DayAndNightCycles {
 	private float timeInHours = 0;
 	private int pastHour = 23;
 	private int[] date = {1, 1, 500};
-	private int timeAcceleration = 70;
+	private int timeAcceleration = 45;
 	private Seasons pastSeason;
 	private Seasons currentSeason;
 	private int moonPhase = 0;
@@ -40,15 +40,18 @@ public class DayAndNightCycles {
 		}
 //		ambientLight.set(timeInMinutes/1440, timeInMinutes/1440, timeInMinutes/1440);
 		
-		if(pastHour != (int) timeInHours) {
-			updateLight(map);
-		}
+//		if(pastHour != (int) timeInHours) {
+//			updateLight(map);
+//		}
+		
+		updateLight(map);
 
 //		System.out.println(df.format((int) timeInHours)+":"+df.format((int) timeInMinutes%60)+" "+date[0]+" day"+" "+date[1]+" month");
 //		System.out.println((int) timeInMinutes);
 	}
 	
-	public void updateLight(CustomGameMap map) { //REPLACE WITH SWITCH-CASE
+	public void updateLight(CustomGameMap map) { //REPLACE WITH SWITCH-CASE	
+		Vector3 desiredRGB = new Vector3();
 		switch ((int)timeInHours) {
 			case 22:
 			case 23:
@@ -56,58 +59,62 @@ public class DayAndNightCycles {
 			case 1:
 			case 2:
 			case 3:
-				ambientLight.set(0.05f, 0.05f, 0.1f);
+				desiredRGB.set(0.05f, 0.05f, 0.1f);
 				map.setUpdate(false);
 				break;
 			case 21:
-				ambientLight.set(0.2f, 0.2f, 0.2f);
+				desiredRGB.set(0.2f, 0.2f, 0.2f);
 				map.setUpdate(false);
 				break;
 			case 20:
-				ambientLight.set(0.5f, 0.3f, 0.2f);
+				desiredRGB.set(0.5f, 0.3f, 0.2f);
 				map.setUpdate(false);
 				break;
 			case 19:
-				ambientLight.set(0.6f, 0.35f, 0.3f);
+				desiredRGB.set(0.6f, 0.35f, 0.3f);
 				map.setUpdate(false);
 				break;
 			case 18:
-				ambientLight.set(0.5f, 0.7f, 0.7f);
+				desiredRGB.set(0.5f, 0.7f, 0.7f);
 				map.setUpdate(false);
 				break;
 			case 17:
-				ambientLight.set(0.6f, 0.8f, 0.8f);
+				desiredRGB.set(0.6f, 0.8f, 0.8f);
 				map.setUpdate(false);
 				break;
 			case 4:
-				ambientLight.set(0.1f, 0.2f, 0.2f);
+				desiredRGB.set(0.1f, 0.2f, 0.2f);
 				map.setUpdate(false);
 				break;
 			case 5:
-				ambientLight.set(0.2f, 0.3f, 0.3f);
+				desiredRGB.set(0.2f, 0.3f, 0.3f);
 				map.setUpdate(false);
 				break;
 			case 6:
-				ambientLight.set(0.3f, 0.4f, 0.4f);
+				desiredRGB.set(0.3f, 0.4f, 0.4f);
 				map.setUpdate(false);
 				break;
 			case 7:
-				ambientLight.set(0.4f, 0.5f, 0.5f);
+				desiredRGB.set(0.4f, 0.5f, 0.5f);
 				map.setUpdate(false);
 				break;
 			case 8:
-				ambientLight.set(0.5f, 0.6f, 0.6f);
+				desiredRGB.set(0.5f, 0.6f, 0.6f);
 				map.setUpdate(false);
 				break;
 			case 9:
-				ambientLight.set(0.7f, 0.8f, 0.8f);
+				desiredRGB.set(0.7f, 0.8f, 0.8f);
 				map.setUpdate(false);
 				break;
 			default:
-				ambientLight.set(1.0f, 1.0f, 1.0f);
+				desiredRGB.set(1.0f, 1.0f, 1.0f);
 				map.setUpdate(false);
 				break;
 		}
+		
+		this.ambientLight.x = this.ambientLight.x < desiredRGB.x ? this.ambientLight.x + 0.005f : this.ambientLight.x - 0.005f;
+		this.ambientLight.y = this.ambientLight.y < desiredRGB.y ? this.ambientLight.y + 0.005f : this.ambientLight.y - 0.005f;
+		this.ambientLight.z = this.ambientLight.z < desiredRGB.z ? this.ambientLight.z + 0.005f : this.ambientLight.z - 0.005f;
 //		if(timeInHours > 21 || timeInHours < 4) {
 //			ambientLight.set(0.05f, 0.05f, 0.1f);
 //			map.setUpdate(false);
