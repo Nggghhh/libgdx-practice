@@ -3,20 +3,15 @@ package com.mygdx.game.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.HUD;
-import com.mygdx.game.entities.animations.EntityAssetManager;
 import com.mygdx.game.items.Inventory;
 import com.mygdx.game.items.Items;
 import com.mygdx.game.items.Knife;
 import com.mygdx.game.items.Weapons;
-import com.mygdx.game.tools.SoundManager;
 import com.mygdx.game.tools.Unprojecter;
 import com.mygdx.game.world.CustomGameMap;
 import com.mygdx.game.world.GameMap;
-import com.mygdx.game.world.TileType;
 
 public class Player extends LivingEntity {
 	private static int DASH_VELOCITY = 400;
@@ -153,7 +148,7 @@ public class Player extends LivingEntity {
 		for(int b = 0; b < map.getEntities().size(); b++) {
 			Entity entity = map.getEntities().get(b);
 			if(entity instanceof Items && !entity.isDisabled()) {
-				if(rect.collidesWith(entity.getRect()) && isDestroyed() == false) {
+				if(rect.collidesWith(entity.getRect()) && !isDestroyed()) {
 					int slot = playerInventory.getEmptySlot();
 					if(slot != -1) {
 						playerInventory.put((Items) entity, slot);

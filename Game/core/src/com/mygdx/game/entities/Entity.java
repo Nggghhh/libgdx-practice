@@ -24,7 +24,7 @@ public abstract class Entity {
 	
 	protected Vector2 pos;
 	protected transient Vector2 velocity;
-	protected float weight, r, g, b;;
+	protected float weight, r, g, b;
 	protected float pushStrenght;
 	protected float slippery = 8f;
 	protected int angle = 0;
@@ -52,7 +52,7 @@ public abstract class Entity {
 	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
 		float x = snapshot.getX();
 		float y = snapshot.getY();
-		this.HEALTH = snapshot.HEALTH;;
+		this.HEALTH = snapshot.HEALTH;
 		this.pos = new Vector2(x, y);
 		this.velocity = new Vector2(0, 0);
 		this.type = type;
@@ -151,10 +151,10 @@ public abstract class Entity {
 				frameNum += 1;
 			}
 			else if(frameNum == animLen) {
-				if(loop == true) {
+				if(loop) {
 					frameNum = 0;
 				}
-				else if(loop == false) {
+				else {
 					if(this.state != "DEATH")
 						changeState("IDLE", true, 1, 2);
 				}
