@@ -1,7 +1,5 @@
 package com.mygdx.game.world;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,22 +9,10 @@ import com.mygdx.game.HUD;
 import com.mygdx.game.entities.Entity;
 import com.mygdx.game.entities.EntitySnapshot;
 import com.mygdx.game.entities.EntityType;
-import com.mygdx.game.entities.SmallBush;
-import com.mygdx.game.entities.TreeEntity;
-import com.mygdx.game.entities.animations.EntityAssetManager;
-import com.mygdx.game.tools.RandomNumGen;
 import com.mygdx.game.tools.Raycaster;
 import com.mygdx.game.tools.Unprojecter;
-import com.mygdx.game.world.tiles.Air;
 import com.mygdx.game.world.tiles.LanternTile;
-import com.mygdx.game.world.tiles.Rock;
-import com.mygdx.game.world.tiles.Sand;
-import com.mygdx.game.world.tiles.ShallowWater;
 import com.mygdx.game.world.tiles.TileGridCell;
-import com.mygdx.game.world.tiles.TileTextureManager;
-import com.mygdx.game.world.tiles.TreeTile;
-import com.mygdx.game.world.tiles.WoodFloor;
-import com.mygdx.game.world.tiles.WoodWall;
 
 public class CustomGameMap extends GameMap {
 	String name;

@@ -115,9 +115,7 @@ public abstract class Entity {
 	
 	public abstract void recreate (int x, int y, int health);
 	
-	public void swimming() {
-		System.out.println(this.type.getName() + " is swimming");
-	}
+	public void swimming() {}
 	
 	public void checkIfSwimming() {
 		CustomTileType tileBelow1 = map.getTileTypeByLocation(0, this.getX(), this.getY()).tile;
