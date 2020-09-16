@@ -6,7 +6,7 @@ public class WoodFloor extends CustomTileType {
 	public WoodFloor(int x, int y, CustomGameMap map) {
 		super(x, y, map);
 		this.id = 7;
-		this.group = "woodFloor";
+		this.tileGroup = TileGroup.WOOD_FLOOR;
 		this.collidable = false;
 		this.destroyable = true;
 		this.connectable = false;

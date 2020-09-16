@@ -10,7 +10,7 @@ public class DayAndNightCycles {
 	private float timeInHours = 0;
 	private int pastHour = 23;
 	private int[] date = {1, 1, 500};
-	private int timeAcceleration = 45;
+	private int timeAcceleration = 1;
 	private Seasons pastSeason;
 	private Seasons currentSeason;
 	private int moonPhase = 0;

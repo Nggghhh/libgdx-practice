@@ -33,14 +33,24 @@ public class CollisionRect {
 	
 	public boolean collidesWithAtOffset (CollisionRect rect, int direction, int distance, int range) {
 		if(isCollisionEnabled) {
-			if(direction == 1)
-				return (x-distance)<rect.x+rect.width && (y-range)<rect.y+rect.height && x+width>rect.x && (y+range)+height>rect.y;
-			else if(direction == 2)
-				return x<rect.x+rect.width && (y-range)<rect.y+rect.height && (x+distance)+width>rect.x && (y+range)+height>rect.y;
-			else if(direction == 3)
-				return (x-range)<rect.x+rect.width && (y-distance)<rect.y+rect.height && (x+range)+width>rect.x && y+height>rect.y;
-			else
-				return (x-range)<rect.x+rect.width && y<rect.y+rect.height && (x+range)+width>rect.x && (y+distance)+height>rect.y;
+			switch (direction) {
+				case 1:
+					return (x-distance)<rect.x+rect.width && (y-range)<rect.y+rect.height && x+width>rect.x && (y+range)+height>rect.y;
+				case 2:
+					return x<rect.x+rect.width && (y-range)<rect.y+rect.height && (x+distance)+width>rect.x && (y+range)+height>rect.y;
+				case 3:
+					return (x-range)<rect.x+rect.width && (y-distance)<rect.y+rect.height && (x+range)+width>rect.x && y+height>rect.y;
+				default:
+					return (x-range)<rect.x+rect.width && y<rect.y+rect.height && (x+range)+width>rect.x && (y+distance)+height>rect.y;
+			}
+//			if(direction == 1)
+//				return (x-distance)<rect.x+rect.width && (y-range)<rect.y+rect.height && x+width>rect.x && (y+range)+height>rect.y;
+//			else if(direction == 2)
+//				return x<rect.x+rect.width && (y-range)<rect.y+rect.height && (x+distance)+width>rect.x && (y+range)+height>rect.y;
+//			else if(direction == 3)
+//				return (x-range)<rect.x+rect.width && (y-distance)<rect.y+rect.height && (x+range)+width>rect.x && y+height>rect.y;
+//			else
+//				return (x-range)<rect.x+rect.width && y<rect.y+rect.height && (x+range)+width>rect.x && (y+distance)+height>rect.y;
 		}
 		return false;
 	}

@@ -27,7 +27,7 @@ public class AnimatedTile extends CustomTileType {
 				frameNum += 1;
 			}
 			else if(frameNum == animLen) {
-				if(loop == true) {
+				if(loop) {
 					frameNum = 0;
 				}
 			}

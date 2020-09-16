@@ -6,7 +6,7 @@ public class WoodWall extends CustomTileType {
 	public WoodWall(int x, int y, CustomGameMap map) {
 		super(x, y, map);
 		this.id = 6;
-		this.group = "woodWall";
+		this.tileGroup = TileGroup.WOOD_WALL;
 		this.collidable = true;
 		this.destroyable = true;
 		this.connectable = true;

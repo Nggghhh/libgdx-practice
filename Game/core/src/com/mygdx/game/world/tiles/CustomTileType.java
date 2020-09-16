@@ -1,18 +1,14 @@
 package com.mygdx.game.world.tiles;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Disposable;
-import com.mygdx.game.tools.RandomNumGen;
 import com.mygdx.game.world.CustomGameMap;
-import com.mygdx.game.world.GameMap;
 
 public abstract class CustomTileType {
 	protected int id, x, y, variation, level = 0;
-	protected String name, group;
+	protected String name;
+	protected TileGroup tileGroup;
 	protected int bottomPoint;
 	protected float r = 0.0f, g = 0.0f, b = 0.0f;
 	protected boolean collidable, destroyable, replacable = true, connectable = false, liquid = false, visible = true, transparent = false;
@@ -83,8 +79,8 @@ public abstract class CustomTileType {
 		this.variation = newVar;
 	}
 	
-	public String getGroup() {
-		return group;
+	public TileGroup getGroup() {
+		return tileGroup;
 	}
 	
 	public int getLevel() {

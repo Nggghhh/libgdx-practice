@@ -2,11 +2,6 @@ package com.mygdx.game.entities;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.game.world.CustomGameMap;
-import com.mygdx.game.world.GameMap;
-import com.mygdx.game.world.tiles.BigTreeTile;
-import com.mygdx.game.world.tiles.CustomTileType;
-import com.mygdx.game.world.tiles.WoodWall;
 
 public class TreeEntity extends Entity {
 	@Override

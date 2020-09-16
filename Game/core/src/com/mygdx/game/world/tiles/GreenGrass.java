@@ -11,7 +11,7 @@ public class GreenGrass extends CustomTileType {
 		super(x, y, map);
 		this.id = 4;
 		this.name = "greenGrass";
-		this.group = "grass";
+		this.tileGroup = TileGroup.GRASS;
 		this.collidable = false;
 		this.destroyable = false;
 		this.connectable = true;

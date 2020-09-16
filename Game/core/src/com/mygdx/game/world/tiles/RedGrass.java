@@ -8,7 +8,7 @@ public class RedGrass extends CustomTileType {
 		super(x, y, map);
 		this.id = 10;
 		this.name = "redGrass";
-		this.group = "redGrass";
+		this.tileGroup = TileGroup.GRASS;
 		this.collidable = false;
 		this.destroyable = false;
 		this.connectable = true;

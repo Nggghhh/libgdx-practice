@@ -10,7 +10,7 @@ public class LanternTile extends CustomTileType {
 	private Texture light;
 	private boolean isEnabled = true;
 	private int lightLen = 64;
-	private float lightArray[][] = {
+	private float[][] lightArray = {
 			{0.0f, 0.2f, 0.4f, 0.4f, 0.4f, 0.2f, 0.0f},
 			{0.2f, 0.6f, 1.0f, 1.0f, 1.0f, 0.6f, 0.2f}, 
 			{0.4f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.4f}, 
@@ -22,7 +22,7 @@ public class LanternTile extends CustomTileType {
 	public LanternTile(int x, int y, CustomGameMap map) {
 		super(x, y, map);
 		this.id = 34;
-		this.group = "light";
+		this.tileGroup = TileGroup.LIGHT;
 		this.collidable = false;
 		this.destroyable = true;
 		this.connectable = false;
@@ -57,9 +57,7 @@ public class LanternTile extends CustomTileType {
 						if(cells.tile != null)
 						cells.tile.addLight(lightArray[j][i], lightArray[j][i], lightArray[j][i]);
 					}
-					catch(IndexOutOfBoundsException e) {
-						
-					}
+					catch(IndexOutOfBoundsException ignored) { }
 				}
 			}
 		}
@@ -92,9 +90,7 @@ public class LanternTile extends CustomTileType {
 						cells.tile.addLight(newLight, newLight, newLight);
 					}
 				}
-			} catch(IndexOutOfBoundsException e) {
-				
-			}
+			} catch(IndexOutOfBoundsException ignored) { }
 		}
 	}
 	

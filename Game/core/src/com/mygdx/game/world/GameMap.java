@@ -32,8 +32,8 @@ public abstract class GameMap {
 	protected boolean mapIsLoading;
 
 	public GameMap() {
-		entities = new ArrayList<Entity>();
-		renderOrder = new ArrayList<Entity>();
+		entities = new ArrayList<>();
+		renderOrder = new ArrayList<>();
 	}
 	
 	public void render (Camera camera, SpriteBatch batch) {
@@ -48,16 +48,15 @@ public abstract class GameMap {
 	}
 	
 	public Entity getEntityByCoordinate(float row, float col, int layer) {
-		for(int i = 0; i < entities.size(); i++) {
-			Entity entity = entities.get(i);
+		for (Entity entity : entities) {
 			float x = entity.getX();
 			float y = entity.getY();
 			int width = entity.getWidth();
 			int height = entity.getHeight();
 			int entityLayer = 0;
-			
-			if(entityLayer == layer)
-				if(x <= row && x+width >= row && y <= col && y+height >= col)
+
+			if (entityLayer == layer)
+				if (x <= row && x + width >= row && y <= col && y + height >= col)
 					return entity;
 		}
 		return null;
@@ -98,7 +97,7 @@ public abstract class GameMap {
 			for(int b = 0; b < entities.size(); b++) {
 				Entity entity2 = entities.get(b);
 				if(!entity1.isDisabled() && !entity2.isDisabled()) {
-					if(entity1.getRect().collidesWith(entity2.getRect()) && entity2.isDestroyed() == false && entity2.getState() != "ATTACK") {
+					if(entity1.getRect().collidesWith(entity2.getRect()) && !entity2.isDestroyed() && entity2.getState() != "ATTACK") {
 						if(entity1 instanceof Player && entity2 instanceof Enemies) {
 							entity1.hurt(1, entity2, entity1);
 						}
@@ -165,10 +164,7 @@ public abstract class GameMap {
 		for (int row = (int) (y / TileType.TILE_SIZE); row < Math.ceil((y+height)/TileType.TILE_SIZE); row++) {
 			for (int col = (int) (x / TileType.TILE_SIZE); col < Math.ceil((x+width)/TileType.TILE_SIZE); col++) {
 				for(int layer = 0; layer < getLayers();) {
-					if (row == mY && col == mX)
-						return true;
-					else
-						return false;
+					return row == mY && col == mX;
 				}
 			}
 		}

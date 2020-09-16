@@ -9,7 +9,7 @@ public class ShallowWater extends AnimatedTile {
 	public ShallowWater(int x, int y, CustomGameMap map) {
 		super(x, y, map);
 		this.id = 2;
-		this.group = "water";
+		this.tileGroup = TileGroup.WATER;
 		this.collidable = false;
 		this.destroyable = false;
 		this.replacable = false;

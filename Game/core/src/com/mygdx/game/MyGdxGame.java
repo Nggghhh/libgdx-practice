@@ -43,8 +43,10 @@ public class MyGdxGame extends ApplicationAdapter {
 //		System.out.println(Gdx.app.getJavaHeap());
 //		System.out.println(Gdx.graphics.getFramesPerSecond());
 		
-		if(Gdx.input.isKeyJustPressed(Keys.DOWN))
-			gameMap.init("Menu");
+		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+			Gdx.app.exit();
+			System.exit(0);
+		}
 		
 		camera.render(gameMap, deltaTime, batch);
 	}

@@ -6,7 +6,7 @@ public class Limestone extends CustomTileType {
 	public Limestone(int x, int y, CustomGameMap map) {
 		super(x, y, map);
 		this.id = 11;
-		this.group = "rock";
+		this.tileGroup = TileGroup.ROCK;
 		this.collidable = true;
 		this.destroyable = true;
 		this.connectable = true;

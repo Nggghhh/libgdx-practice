@@ -1,22 +1,14 @@
 package com.mygdx.game;
 
-import java.util.ArrayList;
-import java.util.Base64;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonValue.ValueType;
-import com.mygdx.game.entities.Entity;
-import com.mygdx.game.entities.EntityType;
 import com.mygdx.game.entities.Player;
 import com.mygdx.game.items.Inventory;
-import com.mygdx.game.items.Items;
 import com.mygdx.game.world.GameMap;
-import com.mygdx.game.world.TileType;
 
 public class GameManager {
 	private FileHandle playerInfo = Gdx.files.local("bin/playerData.json");

@@ -9,7 +9,7 @@ public class Stars extends AnimatedTile {
 	public Stars(int x, int y, CustomGameMap map) {
 		super(x, y, map);
 		this.id = 37;
-		this.group = "void";
+		this.tileGroup = TileGroup.VOID;
 		this.collidable = false;
 		this.destroyable = false;
 		this.replacable = false;
