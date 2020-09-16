@@ -1,7 +1,5 @@
-package com.mydgx.game.shaders;
+package com.mygdx.game.shaders;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.mygdx.game.Camera;
 

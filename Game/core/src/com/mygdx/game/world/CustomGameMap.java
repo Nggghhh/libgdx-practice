@@ -3,7 +3,7 @@ package com.mygdx.game.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mydgx.game.shaders.Vignette;
+import com.mygdx.game.shaders.Vignette;
 import com.mygdx.game.Camera;
 import com.mygdx.game.HUD;
 import com.mygdx.game.entities.Entity;
@@ -11,9 +11,7 @@ import com.mygdx.game.entities.EntitySnapshot;
 import com.mygdx.game.entities.EntityType;
 import com.mygdx.game.tools.Raycaster;
 import com.mygdx.game.tools.Unprojecter;
-import com.mygdx.game.world.tiles.LanternTile;
-import com.mygdx.game.world.tiles.TileGridCell;
-import com.mygdx.game.world.tiles.TileGroup;
+import com.mygdx.game.world.tiles.*;
 
 public class CustomGameMap extends GameMap {
 	String name;
@@ -173,8 +171,18 @@ public class CustomGameMap extends GameMap {
 //			Entity entity = EntityType.createEntityUsingSnapshot(crab, this);
 //			entities.add(entity);
 			
-			if(arrayOfCells[row][col][1].tile.getId() == 0 && !arrayOfCells[row][col][0].tile.getGroup().equals(TileGroup.WATER)) {
-				arrayOfCells[row][col][1].tileChange(new LanternTile(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
+			if(arrayOfCells[row][col][1].tile.getId() == 0 && !Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+				arrayOfCells[row][col][0].tileChange(new WoodFloor(arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y, this), this);
+				EntitySnapshot brazier = new EntitySnapshot();
+				brazier.x = row*16+4;
+				brazier.y = col*16+4;
+				brazier.type = "BRAZIER";
+				brazier.HEALTH = 2;
+				Entity entity = EntityType.createEntityUsingSnapshot(brazier, this);
+				entities.add(entity);
+			}
+			if(arrayOfCells[row][col][1].tile.getId() == 0 && Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+				arrayOfCells[row][col][1].tileChange(new WoodWall(arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y, this), this);
 			}
 //			if(arrayOfCells[row][col][1].tile.getId() == 0  && !Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
 //				arrayOfCells[row][col][1].tileChange(new WoodWall(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);

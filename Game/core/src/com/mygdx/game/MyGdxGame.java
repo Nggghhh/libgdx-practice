@@ -28,6 +28,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		input = new Input();
 		Gdx.input.setInputProcessor(input);
 		batch = new SpriteBatch();
+		Gdx.graphics.setTitle("Demo");
 		
 		camera = new Camera();
 		gameMap = new CustomGameMap();

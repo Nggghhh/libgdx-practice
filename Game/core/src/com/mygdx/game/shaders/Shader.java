@@ -1,4 +1,4 @@
-package com.mydgx.game.shaders;
+package com.mygdx.game.shaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

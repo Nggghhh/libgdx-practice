@@ -18,7 +18,8 @@ public enum EntityType {
 	BUSH("BUSH", TreeEntity.class, 10, 13, 8, 10, 2, 1.0f, 0, 0),
 	SMALL_BUSH("SMALL_BUSH", SmallBush.class, 8, 4, 4, 4, 2, 1.0f, 0, 0),
 	PLAYER("PLAYER", Player.class, 8, 4, 6, 13, 3, 0.5f, 80, 40),
-	SAND_CRAB("SAND_CRAB", SandCrab.class, 8, 4, 6, 13, 3, 0.5f, 20, 30);
+	SAND_CRAB("SAND_CRAB", SandCrab.class, 8, 4, 6, 13, 3, 0.5f, 20, 30),
+	BRAZIER("BRAZIER", Brazier.class, 8, 4, 2, 13, 1, 0.5f, 0, 0);
 	
 	private Class<? extends Entity> loaderClass;
 	private String name;

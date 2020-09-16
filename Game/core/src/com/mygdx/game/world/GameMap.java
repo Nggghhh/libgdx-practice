@@ -1,30 +1,17 @@
 package com.mygdx.game.world;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.Camera;
-import com.mygdx.game.entities.Bullet;
 import com.mygdx.game.entities.Enemies;
 import com.mygdx.game.entities.Entity;
-import com.mygdx.game.entities.EntityType;
-import com.mygdx.game.entities.Fireball;
-import com.mygdx.game.entities.Goblin;
 import com.mygdx.game.entities.Player;
-import com.mygdx.game.items.Inventory;
 import com.mygdx.game.items.Items;
-import com.mygdx.game.tools.RandomNumGen;
-import com.mygdx.game.tools.Unprojecter;
-import com.mygdx.game.world.tiles.CustomTileType;
 import com.mygdx.game.world.tiles.TileGridCell;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public abstract class GameMap {
 	protected transient ArrayList<Entity> entities;
@@ -63,7 +50,7 @@ public abstract class GameMap {
 	}
 	
 	public void renderOrder() {
-		renderOrder.removeAll(renderOrder);
+		renderOrder.clear();
 		renderOrder.addAll(entities);
 		for(int i = 0; i<renderOrder.size(); i++)
 			for(int j = 0; j<renderOrder.size(); j++) {
@@ -163,9 +150,7 @@ public abstract class GameMap {
 		int mY = (int) mouseY/TileType.TILE_SIZE;
 		for (int row = (int) (y / TileType.TILE_SIZE); row < Math.ceil((y+height)/TileType.TILE_SIZE); row++) {
 			for (int col = (int) (x / TileType.TILE_SIZE); col < Math.ceil((x+width)/TileType.TILE_SIZE); col++) {
-				for(int layer = 0; layer < getLayers();) {
-					return row == mY && col == mX;
-				}
+				return row == mY && col == mX;
 			}
 		}
 		return false;
@@ -185,8 +170,7 @@ public abstract class GameMap {
 	public Player getHero() {
 		for(Entity entity : entities)
 			if(entity instanceof Player) {
-				Player player = (Player) entity;
-				return player;
+				return (Player) entity;
 			}
 		return null;
 	}
@@ -214,7 +198,7 @@ public abstract class GameMap {
 	}
 	public void clearEntities() {
 		Player player = getHero();
-		entities.removeAll(entities);
+		entities.clear();
 		entities.add(player);
 	}
 	
