@@ -8,14 +8,18 @@ public class EntitySnapshot {
 	public int HEALTH, layer;
 	public HashMap<String, String> data;
 	
-	public EntitySnapshot() {}
+	public EntitySnapshot() {
+		this.data = new HashMap<>();
+	}
 	public EntitySnapshot(String type, float x, float y, int HEALTH, int layer) {
 		this.type = type;
 		this.x = x;
 		this.y = y;
 		this.HEALTH = HEALTH;
 		this.layer = layer;
+		this.data = new HashMap<>();
 	}
+
 	public String getType() {
 		return type;
 	}
@@ -85,9 +89,6 @@ public class EntitySnapshot {
 	}
 	
 	public String getString(String key, String defaultValue) {
-		if(data.containsKey(key)) {
-			return data.get(key);
-		} else 
-			return defaultValue;
+		return data.getOrDefault(key, defaultValue);
 	}
 }

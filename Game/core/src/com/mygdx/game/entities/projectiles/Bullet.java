@@ -1,7 +1,10 @@
-package com.mygdx.game.entities;
+package com.mygdx.game.entities.projectiles;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.entities.Entity;
+import com.mygdx.game.entities.EntitySnapshot;
+import com.mygdx.game.entities.EntityType;
 import com.mygdx.game.world.GameMap;
 
 public abstract class Bullet extends Entity {
@@ -14,7 +17,7 @@ public abstract class Bullet extends Entity {
 	@Override
 	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
 		super.create(snapshot, type, map);
-		this.caster = snapshot.getString("caster", "nobody");
+//		this.caster = snapshot.getString("caster", "nobody");
 	}
 	
 	
@@ -53,7 +56,15 @@ public abstract class Bullet extends Entity {
 		// TODO Auto-generated method stub
 
 	}
-	
+
+	public String getCaster() {
+		return caster;
+	}
+
+	public void setCaster(String caster) {
+		this.caster = caster;
+	}
+
 	public int getDefaultStrenght() {
 		return defaultStrenght;
 	}

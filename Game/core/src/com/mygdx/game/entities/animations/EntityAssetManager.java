@@ -21,7 +21,8 @@ public class EntityAssetManager {
 		textures.put("SMALL_BUSH/IDLE", TextureRegion.split(new Texture("SMALL_BUSH/IDLE/IDLE.png"), 16, 28));
 		textures.put("BUSH/IDLE", TextureRegion.split(new Texture("BUSH/IDLE/IDLE.png"), 32, 28));
 		textures.put("BIG_TREE/IDLE", TextureRegion.split(new Texture("BIG_TREE/IDLE/IDLE.png"), 64, 64));
-		textures.put("BRAZIER/IDLE", TextureRegion.split(new Texture("BRAZIER/IDLE/IDLE.png"), 16, 16));
+		textures.put("BRAZIER/IDLE", TextureRegion.split(new Texture("BRAZIER/IDLE/IDLE.png"), 16, 32));
+		textures.put("MAGIC_ARROW/IDLE", TextureRegion.split(new Texture("MAGIC_ARROW/IDLE/IDLE.png"), 16, 16));
 	}
 	
 	public static void addAnimation(String name, String state, int sizeX, int sizeY) {

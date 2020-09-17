@@ -1,7 +1,6 @@
 package com.mygdx.game.world;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -9,10 +8,8 @@ import com.badlogic.gdx.utils.Json;
 import com.mygdx.game.entities.Entity;
 import com.mygdx.game.entities.EntitySnapshot;
 import com.mygdx.game.entities.EntityType;
-import com.mygdx.game.entities.Player;
 import com.mygdx.game.tools.RandomNumGen;
 import com.mygdx.game.tools.SimplexNoise;
-import com.mygdx.game.world.tiles.TileGridCell;
 
 public class CustomGameMapLoader {
 	private static Json json;

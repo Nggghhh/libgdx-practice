@@ -232,12 +232,16 @@ public abstract class Entity {
 		return pos.y;
 	}
 	
-	public float velocityX() {
+	public float getVelocityX() {
 		return velocity.x;
 	}
 	
-	public float velocityY() {
+	public float getVelocityY() {
 		return velocity.y;
+	}
+
+	public float getAbsoluteVelocity() {
+		return Math.abs(velocity.x) + Math.abs(velocity.y);
 	}
 	
 	public void setVelocityX(float x) {

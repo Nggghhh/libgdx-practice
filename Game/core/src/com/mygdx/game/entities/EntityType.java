@@ -5,9 +5,11 @@ import java.util.HashMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.mygdx.game.entities.playerchar.Player;
+import com.mygdx.game.entities.projectiles.MagicArrow;
 import com.mygdx.game.items.WoodPlanks;
 import com.mygdx.game.world.CustomGameMap;
-import com.mygdx.game.world.GameMap;;
+;
 
 public enum EntityType {
 //	DAGGER("DAGGER", Dagger.class, 8, 3, 32, 3, 4, 0.5f),
@@ -19,7 +21,8 @@ public enum EntityType {
 	SMALL_BUSH("SMALL_BUSH", SmallBush.class, 8, 4, 4, 4, 2, 1.0f, 0, 0),
 	PLAYER("PLAYER", Player.class, 8, 4, 6, 13, 3, 0.5f, 80, 40),
 	SAND_CRAB("SAND_CRAB", SandCrab.class, 8, 4, 6, 13, 3, 0.5f, 20, 30),
-	BRAZIER("BRAZIER", Brazier.class, 8, 4, 2, 13, 1, 0.5f, 0, 0);
+	BRAZIER("BRAZIER", Brazier.class, 8, 4, 2, 13, 1, 0.5f, 0, 0),
+	MAGIC_ARROW("MAGIC_ARROW", MagicArrow.class, 8, 4, 2, 13, 2, 0.5f, 40, 40);
 	
 	private Class<? extends Entity> loaderClass;
 	private String name;

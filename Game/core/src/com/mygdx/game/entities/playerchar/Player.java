@@ -1,14 +1,13 @@
-package com.mygdx.game.entities;
+package com.mygdx.game.entities.playerchar;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.entities.*;
 import com.mygdx.game.items.Inventory;
 import com.mygdx.game.items.Items;
-import com.mygdx.game.items.Knife;
-import com.mygdx.game.items.Weapons;
 import com.mygdx.game.tools.Unprojecter;
 import com.mygdx.game.world.CustomGameMap;
 import com.mygdx.game.world.GameMap;
@@ -17,13 +16,12 @@ public class Player extends LivingEntity {
 	private static int DASH_VELOCITY = 400;
 	private int MAX_HEALTH = 6;
 	private Inventory playerInventory;
-	private Weapons weapon;
+	private MagicBook magicBook;
 	
 	@Override
 	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
 		super.create(snapshot, type, map);
 		playerInventory = new Inventory(map);
-		weapon = new Knife();
 		this.faction = EntityFactions.PLAYER;
 	}
 	
@@ -35,9 +33,8 @@ public class Player extends LivingEntity {
 		
 		if(!this.destroy) {
 			livingState(camera, deltaTime, map);
-		}
-		else {
-			changeState("DEATH", false, 2, 6);
+		} else {
+			setAnimationDeath();
 		}
 	}
 	
@@ -53,7 +50,7 @@ public class Player extends LivingEntity {
 		//walk
 //		if(this.state != "HURT" && this.state != "DASH" && this.state.charAt(0) != 'A') {
 //			if(Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.W)) {
-//				changeState("MOVE", true, 7, 6);
+//				setAnimationToMove();
 //				if(Gdx.input.isKeyPressed(Keys.W)) {
 //					angle = 270;
 //				}
@@ -69,18 +66,18 @@ public class Player extends LivingEntity {
 //				move(angle, SPEED, deltaTime);
 //			}
 //			else {
-//				changeState("IDLE", true, 1, 2);
+//				setAnimationToIdle();
 //			}
 //		}
 		
 		if(this.state != "HURT" && this.state != "DASH" && this.state.charAt(0) != 'A') {
 			if(Gdx.input.isKeyPressed(Keys.W)) {
-				changeState("MOVE", true, 7, 6);
+				setAnimationToMove();
 				angle = (int) calculateAngle(Unprojecter.getMouseCoords(camera).x, Unprojecter.getMouseCoords(camera).y);
 				move(angle, SPEED, deltaTime);
 			}
 			else {
-				changeState("IDLE", true, 1, 2);
+				setAnimationToIdle();
 			}
 		}
 
@@ -95,8 +92,9 @@ public class Player extends LivingEntity {
 			}
 		}
 		
-		if(weapon != null)
-			weapon.update(this, map);
+//		if(weapon != null) {
+//			weapon.update(this, map);
+//		}
 		
 	}
 	
@@ -166,5 +164,17 @@ public class Player extends LivingEntity {
 			this.HEALTH = this.MAX_HEALTH;
 		else
 			this.HEALTH += amount;
+	}
+
+	public void setAnimationToIdle() {
+		changeState("IDLE", true, 1, 2);
+	}
+
+	public void setAnimationToMove() {
+		changeState("MOVE", true, 7, 6);
+	}
+
+	public void setAnimationDeath() {
+		changeState("DEATH", false, 2, 6);
 	}
 }

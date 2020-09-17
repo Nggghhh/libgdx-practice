@@ -1,13 +1,8 @@
 package com.mygdx.game.items;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entities.Entity;
-import com.mygdx.game.entities.EntityType;
-import com.mygdx.game.entities.Player;
 import com.mygdx.game.world.GameMap;
 
 public class Inventory {

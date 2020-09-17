@@ -3,6 +3,7 @@ package com.mygdx.game.entities;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.entities.animations.EntityAssetManager;
+import com.mygdx.game.entities.playerchar.Player;
 import com.mygdx.game.world.CustomGameMap;
 import com.mygdx.game.world.GameMap;
 

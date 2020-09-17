@@ -88,6 +88,8 @@ public class LanternTile extends CustomTileType {
 					for(int l = playerLayer; l<playerLayer+2; l++) {
 						TileGridCell cells = map.getCells()[(int) newx/16][(int) newy/16][l];
 						cells.tile.addLight(newLight, newLight, newLight);
+						cells.tile.adjustLight(map.getInGameTime().getLight());
+						cells.tile.updateLight();
 					}
 				}
 			} catch(IndexOutOfBoundsException ignored) { }

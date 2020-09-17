@@ -3,15 +3,9 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Json;
-import com.mygdx.game.entities.Entity;
-import com.mygdx.game.entities.Player;
 import com.mygdx.game.world.CustomGameMap;
 import com.mygdx.game.world.GameMap;
 

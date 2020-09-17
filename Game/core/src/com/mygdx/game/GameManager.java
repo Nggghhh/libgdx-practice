@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.mygdx.game.entities.Player;
+import com.mygdx.game.entities.playerchar.Player;
 import com.mygdx.game.items.Inventory;
 import com.mygdx.game.world.GameMap;
 

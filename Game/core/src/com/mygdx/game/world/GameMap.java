@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.Camera;
 import com.mygdx.game.entities.Enemies;
 import com.mygdx.game.entities.Entity;
-import com.mygdx.game.entities.Player;
+import com.mygdx.game.entities.playerchar.Player;
 import com.mygdx.game.items.Items;
 import com.mygdx.game.world.tiles.TileGridCell;
 
@@ -91,9 +91,10 @@ public abstract class GameMap {
 						if(entity1 instanceof Items && entity2 instanceof Items) {
 							if(entities.indexOf(entity1) != entities.indexOf(entity2))
 								entity1.push(entity2.getX(), entity2.getY(), entity2.getType().getWeight());
-						} else if(!(entity1 instanceof Items) && !(entity2 instanceof Items))
-							if(entities.indexOf(entity1) != entities.indexOf(entity2) && entity1.getState() != "HURT" && entity1.getState() != "ATTACK" && !entity1.isDestroyed())
-								entity1.push(entity2.getX(), entity2.getY(), entity2.getType().getWeight());
+						}
+//						else if(!(entity1 instanceof Items) && !(entity2 instanceof Items))
+//							if(entities.indexOf(entity1) != entities.indexOf(entity2) && entity1.getState() != "HURT" && entity1.getState() != "ATTACK" && !entity1.isDestroyed())
+//								entity1.push(entity2.getX(), entity2.getY(), entity2.getType().getWeight());
 						
 						if(entity1.getRect().collidesWithAtOffset(entity2.getRect(), entity1.getDirection(), 32, 12)) {
 							if(entity1 instanceof Player && entity2 instanceof Enemies && entity1.getState() == "ATTACK" && entity1.getFrame() == 1) {
@@ -145,16 +146,16 @@ public abstract class GameMap {
 	/**
 	 * Check if entity is on this tile. MouseX and MouseY are coordinates of the tile, which you want to check, X and Y - coordinates of the entity. If they match each other, then this method returns true
 	 */
-	public boolean isEntityOnTile(float x, float y, int width, int height, float mouseX, float mouseY) {
-		int mX = (int) mouseX/TileType.TILE_SIZE;
-		int mY = (int) mouseY/TileType.TILE_SIZE;
-		for (int row = (int) (y / TileType.TILE_SIZE); row < Math.ceil((y+height)/TileType.TILE_SIZE); row++) {
-			for (int col = (int) (x / TileType.TILE_SIZE); col < Math.ceil((x+width)/TileType.TILE_SIZE); col++) {
-				return row == mY && col == mX;
-			}
-		}
-		return false;
-	}
+//	public boolean isEntityOnTile(float x, float y, int width, int height, float mouseX, float mouseY) {
+//		int mX = (int) mouseX/TileType.TILE_SIZE;
+//		int mY = (int) mouseY/TileType.TILE_SIZE;
+//		for (int row = (int) (y / TileType.TILE_SIZE); row < Math.ceil((y+height)/TileType.TILE_SIZE); row++) {
+//			for (int col = (int) (x / TileType.TILE_SIZE); col < Math.ceil((x+width)/TileType.TILE_SIZE); col++) {
+//				return row == mY && col == mX;
+//			}
+//		}
+//		return false;
+//	}
 	
 	public abstract int getWidth();
 	public abstract int getHeight();

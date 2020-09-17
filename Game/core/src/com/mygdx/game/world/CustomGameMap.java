@@ -3,6 +3,7 @@ package com.mygdx.game.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.entities.projectiles.MagicArrow;
 import com.mygdx.game.shaders.Vignette;
 import com.mygdx.game.Camera;
 import com.mygdx.game.HUD;
@@ -38,6 +39,7 @@ public class CustomGameMap extends GameMap {
 
 	@Override
 	public void render(Camera camera, SpriteBatch batch) {
+//		System.out.println(Gdx.graphics.getFramesPerSecond());
 		batch.setProjectionMatrix(camera.getCamera().combined);
 		batch.begin();
 		
@@ -59,8 +61,6 @@ public class CustomGameMap extends GameMap {
 			updateLight(playerLayer, roofLayer);
 			update = true;
 		}
-		
-		System.out.println(Gdx.graphics.getFramesPerSecond());
 		
 		for(int layer = playerLayer; layer < roofLayer-3; layer++) {
 			for(int col = mapTopBorder; col > mapBottomBorder-1; col--) {
@@ -90,9 +90,11 @@ public class CustomGameMap extends GameMap {
 		for(int layer = playerLayer; layer < roofLayer; layer++) {
 			for(int row = getWidth()-1; row > -1; row--) {
 				for(int col = getHeight()-1; col > -1; col--) {
-					if(arrayOfCells[row][col][layer].tile != null && arrayOfCells[row][col][layer].tile.isVisible()) {
-						if(arrayOfCells[row][col][layer].tile.getGroup().equals(TileGroup.LIGHT)) {
-							LanternTile tile2 = (LanternTile) arrayOfCells[row][col][layer].tile;
+					CustomTileType tile = arrayOfCells[row][col][layer].tile;
+
+					if(tile != null && tile.isVisible()) {
+						if(tile.getGroup().equals(TileGroup.LIGHT)) {
+							LanternTile tile2 = (LanternTile) tile;
 							tile2.light(this);
 						}
 					}
@@ -102,9 +104,11 @@ public class CustomGameMap extends GameMap {
 		for(int layer = playerLayer; layer < roofLayer; layer++) {
 			for(int row = getWidth()-1; row > -1; row--) {
 				for(int col = getHeight()-1; col > -1; col--) {
-					if(arrayOfCells[row][col][layer].tile != null && arrayOfCells[row][col][layer].tile.isVisible()) {
-						arrayOfCells[row][col][layer].tile.adjustLight(inGameTime.getLight());
-						arrayOfCells[row][col][layer].tile.updateLight();
+					CustomTileType tile = arrayOfCells[row][col][layer].tile;
+
+					if(tile != null && tile.isVisible()) {
+						tile.adjustLight(inGameTime.getLight());
+						tile.updateLight();
 					}
 				}
 			}
@@ -170,20 +174,33 @@ public class CustomGameMap extends GameMap {
 //			crab.HEALTH = 6;
 //			Entity entity = EntityType.createEntityUsingSnapshot(crab, this);
 //			entities.add(entity);
-			
+
+			System.out.println(arrayOfCells[row][col][0].isOccupied(this, 0));
+//			if(arrayOfCells[row][col][1].tile.getId() == 0 && !Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+//				arrayOfCells[row][col][1].tileChange(new LanternTile(arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y, this), this);
+//			}
 			if(arrayOfCells[row][col][1].tile.getId() == 0 && !Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
-				arrayOfCells[row][col][0].tileChange(new WoodFloor(arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y, this), this);
-				EntitySnapshot brazier = new EntitySnapshot();
-				brazier.x = row*16+4;
-				brazier.y = col*16+4;
-				brazier.type = "BRAZIER";
-				brazier.HEALTH = 2;
-				Entity entity = EntityType.createEntityUsingSnapshot(brazier, this);
+//				arrayOfCells[row][col][0].tileChange(new WoodFloor(arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y, this), this);
+//				EntitySnapshot brazier = new EntitySnapshot();
+//				brazier.x = row*16+4;
+//				brazier.y = col*16+4;
+//				brazier.type = "BRAZIER";
+//				brazier.HEALTH = 2;
+//				Entity entity = EntityType.createEntityUsingSnapshot(brazier, this);
+//				entities.add(entity);
+
+				EntitySnapshot arrow = new EntitySnapshot();
+				arrow.x = row*16+4;
+				arrow.y = col*16+4;
+				arrow.type = "MAGIC_ARROW";
+				arrow.HEALTH = 2;
+				Entity entity = EntityType.createEntityUsingSnapshot(arrow, this);
 				entities.add(entity);
 			}
-			if(arrayOfCells[row][col][1].tile.getId() == 0 && Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+			if(arrayOfCells[row][col][1].tile.getId() == 0 && Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && !arrayOfCells[row][col][0].isOccupied(this, 0)) {
 				arrayOfCells[row][col][1].tileChange(new WoodWall(arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y, this), this);
 			}
+//			System.out.println(isSpaceOccupied(row, col));
 //			if(arrayOfCells[row][col][1].tile.getId() == 0  && !Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
 //				arrayOfCells[row][col][1].tileChange(new WoodWall(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
 //			if(arrayOfCells[row][col][0].tile.isReplacable() && Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
@@ -192,8 +209,6 @@ public class CustomGameMap extends GameMap {
 //				arrayOfCells[row][col][1].tileChange(new Air(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
 		}
 		super.update(camera, delta);
-		
-
 	}
 	
 	public void movePlayer() {
@@ -432,22 +447,30 @@ public class CustomGameMap extends GameMap {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	public DayAndNightCycles getInGameTime() {
+		return inGameTime;
+	}
+
+	public void setInGameTime(DayAndNightCycles inGameTime) {
+		this.inGameTime = inGameTime;
+	}
+
 	public void setUpdate(boolean update) {
 		this.update = update;
 	}
 	
-	public boolean isSpaceOccupied(float checkX, float checkY) {
-		for(int i = 0; i < entities.size(); i++) {
-			Entity entity = entities.get(i);
-			float x = entity.getX();
-			float y = entity.getY();
-			float width = entity.getX()+entity.getWidth();
-			float height = entity.getY()+entity.getHeight();
-			
-			if(checkX > x && checkX < width && checkY > y && checkY < height)
-				return true;
-		}
-		return false;
-	}
+//	public boolean isSpaceOccupied(float checkX, float checkY) {
+//		for(int i = 0; i < entities.size(); i++) {
+//			Entity entity = entities.get(i);
+//			float x = entity.getX();
+//			float y = entity.getY();
+//			float width = entity.getX()+entity.getWidth();
+//			float height = entity.getY()+entity.getHeight();
+//
+//			if(checkX > x && checkX < width && checkY > y && checkY < height)
+//				return true;
+//		}
+//		return false;
+//	}
 }
