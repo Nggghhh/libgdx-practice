@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.mygdx.game.entities.Entity;
 import com.mygdx.game.world.GameMap;
 
 public class Camera {
@@ -111,15 +112,20 @@ public class Camera {
 //		sh.setColor(255, 0, 0, 255);
 //		sh.line(originX, originY, newX, newY);
 //		sh.end();
-		
-//		sh.begin(ShapeType.Line);
-//		sh.setProjectionMatrix(camera.combined);
-//		sh.setColor(255, 0, 0, 255);
-//		sh.line(gameMap.getHero().getX(), gameMap.getHero().getY(), gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY());
-//		sh.line(gameMap.getHero().getX(), gameMap.getHero().getY()+gameMap.getHero().getHeight(), gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY()+gameMap.getHero().getHeight());
-//		sh.line(gameMap.getHero().getX(), gameMap.getHero().getY()+gameMap.getHero().getHeight(), gameMap.getHero().getX(), gameMap.getHero().getY());
-//		sh.line(gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY()+gameMap.getHero().getHeight(), gameMap.getHero().getX()+gameMap.getHero().getWidth(), gameMap.getHero().getY());
-//		sh.end();
+//		renderCollisionBoxes(gameMap);
+	}
+
+	public void renderCollisionBoxes(GameMap gameMap) {
+		sh.begin(ShapeType.Line);
+		sh.setProjectionMatrix(camera.combined);
+		sh.setColor(255, 0, 0, 255);
+		for(Entity entity : gameMap.getEntities()) {
+			sh.line(entity.getX(), entity.getY(), entity.getX() + entity.getWidth(), entity.getY());
+			sh.line(entity.getX(), entity.getY() + entity.getHeight(), entity.getX() + entity.getWidth(), entity.getY() + entity.getHeight());
+			sh.line(entity.getX(), entity.getY() + entity.getHeight(), entity.getX(), entity.getY());
+			sh.line(entity.getX() + entity.getWidth(), entity.getY() + entity.getHeight(), entity.getX() + entity.getWidth(), entity.getY());
+		}
+		sh.end();
 	}
 	
 	public void resize() {

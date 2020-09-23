@@ -57,16 +57,6 @@ public class MagicArrow extends Bullet {
 		//destroy after flinch animation is ended
 		if(this.HEALTH < 0 && this.state != "HURT") {
 		}
-
-		for(Entity entity : map.getEntities()) {
-			if (map.getEntities().indexOf(this) != map.getEntities().indexOf(entity) && !entity.isDestroyed()) {
-				if (this.rect.collidesWith(entity.getRect())) {
-//					entity.hurt(1, this, entity);
-					entity.push(this.getX(), this.getY(), this.getType().getWeight());
-					this.push(entity.getX(), entity.getY(), entity.getType().getWeight());
-				}
-			}
-		}
 	}
 
 	@Override

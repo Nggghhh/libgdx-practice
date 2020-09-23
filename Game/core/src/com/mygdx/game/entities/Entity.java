@@ -1,20 +1,16 @@
 package com.mygdx.game.entities;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.world.GameMap;
-import com.mygdx.game.world.TileType;
-import com.mygdx.game.world.tiles.CustomTileType;
 import com.mygdx.game.entities.animations.EntityAssetManager;
-import com.mygdx.game.items.Inventory;
 import com.mygdx.game.tools.CollisionRect;
 import com.mygdx.game.tools.SoundManager;
-import com.mygdx.game.tools.Unprojecter;
+import com.mygdx.game.world.GameMap;
+import com.mygdx.game.world.tiles.CustomTileType;
 
 public abstract class Entity {
 	protected int id;
@@ -41,6 +37,7 @@ public abstract class Entity {
 	protected boolean canMove = true;
 	protected boolean isPickable = false;
 	protected boolean disabled = false;
+	protected boolean rotatable = false;
 	
 	//collisions
 	protected int direction = 1;
@@ -73,13 +70,30 @@ public abstract class Entity {
 			rect.move(this.pos.x, this.pos.y);
 		if(this.isDisabled())
 			this.rect.setEnabled(false);
+
+		checkForCollision();
 		
+	}
+
+	public void checkForCollision() {
+		for(Entity entity : map.getEntities()) {
+			if (map.getEntities().indexOf(this) != map.getEntities().indexOf(entity) && !entity.isDestroyed() && !entity.isDisabled()) {
+				if (this.rect.collidesWith(entity.getRect())) {
+//					entity.hurt(1, this, entity);
+					entity.push(this.getX(), this.getY(), entity.getType().getWeight());
+					if(entity.getAbsoluteVelocity() > 0) {
+						this.push(entity.getX(), entity.getY(), entity.getType().getWeight());
+					}
+				}
+			}
+		}
 	}
 	
 	public void livingState(OrthographicCamera camera, float deltaTime, GameMap map) {
 		//after recovery time is ended, reset back to idling state
-		if(remainingRecoveryTime > 0)
+		if(remainingRecoveryTime > 0) {
 			remainingRecoveryTime -= deltaTime;
+		}
 		
 		//destroy after flinch animation is ended
 		if(HEALTH == 0 && state != "HURT") {
@@ -94,9 +108,9 @@ public abstract class Entity {
 	
 	public abstract void hurt(int damage, Entity hitter, Entity receiver);
 	
-	public void push(float x, float y, float distance) {
-		
-	}
+	public void push(float x, float y, float distance) {}
+
+	public void push(float x, float y, float distance, float absoluteVelocity) {}
 	
 	public void throwEntity(Entity thrower, float power) {
 		if(thrower.getDirection() == 1)
@@ -163,6 +177,10 @@ public abstract class Entity {
 	}
 	
 	public void animationPlay(SpriteBatch batch) {
+		int angle = 0;
+		if(this.rotatable) {
+			angle = this.angle;
+		}
 		try {
 			TextureRegion texture = EntityAssetManager.getTexture(this.type+"/"+this.state, frameNum, direction-1);
 			if(texture != null) {
@@ -171,7 +189,7 @@ public abstract class Entity {
 				int entityHalfWidth = this.getWidth()/2;
 				int entityHalfHeight = this.getHeight()/2;
 				batch.setColor(r,g,b,1.0f);
-				batch.draw(texture, pos.x+entityHalfWidth-textureWidth/2, pos.y-entityHalfHeight);
+				batch.draw(texture, pos.x+entityHalfWidth-textureWidth/2, pos.y-entityHalfHeight, (float) texture.getRegionWidth()/2, (float) texture.getRegionHeight()/2, (float) texture.getRegionWidth(), (float) texture.getRegionHeight(), 1, 1, angle);
 				batch.setColor(1.0f,1.0f,1.0f,1.0f);
 			} else {
 				batch.draw(EntityAssetManager.getError(), pos.x-type.getPivotX(), pos.y-type.getPivotY());

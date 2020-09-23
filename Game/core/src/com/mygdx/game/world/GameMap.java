@@ -95,12 +95,6 @@ public abstract class GameMap {
 //						else if(!(entity1 instanceof Items) && !(entity2 instanceof Items))
 //							if(entities.indexOf(entity1) != entities.indexOf(entity2) && entity1.getState() != "HURT" && entity1.getState() != "ATTACK" && !entity1.isDestroyed())
 //								entity1.push(entity2.getX(), entity2.getY(), entity2.getType().getWeight());
-						
-						if(entity1.getRect().collidesWithAtOffset(entity2.getRect(), entity1.getDirection(), 32, 12)) {
-							if(entity1 instanceof Player && entity2 instanceof Enemies && entity1.getState() == "ATTACK" && entity1.getFrame() == 1) {
-								entity2.hurt(1, entity1, entity2);
-							}
-						}
 					}
 				}
 			}

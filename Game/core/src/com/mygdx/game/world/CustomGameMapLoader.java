@@ -39,12 +39,10 @@ public class CustomGameMapLoader {
 		json = new Json();
 		FileHandle data = Gdx.files.local("world/global/data.json");
 		if(data.exists()) {
-			GlobalDataSnapshot dataSnapshot = json.fromJson(GlobalDataSnapshot.class, data.readString());
-			return dataSnapshot;
+			return json.fromJson(GlobalDataSnapshot.class, data.readString());
 		}
 		else {
-			GlobalDataSnapshot dataSnapshot = new GlobalDataSnapshot();
-			return dataSnapshot;
+			return new GlobalDataSnapshot();
 		}
 			
 	}
@@ -55,8 +53,7 @@ public class CustomGameMapLoader {
 		FileHandle entityList = Gdx.files.local("world/maps/entities/"+id+".json");
 		if(cell.exists() && entityList.exists()) {
 			CustomGameMapData data = json.fromJson(CustomGameMapData.class, cell.readString());
-			EntitySnapshot[] entities = json.fromJson(EntitySnapshot[].class, entityList.readString());
-			data.entities = entities;
+			data.entities = json.fromJson(EntitySnapshot[].class, entityList.readString());
 			return data;
 		}
 		else if(cell.exists() && !entityList.exists()) {
@@ -76,9 +73,8 @@ public class CustomGameMapLoader {
 	
 	public static EntitySnapshot loadPlayer() {	
 		FileHandle player = Gdx.files.local("world/player/player.json");
-		if(player.exists()) {	
-			EntitySnapshot playerSnapshot = json.fromJson(EntitySnapshot.class, player.readString());
-			return playerSnapshot;
+		if(player.exists()) {
+			return json.fromJson(EntitySnapshot.class, player.readString());
 		}
 		else {
 			EntitySnapshot playerSnapshot = new EntitySnapshot();
@@ -123,17 +119,15 @@ public class CustomGameMapLoader {
 		
 		int seed = -1;
 		int octave = 3;
-		if(seed < 0)
-			seed = RandomNumGen.getRandomNumberInRange(1000, 9999);
+		seed = RandomNumGen.getRandomNumberInRange(1000, 9999);
 		
 		mapData.id = id;
 		mapData.name = name;
 		mapData.map = mapGen.generateBaseTerrain(mapGen.CreateRoundedArray(SIZE, SIZE, octave, 5, seed));
-		mapData.map = crop(mapData.map);
-		mapData.map = generateBridges(mapData.map);
-		EntitySnapshot[] entityList = generateForest(mapData);
-//		mapData.map = generateDiversity(mapData.map, seed, octave);
-		mapData.entities = entityList;
+		crop(mapData.map);
+		generateBridges(mapData.map);
+		//		mapData.map = generateDiversity(mapData.map, seed, octave);
+		mapData.entities = generateForest(mapData);
 		
 		return mapData;
 	}
