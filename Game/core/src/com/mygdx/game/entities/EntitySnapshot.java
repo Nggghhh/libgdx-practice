@@ -1,5 +1,7 @@
 package com.mygdx.game.entities;
 
+import com.mygdx.game.items.Inventory;
+
 import java.util.HashMap;
 
 public class EntitySnapshot {
@@ -7,6 +9,7 @@ public class EntitySnapshot {
 	public float x,y;
 	public int HEALTH, layer;
 	public HashMap<String, String> data;
+	public Inventory inventory;
 	
 	public EntitySnapshot() {
 		this.data = new HashMap<>();
@@ -18,6 +21,15 @@ public class EntitySnapshot {
 		this.HEALTH = HEALTH;
 		this.layer = layer;
 		this.data = new HashMap<>();
+	}
+	public EntitySnapshot(String type, float x, float y, int HEALTH, int layer, Inventory inventory) {
+		this.type = type;
+		this.x = x;
+		this.y = y;
+		this.HEALTH = HEALTH;
+		this.layer = layer;
+		this.data = new HashMap<>();
+		this.inventory = inventory;
 	}
 
 	public String getType() {

@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.entities.*;
+import com.mygdx.game.entities.animations.EntityAssetManager;
 import com.mygdx.game.items.Inventory;
 import com.mygdx.game.items.Items;
 import com.mygdx.game.tools.Unprojecter;
@@ -21,7 +23,11 @@ public class Player extends LivingEntity {
 	@Override
 	public void create(EntitySnapshot snapshot, EntityType type, GameMap map) {
 		super.create(snapshot, type, map);
-		playerInventory = new Inventory(map);
+		if(snapshot.inventory == null) {
+			this.playerInventory = new Inventory();
+		} else {
+			this.playerInventory = snapshot.inventory;
+		}
 		this.faction = EntityFactions.PLAYER;
 	}
 	
@@ -48,48 +54,51 @@ public class Player extends LivingEntity {
 		playerInventory.collectInput(map);
 		
 		//walk
-//		if(this.state != "HURT" && this.state != "DASH" && this.state.charAt(0) != 'A') {
-//			if(Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.W)) {
-//				setAnimationToMove();
-//				if(Gdx.input.isKeyPressed(Keys.W)) {
-//					angle = 270;
-//				}
-//				else if(Gdx.input.isKeyPressed(Keys.A)) {
-//					angle = 360;
-//				}
-//				else if(Gdx.input.isKeyPressed(Keys.S)) {
-//					angle = 90;
-//				}
-//				else if(Gdx.input.isKeyPressed(Keys.D)) {
-//					angle = 180;
-//				}
-//				move(angle, SPEED, deltaTime);
-//			}
-//			else {
-//				setAnimationToIdle();
-//			}
-//		}
-		
 		if(this.state != "HURT" && this.state != "DASH" && this.state.charAt(0) != 'A') {
-			if(Gdx.input.isKeyPressed(Keys.W)) {
+			if(Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.W)) {
 				setAnimationToMove();
-				angle = (int) calculateAngle(Unprojecter.getMouseCoords(camera).x, Unprojecter.getMouseCoords(camera).y);
+				if(Gdx.input.isKeyPressed(Keys.W)) {
+					angle = 270;
+				}
+				else if(Gdx.input.isKeyPressed(Keys.A)) {
+					angle = 360;
+				}
+				else if(Gdx.input.isKeyPressed(Keys.S)) {
+					angle = 90;
+				}
+				else if(Gdx.input.isKeyPressed(Keys.D)) {
+					angle = 180;
+				}
 				move(angle, SPEED, deltaTime);
 			}
 			else {
 				setAnimationToIdle();
 			}
 		}
+		
+//		if(this.state != "HURT" && this.state != "DASH" && this.state.charAt(0) != 'A') {
+//			if(Gdx.input.isKeyPressed(Keys.W)) {
+//				setAnimationToMove();
+//				angle = (int) calculateAngle(Unprojecter.getMouseCoords(camera).x, Unprojecter.getMouseCoords(camera).y);
+//				move(angle, SPEED, deltaTime);
+//			}
+//			else {
+//				setAnimationToIdle();
+//			}
+//		}
 
 //		if(Gdx.input.isKeyJustPressed(Keys.SPACE)) {
 //			strafe(-7f, camera);
 //		}
 
 		if(Gdx.input.justTouched() && this.state != "ATTACK" && this.previousState != "HURT") {
-			if(playerInventory.getItemList()[0] != null) {
-				CustomGameMap newMap = (CustomGameMap) map;
-				playerInventory.getItemList()[0].action(newMap, this, playerInventory, camera);
-			}
+//			if(playerInventory.getItemList()[playerInventory.getPointer()] != null) {
+//				CustomGameMap newMap = (CustomGameMap) map;
+//				playerInventory.getItemList()[playerInventory.getPointer()].action(newMap, this, playerInventory, camera);
+//			}
+			angle = (int) calculateAngle(Unprojecter.getMouseCoords(camera).x, Unprojecter.getMouseCoords(camera).y);
+			magicBook = new MagicBook();
+			magicBook.getSpell(0).cast(this, map, angle);
 		}
 		
 //		if(weapon != null) {
@@ -164,6 +173,11 @@ public class Player extends LivingEntity {
 			this.HEALTH = this.MAX_HEALTH;
 		else
 			this.HEALTH += amount;
+	}
+
+	@Override
+	public EntitySnapshot getSaveSnapshot() {
+		return new EntitySnapshot(type.getName(), pos.x, pos.y, HEALTH, 0, playerInventory);
 	}
 
 	public void setAnimationToIdle() {

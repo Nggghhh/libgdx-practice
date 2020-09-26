@@ -79,25 +79,6 @@ public abstract class GameMap {
 				Entity entity1 = entities.get(i);
 				if(!entity1.isDisabled())
 					entity1.update(camera.getCamera(), delta, this);
-
-			//check entities for collision
-			for(int b = 0; b < entities.size(); b++) {
-				Entity entity2 = entities.get(b);
-				if(!entity1.isDisabled() && !entity2.isDisabled()) {
-					if(entity1.getRect().collidesWith(entity2.getRect()) && !entity2.isDestroyed() && entity2.getState() != "ATTACK") {
-						if(entity1 instanceof Player && entity2 instanceof Enemies) {
-							entity1.hurt(1, entity2, entity1);
-						}
-						if(entity1 instanceof Items && entity2 instanceof Items) {
-							if(entities.indexOf(entity1) != entities.indexOf(entity2))
-								entity1.push(entity2.getX(), entity2.getY(), entity2.getType().getWeight());
-						}
-//						else if(!(entity1 instanceof Items) && !(entity2 instanceof Items))
-//							if(entities.indexOf(entity1) != entities.indexOf(entity2) && entity1.getState() != "HURT" && entity1.getState() != "ATTACK" && !entity1.isDestroyed())
-//								entity1.push(entity2.getX(), entity2.getY(), entity2.getType().getWeight());
-					}
-				}
-			}
 		}
 	}
 	public abstract void dispose ();
@@ -188,7 +169,7 @@ public abstract class GameMap {
 		System.out.flush();
 		System.out.println("[");
 		for(Entity entity : entities)
-			System.out.println(entities.indexOf(entity)+". "+entity.getType().getName()+" "+entity.isDisabled()+" "+entity.getPos().x +" "+entity.getId());
+			System.out.println(entities.indexOf(entity)+". "+entity.getType().getName()+" "+entity.isDisabled()+" "+entity.getPos().x);
 		System.out.println("]");
 	}
 	public void clearEntities() {

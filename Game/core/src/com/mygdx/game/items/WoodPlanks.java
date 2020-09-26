@@ -22,7 +22,6 @@ public class WoodPlanks extends Items {
 		super.create(snapshot, type, map);
 		this.frameNum = 0;
 		this.frameRow = 0;
-		this.id = 6;
 		this.consumable = true;
 	}
 
@@ -56,12 +55,12 @@ public class WoodPlanks extends Items {
 			if(!Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
 				if(wall.tile.getId() == 0) {
 					wall.tileChange(new WoodWall(floor.x, floor.y, map), map);
-					actorsInventory.getItemList()[0] = null;
+					actorsInventory.getItemList()[actorsInventory.getPointer()] = null;
 				}
 			} else {
 				if(floor.tile.isReplacable() && wall.tile.getId() == 0) {
 					floor.tileChange(new WoodFloor(floor.x, floor.y, map), map);
-					actorsInventory.getItemList()[0] = null;
+					actorsInventory.getItemList()[actorsInventory.getPointer()] = null;
 				}
 			}
 		}

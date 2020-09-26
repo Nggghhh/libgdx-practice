@@ -23,6 +23,8 @@ public class EntityAssetManager {
 		textures.put("BIG_TREE/IDLE", TextureRegion.split(new Texture("BIG_TREE/IDLE/IDLE.png"), 64, 64));
 		textures.put("BRAZIER/IDLE", TextureRegion.split(new Texture("BRAZIER/IDLE/IDLE.png"), 16, 32));
 		textures.put("MAGIC_ARROW/IDLE", TextureRegion.split(new Texture("MAGIC_ARROW/IDLE/IDLE.png"), 16, 16));
+		textures.put("MAGIC_ARROW/TRAIL", TextureRegion.split(new Texture("MAGIC_ARROW/IDLE/TRAIL.png"), 16, 16));
+		textures.put("MAGIC_ARROW/EXPLOSION", TextureRegion.split(new Texture("MAGIC_ARROW/IDLE/EXPLOSION.png"), 16, 16));
 	}
 	
 	public static void addAnimation(String name, String state, int sizeX, int sizeY) {
@@ -47,6 +49,13 @@ public class EntityAssetManager {
 		TextureRegion[][] texture = textures.get(path);
 		if(texture != null)
 			return texture[direction][frameNum];
+		return null;
+	}
+
+	public static TextureRegion getTexture(String path, int frameNum) {
+		TextureRegion[][] texture = textures.get(path);
+		if(texture != null)
+			return texture[0][frameNum];
 		return null;
 	}
 	

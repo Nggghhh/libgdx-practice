@@ -115,7 +115,7 @@ public abstract class LivingEntity extends Entity {
 			velocity.y =+ speed*newY;
 	}
 	
-	protected float calculateAngle(float x, float y) {
+	public float calculateAngle(float x, float y) {
 		float vecX = x-pos.x;
 		float vecY = y-pos.y;
 		float angle = (float) ((float) Math.atan2(vecY, vecX)*(180/Math.PI));

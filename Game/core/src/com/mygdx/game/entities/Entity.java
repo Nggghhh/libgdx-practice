@@ -13,14 +13,12 @@ import com.mygdx.game.world.GameMap;
 import com.mygdx.game.world.tiles.CustomTileType;
 
 public abstract class Entity {
-	protected int id;
-	
 	protected float RECOVERY_TIME;
 	protected transient float remainingRecoveryTime;
 	
 	protected Vector2 pos;
 	protected transient Vector2 velocity;
-	protected float weight, r, g, b;
+	protected transient float r, g, b;
 	protected float pushStrenght;
 	protected float slippery = 8f;
 	protected int angle = 0;
@@ -72,14 +70,12 @@ public abstract class Entity {
 			this.rect.setEnabled(false);
 
 		checkForCollision();
-		
 	}
 
 	public void checkForCollision() {
 		for(Entity entity : map.getEntities()) {
 			if (map.getEntities().indexOf(this) != map.getEntities().indexOf(entity) && !entity.isDestroyed() && !entity.isDisabled()) {
-				if (this.rect.collidesWith(entity.getRect())) {
-//					entity.hurt(1, this, entity);
+				if (this.rect.isEnabled() && entity.getRect().isEnabled() && this.rect.collidesWith(entity.getRect())) {
 					entity.push(this.getX(), this.getY(), entity.getType().getWeight());
 					if(entity.getAbsoluteVelocity() > 0) {
 						this.push(entity.getX(), entity.getY(), entity.getType().getWeight());
@@ -162,15 +158,10 @@ public abstract class Entity {
 		if(timer > 1f) {
 			timer = 0;
 			if(frameNum < animLen) {
-				frameNum += 1;
-			}
-			else if(frameNum == animLen) {
+				frameNum++;
+			} else if(frameNum == animLen) {
 				if(loop) {
 					frameNum = 0;
-				}
-				else {
-					if(this.state != "DEATH")
-						changeState("IDLE", true, 1, 2);
 				}
 			}
 		}
@@ -216,10 +207,6 @@ public abstract class Entity {
 	public EntitySnapshot getSaveSnapshot() {
 		return new EntitySnapshot(type.getName(), pos.x, pos.y, HEALTH, 0);
 	}
-	
-	public int getId() {
-		return id;
-	}
 
 	public Vector2 getPos() {
 		return pos;
@@ -236,10 +223,6 @@ public abstract class Entity {
 	
 	public void setType(EntityType type) {
 		this.type = type;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
 	}
 	
 	public float getX() {
@@ -350,5 +333,13 @@ public abstract class Entity {
 	
 	public int getTextureWidth() {
 		return textureWidth;
+	}
+
+	public int getAngle() {
+		return angle;
+	}
+
+	public void setAngle(int angle) {
+		this.angle = angle;
 	}
 }

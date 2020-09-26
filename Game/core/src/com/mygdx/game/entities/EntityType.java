@@ -29,7 +29,7 @@ public enum EntityType {
 	private int width, height, health, pivotPointX, pivotPointY, speed, swimmingSpeed;
 	float weight;
 	
-	private EntityType(String name, Class<? extends Entity> loaderClass, int width, int height, int health, int x, int y, float weight, int speed, int swimmingSpeed) {
+	EntityType(String name, Class<? extends Entity> loaderClass, int width, int height, int health, int x, int y, float weight, int speed, int swimmingSpeed) {
 		this.name = name;
 		this.loaderClass = loaderClass;
 		this.width = width;

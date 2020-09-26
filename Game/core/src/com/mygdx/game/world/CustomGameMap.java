@@ -3,7 +3,6 @@ package com.mygdx.game.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.game.entities.projectiles.MagicArrow;
 import com.mygdx.game.shaders.Vignette;
 import com.mygdx.game.Camera;
 import com.mygdx.game.HUD;
@@ -39,7 +38,7 @@ public class CustomGameMap extends GameMap {
 
 	@Override
 	public void render(Camera camera, SpriteBatch batch) {
-//		System.out.println(Gdx.graphics.getFramesPerSecond());
+		System.out.println(Gdx.graphics.getFramesPerSecond());
 		batch.setProjectionMatrix(camera.getCamera().combined);
 		batch.begin();
 		
@@ -189,22 +188,28 @@ public class CustomGameMap extends GameMap {
 //				Entity entity = EntityType.createEntityUsingSnapshot(brazier, this);
 //				entities.add(entity);
 
-				EntitySnapshot arrow = new EntitySnapshot();
-				arrow.x = row*16+4;
-				arrow.y = col*16+4;
-				arrow.type = "MAGIC_ARROW";
-				arrow.HEALTH = 2;
-				Entity entity = EntityType.createEntityUsingSnapshot(arrow, this);
-				entities.add(entity);
+//				EntitySnapshot arrow = new EntitySnapshot();
+//				arrow.x = row*16+4;
+//				arrow.y = col*16+4;
+//				arrow.type = "MAGIC_ARROW";
+//				arrow.HEALTH = 2;
+//				Entity entity = EntityType.createEntityUsingSnapshot(arrow, this);
+//				entities.add(entity);
+
+//				EntitySnapshot woodPlanks = new EntitySnapshot();
+//				woodPlanks.x = row*16;
+//				woodPlanks.y = col*16;
+//				woodPlanks.type = "WOODPLANK";
+//				woodPlanks.HEALTH = 2;
+//				Entity entity = EntityType.createEntityUsingSnapshot(woodPlanks, this);
+//				entities.add(entity);
 			}
-			if(arrayOfCells[row][col][1].tile.getId() == 0 && Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && !arrayOfCells[row][col][0].isOccupied(this, 0)) {
-				arrayOfCells[row][col][1].tileChange(new WoodWall(arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y, this), this);
-			}
-//			System.out.println(isSpaceOccupied(row, col));
-//			if(arrayOfCells[row][col][1].tile.getId() == 0  && !Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
-//				arrayOfCells[row][col][1].tileChange(new WoodWall(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
-//			if(arrayOfCells[row][col][0].tile.isReplacable() && Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
+//			if(arrayOfCells[row][col][0].tile.isReplacable() && arrayOfCells[row][col][1].tile.getId() == 0 && !Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && !arrayOfCells[row][col][0].isOccupied(this, 0)) {
+//				arrayOfCells[row][col][1].tileChange(new WoodWall(arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y, this), this);
+//			}
+//			if(arrayOfCells[row][col][0].tile.isReplacable() && Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
 //				arrayOfCells[row][col][0].tileChange(new WoodFloor(arrayOfCells[row][col][0].x, arrayOfCells[row][col][0].y, this), this);
+//			}
 //			else if(arrayOfCells[row][col][1].tile.getId() == 34)
 //				arrayOfCells[row][col][1].tileChange(new Air(arrayOfCells[row][col][1].x, arrayOfCells[row][col][1].y, this), this);
 		}
@@ -337,8 +342,9 @@ public class CustomGameMap extends GameMap {
 	public void loadEntities(EntitySnapshot[] snapshots) {
 		if(snapshots != null) {
 			for (EntitySnapshot snapshot : snapshots) {
-				if (snapshot != null)
+				if (snapshot != null) {
 					entities.add(EntityType.createEntityUsingSnapshot(snapshot, this));
+				}
 			}
 		}
 	}

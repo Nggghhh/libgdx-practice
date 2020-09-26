@@ -70,7 +70,7 @@ public abstract class Bullet extends Entity {
 	}
 	
 	
-	public void timer(float deltaTime, float sliperyness) {
+	public void linearDumping(float deltaTime, float sliperyness) {
 		velocity.scl(1 - (sliperyness * deltaTime*2));
 	}
 }

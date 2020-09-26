@@ -7,18 +7,24 @@ import com.mygdx.game.world.GameMap;
 
 public class Inventory {
 	protected int maxInventorySize = 10;
-	protected Items[] inventory = new Items[maxInventorySize];
-	public Inventory(GameMap map) {
+	private int pointer = 0;
+	public Items[] inventory = new Items[maxInventorySize];
+	public Inventory() {
+		printInventory();
 	}
 	
 	public void collectInput(GameMap map) {
 		if(Gdx.input.isKeyJustPressed(Keys.M)) {
-			dropItem(0, map);
-			dropItem(1, map);
-			dropItem(2, map);
+			dropItem(pointer, map);
 		}
 		if(Gdx.input.isKeyJustPressed(Keys.N)) {
 			printInventory();
+		}
+		if(Gdx.input.isKeyJustPressed(Keys.RIGHT)) {
+			movePointerToTheRight();
+		}
+		if(Gdx.input.isKeyJustPressed(Keys.LEFT)) {
+			movePointerToTheLeft();
 		}
 	}
 	
@@ -69,5 +75,33 @@ public class Inventory {
 	
 	public int getMaxSize() {
 		return maxInventorySize;
+	}
+
+	public void movePointerToTheLeft() {
+		if(pointer > 0) {
+			pointer--;
+		}
+	}
+
+	public void movePointerToTheRight() {
+		if(pointer < maxInventorySize) {
+			pointer++;
+		}
+	}
+
+	public int getMaxInventorySize() {
+		return maxInventorySize;
+	}
+
+	public void setMaxInventorySize(int maxInventorySize) {
+		this.maxInventorySize = maxInventorySize;
+	}
+
+	public int getPointer() {
+		return pointer;
+	}
+
+	public void setPointer(int pointer) {
+		this.pointer = pointer;
 	}
 }
